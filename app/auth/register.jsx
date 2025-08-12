@@ -1,11 +1,12 @@
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Alert } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Alert, ImageBackground, ScrollView } from 'react-native';
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'expo-router';
 import { setDoc, doc } from 'firebase/firestore';
-import { auth, db } from '../../firebase';
+import { auth, firestoreDB } from '../../firebase';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { images } from '../../constants';
 
 
@@ -13,211 +14,360 @@ const { width } = Dimensions.get('window');
 
 const Register = () => {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+
+  const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
+  const [institutionalEmail, setInstitutionalEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('+63');
+  const [address, setAddress] = useState('');
+
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isFocusedEmail, setIsFocusedEmail] = useState(false);
-  const [isFocusedPassword, setIsFocusedPassword] = useState(false);
-  const [isFocusedConfirmPassword, setIsFocusedConfirmPassword] = useState(false);
+
+  const [isFocused, setIsFocused] = useState({});
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const handlePhoneChange = (value) => {
+    let cleaned = value.replace(/[^0-9+]/g, '');
+    if (!cleaned.startsWith('+63')) {
+      cleaned = '+63';
+    }
+    if (cleaned.length > 13) {
+      cleaned = cleaned.slice(0, 13);
+    }
+    setPhoneNumber(cleaned);
+  };
+
   const role = 'admin';
 
   const handleRegister = async () => {
+    if (
+      !fullName.trim() ||
+      !username.trim() ||
+      !institutionalEmail.trim() ||
+      !password.trim() ||
+      !confirmPassword.trim() ||
+      !phoneNumber.trim() ||
+      !address.trim()
+    ) {
+      Alert.alert("Error", "All fields are required.");
+      return;
+    }
+  
+    if (!phoneNumber.startsWith("+63") || phoneNumber.length !== 13) {
+      Alert.alert("Error", "Please enter a valid phone number in +63XXXXXXXXXX format.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(institutionalEmail)) {
+      Alert.alert('Please enter a valid email address.');
+      return;
+    }
+
+    if (!institutionalEmail.endsWith('@slsu.edu.ph')) {
+      Alert.alert('Please use your institutional email (e.g., yourname@slsu.edu.ph).');
+      return;
+    }
+  
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
       Alert.alert("Error", "Passwords do not match.");
       return;
     }
 
     try {
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
-      await setDoc(doc(db, 'users', userCred.user.uid), { role });
+      setLoading(true);
+      const userCred = await createUserWithEmailAndPassword(auth, institutionalEmail, password);
+      await setDoc(doc(firestoreDB, 'users', userCred.user.uid), {
+        fullName,
+        username,
+        institutionalEmail,
+        phoneNumber,
+        address,
+        role
+      });
+      Alert.alert("Success", "Account created successfully!");
+      setLoading(false);
+      router.push('/auth/login');
     } catch (e) {
-      setError('Registration failed.');
+      setLoading(false);
+      console.error(e);
       Alert.alert("Error", "Registration failed.");
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Image 
-        source={images.backgroundTop}
-        style={styles.bgTop}
-        resizeMode='contain'
-      />
+    <ImageBackground
+        source={images.background}
+        style={styles.background}
+        resizeMode="cover"
+    >
+      <SafeAreaView style={styles.container}>
+          <View style={styles.headerContainer}>
+              <Image 
+                  source={images.mainLogo}
+                  style={styles.imageLogo}
+                  resizeMode='contain'
+              />
+              <Text style={styles.headerText}>SIGN UP</Text>
+              <Image 
+                  source={images.mainLogo}
+                  style={styles.imageLogo}
+                  resizeMode='contain'
+              />
+          </View>
+          <ScrollView 
+              style={styles.scrollArea} 
+              contentContainerStyle={styles.scrollContent}
+              showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.inputMainContainer}>
+              <Text style={styles.label}>Full Name</Text>
+              <View style={[styles.inputContainer, isFocused.fullName && styles.inputContainerFocused]}>
+                <TextInput
+                  placeholder="Enter full name"
+                  value={fullName}
+                  onChangeText={setFullName}
+                  style={styles.input}
+                  onFocus={() => setIsFocused(prev => ({ ...prev, fullName: true }))}
+                  onBlur={() => setIsFocused(prev => ({ ...prev, fullName: false }))}
+                />
+              </View>
+            </View>
 
-       <Image 
-        source={images.logo}
-        style={styles.imageLogo}
-        resizeMode='contain'
-      />
-      <Text style={styles.title}>Sign Up</Text>
+            <View style={styles.inputMainContainer}>
+              <Text style={styles.label}>Username</Text>
+              <View style={[styles.inputContainer, isFocused.username && styles.inputContainerFocused]}>
+                <TextInput
+                  placeholder="Enter username"
+                  value={username}
+                  onChangeText={setUsername}
+                  style={styles.input}
+                  onFocus={() => setIsFocused(prev => ({ ...prev, username: true }))}
+                  onBlur={() => setIsFocused(prev => ({ ...prev, username: false }))}
+                />
+              </View>
+            </View>
 
-      <View style={styles.inputMainContainer}>
-        <Text style={styles.label}>Email address</Text>
-        <View 
-          style={[
-            styles.inputContainer,
-            isFocusedEmail && styles.inputContainerFocused
-          ]}
-        >
-          <TextInput 
-            placeholder="Enter email" 
-            onChangeText={setEmail} 
-            style={styles.input}
-            onFocus={() => setIsFocusedEmail(true)} 
-            onBlur={() => setIsFocusedEmail(false)} 
-          />
-        </View>
-      </View>
-      
-      <View style={styles.inputMainContainer}>
-        <Text style={styles.label}>Password</Text>
-        <View 
-          style={[
-            styles.inputContainer,
-            isFocusedPassword && styles.inputContainerFocused
-          ]}
-        >
-          <TextInput 
-            placeholder="Enter password" 
-            onFocus={() => setIsFocusedPassword(true)} 
-            onBlur={() => setIsFocusedPassword(false)} 
-            secureTextEntry={!showPassword} 
-            value={password} 
-            onChangeText={setPassword} 
-            style={styles.input}
-          />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Ionicons
-              name={`${!showPassword ? 'eye-off-outline' : "eye-outline"}`}
-              size={28}
-              color='blue'
-            />
+            <View style={styles.inputMainContainer}>
+              <Text style={styles.label}>Institutional Email</Text>
+              <View style={[styles.inputContainer, isFocused.institutionalEmail && styles.inputContainerFocused]}>
+                <TextInput
+                  placeholder="Enter institutional email"
+                  value={institutionalEmail}
+                  onChangeText={setInstitutionalEmail}
+                  style={styles.input}
+                  keyboardType="email-address"
+                  onFocus={() => setIsFocused(prev => ({ ...prev, institutionalEmail: true }))}
+                  onBlur={() => setIsFocused(prev => ({ ...prev, institutionalEmail: false }))}
+                />
+              </View>
+            </View>
+
+            <View style={styles.inputMainContainer}>
+              <Text style={styles.label}>Password</Text>
+              <View style={[styles.inputContainer, isFocused.password && styles.inputContainerFocused]}>
+                <TextInput
+                  placeholder="Enter password"
+                  onFocus={() => setIsFocused(prev => ({ ...prev, password: true }))}
+                  onBlur={() => setIsFocused(prev => ({ ...prev, password: false }))}
+                  secureTextEntry={!showPassword}
+                  value={password}
+                  onChangeText={setPassword}
+                  style={styles.input}
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                  <Ionicons
+                    name={!showPassword ? 'eye-off-outline' : "eye-outline"}
+                    size={28}
+                    color='blue'
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.inputMainContainer}>
+              <Text style={styles.label}>Confirm Password</Text>
+              <View style={[styles.inputContainer, isFocused.confirmPassword && styles.inputContainerFocused]}>
+                <TextInput
+                  placeholder="Confirm password"
+                  onFocus={() => setIsFocused(prev => ({ ...prev, confirmPassword: true }))}
+                  onBlur={() => setIsFocused(prev => ({ ...prev, confirmPassword: false }))}
+                  secureTextEntry={!showConfirmPassword}
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  style={styles.input}
+                />
+                <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                  <Ionicons
+                    name={!showConfirmPassword ? 'eye-off-outline' : "eye-outline"}
+                    size={28}
+                    color='blue'
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.inputMainContainer}>
+              <Text style={styles.label}>Phone Number</Text>
+              <View style={[styles.inputContainer, isFocused.phoneNumber && styles.inputContainerFocused]}>
+                <TextInput
+                  placeholder="+63XXXXXXXXXX"
+                  value={phoneNumber}
+                  onChangeText={handlePhoneChange}
+                  style={styles.input}
+                  keyboardType="phone-pad"
+                  onFocus={() => setIsFocused(prev => ({ ...prev, phoneNumber: true }))}
+                  onBlur={() => setIsFocused(prev => ({ ...prev, phoneNumber: false }))}
+                  maxLength={13}
+                />
+              </View>
+            </View>
+
+            <View style={styles.inputMainContainer}>
+              <Text style={styles.label}>Address</Text>
+              <View style={[styles.inputContainer, isFocused.address && styles.inputContainerFocused]}>
+                <TextInput
+                  placeholder="Enter address"
+                  value={address}
+                  onChangeText={setAddress}
+                  style={styles.input}
+                  multiline
+                  onFocus={() => setIsFocused(prev => ({ ...prev, address: true }))}
+                  onBlur={() => setIsFocused(prev => ({ ...prev, address: false }))}
+                />
+              </View>
+            </View>
+          </ScrollView>
+          <TouchableOpacity 
+              activeOpacity={0.8} 
+              style={styles.buttonWrapper}
+              onPress={handleRegister}
+              disabled={loading}
+          >
+              <LinearGradient
+                  colors={['#07a751', '#8DC63F']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.button}
+              >
+                <Text style={styles.buttonText}>{loading ? 'Signing up...' : 'Sign Up'}</Text>
+              </LinearGradient>
           </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.inputMainContainer}>
-        <Text style={styles.label}>Confirm Password</Text>
-        <View style={[styles.inputContainer, isFocusedConfirmPassword && styles.inputContainerFocused]}>
-          <TextInput
-            placeholder="Confirm password"
-            onFocus={() => setIsFocusedConfirmPassword(true)}
-            onBlur={() => setIsFocusedConfirmPassword(false)}
-            secureTextEntry={!showConfirmPassword}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            style={styles.input}
+      </SafeAreaView>
+      <TouchableOpacity 
+          style={styles.navButtonContainer}
+          onPress={() => router.back()}
+      >
+          <Image 
+              source={images.backIcon}
+              style={styles.navButtonImage}
+              resizeMode='contain'
           />
-          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-            <Ionicons
-              name={`${!showConfirmPassword ? 'eye-off-outline' : "eye-outline"}`}
-              size={28}
-              color='blue'
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <TouchableOpacity onPress={handleRegister} style={styles.registerButton}>
-        <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
-
-      <View style={styles.registerContainer}>
-        <Text style={styles.registerText}>Already have an account? </Text>
-        <TouchableOpacity onPress={() => router.push('/auth/login')}>
-          <Text style={styles.registerButtonText}>Sign In</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Image 
-        source={images.backgroundBottom}
-        style={styles.bgBottom}
-        resizeMode='contain'
-      />
-
-    </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    padding: 24,
-    justifyContent: 'center',
-    backgroundColor: '#eaeaea',
+    width: '100%',
+    height: '100%',
     position: 'relative'
   },
-  bgTop:{
-    position: 'absolute',
-    width: '100%',
-    top: 0
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff4c',
+    paddingHorizontal: 20,
   },
-  bgBottom:{
-    position: 'absolute',
-    width: width,
-    bottom: -30,
-    zIndex: -10
+
+  headerContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 50,
+    paddingVertical: 8
   },
   imageLogo: {
-    marginHorizontal: 'auto'
+    width: 80,
+    height: 80
   },
-  title: {
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: 50,
-    textAlign: 'center'
+  headerText: {
+    fontFamily: 'Poppins-Bold',
+    fontSize: 70,
+    marginBottom: -12
   },
+
+  scrollArea: {
+      flex: 1,
+  },
+  scrollContent: {
+      paddingHorizontal: 200,
+      paddingBottom: 20,
+      gap: 20
+  },
+
+ 
   label: {
-    fontFamily: 'Poppins-Medium',
-    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 20,
     marginBottom: 8,
     color: '#333',
   },
   inputMainContainer:{
     width: '100%',
     height: 'auto',
-    marginVertical: 10
+    marginVertical: 10,
   },
   input : {
     flex : 1,
-    fontFamily: 'Poppins-Regular'
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16
   },
   inputContainer: {
     width: '100%',
     height: 64,
     paddingHorizontal: 16,
+    backgroundColor: '#ffffff82',
     borderWidth: 2,
-    borderColor: '#a1a2a8',
+    borderColor: '#07a751',
     borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
   },
   inputContainerFocused: {
-    borderColor: '#3B82F6',
+    borderColor: '#d0f58d',
   },
   forgetText: {
     fontFamily: 'Poppins-Light',
     color: 'blue'
   },
-  registerButton:{
-    width: '70%',
-    backgroundColor: '#c6c6c6',
+  buttonContainer:{
+    marginTop: 50
+  },
+  buttonWrapper: {
+    borderRadius: 50,
+    width: '30%',
+    marginHorizontal: 'auto',
+    overflow: 'hidden'
+  },
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 14,
-    borderRadius: 30,
-    marginHorizontal: 'auto',
-    marginTop: 16,
-    borderWidth: 2,
-    borderColor: '#a1a2a8',
+    marginBottom: 20
   },
   buttonText: {
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: 20,
-    color: 'white'
+    color: '#000',
+    fontFamily: 'Poppins-Bold',
+    fontSize: 24,
   },
 
   registerContainer:{
@@ -232,6 +382,16 @@ const styles = StyleSheet.create({
   registerButtonText: {
     fontFamily: 'Poppins-SemiBold',
     color: 'blue'
+  },
+
+  navButtonContainer:{
+    position: 'absolute',
+    bottom: 10,
+    left: 10
+  },
+  navButtonImage: {
+      width: 50,
+      height: 50
   }
 });
 

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
@@ -29,6 +29,22 @@ const Calendar = () => {
                     resizeMode='contain'
                 />
             </View>
+            <ScrollView 
+              style={styles.scrollArea} 
+              contentContainerStyle={styles.scrollContent}
+              showsVerticalScrollIndicator={false}
+            >
+              <Image 
+                source={images.calendarOne}
+                style={[styles.image, { marginBottom: 30 }]}
+                resizeMode='contain'
+              />
+              <Image 
+                source={images.calendarTwo}
+                style={styles.image}
+                resizeMode='contain'
+              />
+            </ScrollView>
         </SafeAreaView>
         <TouchableOpacity 
             style={styles.navButtonContainer}
@@ -75,6 +91,19 @@ const styles = StyleSheet.create({
       fontFamily: 'Poppins-Bold',
       fontSize: 70,
       marginBottom: -12
+    },
+
+    scrollArea: {
+      flex: 1,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 30,
+    },
+    image: {
+      width: '90%'
     },
 
     navButtonContainer:{

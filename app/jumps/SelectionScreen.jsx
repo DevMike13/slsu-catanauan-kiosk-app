@@ -4,9 +4,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 
 
-import { images } from '../constants';
+import { images } from '../../constants';
 
-const Index = () => {
+const SelectionScreen = () => {
   const router = useRouter();
 
   return (
@@ -31,27 +31,43 @@ const Index = () => {
         </View>
         <View>
           <Text style={styles.headerText}>WELCOME TO SLSU CATANAUAN!</Text>
-          <TouchableOpacity 
-            activeOpacity={0.8} 
-            style={styles.buttonWrapper}
-            onPress={() => router.push('/jumps/SelectionScreen')}
-          >
-            <LinearGradient
-              colors={['#d0f58d', '#8DC63F']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.button}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity 
+                activeOpacity={0.8} 
+                style={styles.buttonWrapper}
+                onPress={() => router.push('/jumps/AdminSelectionScreen')}
             >
-              <Text style={styles.buttonText}>Start</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+                <LinearGradient
+                    colors={['#07a751', '#8DC63F']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.button}
+                >
+                <Text style={styles.buttonText}>Admin</Text>
+                </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity 
+                activeOpacity={0.8} 
+                style={styles.buttonWrapper}
+                onPress={() => router.push('/screens/main')}
+            >
+                <LinearGradient
+                    colors={['#07a751', '#8DC63F']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.button}
+                >
+                <Text style={styles.buttonText}>Student</Text>
+                </LinearGradient>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     </ImageBackground>
   );
 }
 
-export default Index;
+export default SelectionScreen;
 
 const styles = StyleSheet.create({
   background: {
@@ -84,19 +100,22 @@ const styles = StyleSheet.create({
     width: '60%',
     marginHorizontal: 'auto'
   },
+  buttonContainer:{
+    marginTop: 50
+  },
   buttonWrapper: {
-    borderRadius: 10,
+    borderRadius: 50,
     width: '30%',
     marginHorizontal: 'auto',
-    overflow: 'hidden',
-    marginTop: 80
+    overflow: 'hidden'
   },
   button: {
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 20,
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 20
   },
   buttonText: {
     color: '#000',

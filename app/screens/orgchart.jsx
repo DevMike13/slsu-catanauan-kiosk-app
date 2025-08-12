@@ -1,8 +1,6 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-
-
 import { images } from '../../constants';
 
 const Orgchart = () => {
@@ -14,22 +12,32 @@ const Orgchart = () => {
         style={styles.background}
         resizeMode="cover"
     >
-        
-        <SafeAreaView style={styles.container}>
-            <View style={styles.headerContainer}>
-                <Image 
-                    source={images.mainLogo}
-                    style={styles.imageLogo}
-                    resizeMode='contain'
-                />
-                <Text style={styles.headerText}>ORGANIZATIONAL CHART</Text>
-                <Image 
-                    source={images.mainLogo}
-                    style={styles.imageLogo}
-                    resizeMode='contain'
-                />
-            </View>
-        </SafeAreaView>
+      <SafeAreaView style={styles.container}>
+          <View style={styles.headerContainer}>
+              <Image 
+                  source={images.mainLogo}
+                  style={styles.imageLogo}
+                  resizeMode='contain'
+              />
+              <Text style={styles.headerText}>ORGANIZATIONAL CHART</Text>
+              <Image 
+                  source={images.mainLogo}
+                  style={styles.imageLogo}
+                  resizeMode='contain'
+              />
+          </View>
+          <ScrollView 
+            style={styles.scrollArea} 
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            <Image 
+              source={images.orgChart}
+              style={styles.image}
+              resizeMode='contain'
+            />
+          </ScrollView>
+      </SafeAreaView>
         <TouchableOpacity 
             style={styles.navButtonContainer}
             onPress={() => router.back()}
@@ -73,10 +81,21 @@ const styles = StyleSheet.create({
     },
     headerText: {
       fontFamily: 'Poppins-Bold',
-      fontSize: 70,
+      fontSize: 60,
       marginBottom: -12
     },
 
+    scrollArea: {
+      flex: 1,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    image: {
+      width: '90%'
+    },
     navButtonContainer:{
         position: 'absolute',
         bottom: 10,

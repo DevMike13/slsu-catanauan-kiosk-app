@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { Stack, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useFonts } from 'expo-font';
@@ -9,6 +9,8 @@ import * as NavigationBar from 'expo-navigation-bar';
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
+  const segments = useSegments();
+
   const [fontsLoaded, error] = useFonts({
     "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -28,17 +30,9 @@ export default function Layout() {
   }, [fontsLoaded, error]);
 
   useEffect(() => {
-    // const hideNavBar = async () => {
-    //   // try {
-    //     await NavigationBar.setVisibilityAsync('hidden');
-    //     await NavigationBar.setBehaviorAsync('overlay-swipe');
-    //   // } catch (err) {
-    //   //   console.warn('NavigationBar control not supported:', err);
-    //   // }
-    // };
-    // hideNavBar();
     NavigationBar.setVisibilityAsync("hidden");
-  }, []);
+    NavigationBar.setBehaviorAsync('inset-swipe'); 
+  }, [segments]);
 
   if (!fontsLoaded && !error) {
     return (
