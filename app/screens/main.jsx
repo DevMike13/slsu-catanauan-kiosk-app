@@ -112,7 +112,11 @@ const Main = () => {
           </View>
 
           <View style={styles.gridItem}>
-            <TouchableOpacity activeOpacity={0.8} style={styles.buttonWrapper}>
+            <TouchableOpacity 
+              activeOpacity={0.8} 
+              style={styles.buttonWrapper}
+              onPress={() => router.push('/screens/program')}
+            >
               <LinearGradient
                 colors={['#07a751', '#8DC63F']}
                 start={{ x: 0, y: 0 }}
@@ -136,7 +140,11 @@ const Main = () => {
                 <Text style={styles.buttonText}>SLSU Calendar</Text>
               </LinearGradient>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} style={styles.buttonWrapper}>
+            <TouchableOpacity 
+              activeOpacity={0.8} 
+              style={styles.buttonWrapper}
+              onPress={() => router.push('/screens/studorg')}
+            >
               <LinearGradient
                 colors={['#07a751', '#8DC63F']}
                 start={{ x: 0, y: 0 }}

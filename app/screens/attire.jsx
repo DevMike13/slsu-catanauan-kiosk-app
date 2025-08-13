@@ -86,7 +86,7 @@ const Attire = () => {
                                 colors={
                                     activeTab === item
                                     ? ['#07a751', '#8DC63F']
-                                    : ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.1)']
+                                    : ['#ffffffbb', '#ffffff58']
                                 }
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
@@ -170,7 +170,8 @@ const styles = StyleSheet.create({
     },
     flatlistContainer:{
         flexGrow: 1,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        gap: 20
     },
     tabButton: {
         paddingVertical: 10,
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255,255,255,0.1)'
     },
     tabText: {
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins-Bold',
         fontSize: 16,
         textAlign: 'center'
     },
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
         color: '#fff'
     },
     inactiveTabText: {
-        color: '#ccc'
+        color: '#000'
     },
 
     contentWrapper: {
