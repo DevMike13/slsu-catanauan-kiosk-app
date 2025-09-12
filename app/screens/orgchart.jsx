@@ -1,53 +1,35 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { images } from '../../constants';
+
+const { width, height } = Dimensions.get('window');
 
 const Orgchart = () => {
   const router = useRouter();
 
   return (
     <ImageBackground
-        source={images.background}
+        // source={images.background}
         style={styles.background}
         resizeMode="cover"
     >
       <SafeAreaView style={styles.container}>
-          <View style={styles.headerContainer}>
-              <Image 
-                  source={images.mainLogo}
-                  style={styles.imageLogo}
-                  resizeMode='contain'
-              />
-              <Text style={styles.headerText}>ORGANIZATIONAL CHART</Text>
-              <Image 
-                  source={images.mainLogo}
-                  style={styles.imageLogo}
-                  resizeMode='contain'
-              />
-          </View>
           <ScrollView 
             style={styles.scrollArea} 
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
+            bounces={false}
           >
-            <Image 
-              source={images.orgChart}
-              style={styles.image}
-              resizeMode='contain'
-            />
+            <View style={styles.imageWrapper}>
+              <Image 
+                source={images.orgChart}
+                style={styles.image}
+                resizeMode='contain'
+              />
+            </View>
           </ScrollView>
       </SafeAreaView>
-        <TouchableOpacity 
-            style={styles.navButtonContainer}
-            onPress={() => router.back()}
-        >
-            <Image 
-                source={images.backIcon}
-                style={styles.navButtonImage}
-                resizeMode='contain'
-            />
-        </TouchableOpacity>
     </ImageBackground>
   )
 }
@@ -63,7 +45,7 @@ const styles = StyleSheet.create({
     },
     container: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.3)',
+      // backgroundColor: 'rgba(0,0,0,0.3)',
       paddingHorizontal: 20,
     },
   
@@ -72,7 +54,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: 50,
+      paddingHorizontal: width * 0.01,
       paddingVertical: 8
     },
     imageLogo: {
@@ -81,8 +63,8 @@ const styles = StyleSheet.create({
     },
     headerText: {
       fontFamily: 'Poppins-Bold',
-      fontSize: 60,
-      marginBottom: -12
+      fontSize: width * 0.06,
+      marginBottom: -20
     },
 
     scrollArea: {
@@ -91,10 +73,18 @@ const styles = StyleSheet.create({
     scrollContent: {
       flexGrow: 1,
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      paddingHorizontal: 50
+    },
+    imageWrapper: {
+      marginTop: -50,
+      width: width - 100, // full screen width
+      paddingHorizontal: 50,
+      aspectRatio: 1080 / 1623,
     },
     image: {
-      width: '90%'
+      width: '100%',
+      height: '100%',
     },
     navButtonContainer:{
         position: 'absolute',

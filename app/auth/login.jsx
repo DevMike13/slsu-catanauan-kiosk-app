@@ -11,7 +11,7 @@ import { images } from '../../constants';
 
 import { useAuthStore } from '../../store/useAuthStore';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const Login = () => {
   const router = useRouter();
@@ -55,7 +55,7 @@ const Login = () => {
         Alert.alert('Error', 'No user profile found');
       }
 
-    } catch (e) {
+    } catch (error) {
       console.error(error);
       Alert.alert('Login Failed', error.message);
     } finally {
@@ -76,7 +76,7 @@ const Login = () => {
                   style={styles.imageLogo}
                   resizeMode='contain'
               />
-              <Text style={styles.headerText}>SIGN UP</Text>
+              <Text style={styles.headerText}>SIGN IN</Text>
               <Image 
                   source={images.mainLogo}
                   style={styles.imageLogo}
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 50,
+    paddingHorizontal: width * 0.02,
     paddingVertical: 8
   },
   imageLogo: {
@@ -199,17 +199,17 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontFamily: 'Poppins-Bold',
-    fontSize: 70,
+    fontSize: width * 0.06,
     marginBottom: -12
   },
 
   scrollArea: {
-      flex: 1,
+    flex: 1,
   },
   scrollContent: {
-      paddingHorizontal: 200,
-      paddingBottom: 20,
-      gap: 20
+    paddingHorizontal: width * 0.2,
+    paddingBottom: 20,
+    gap: 20
   },
 
  
@@ -253,21 +253,20 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     borderRadius: 50,
     width: '30%',
-    marginHorizontal: 'auto',
-    overflow: 'hidden'
+    alignSelf: 'center'
   },
   button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.06,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20
+    marginBottom: 30
   },
   buttonText: {
     color: '#000',
     fontFamily: 'Poppins-Bold',
-    fontSize: 24,
+    fontSize: width * 0.02,
   },
 
   registerContainer:{

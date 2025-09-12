@@ -10,7 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { images } from '../../constants';
 
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const Register = () => {
   const router = useRouter();
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 50,
+    paddingHorizontal: width * 0.02,
     paddingVertical: 8
   },
   imageLogo: {
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontFamily: 'Poppins-Bold',
-    fontSize: 70,
+    fontSize: width * 0.06,
     marginBottom: -12
   },
 
@@ -307,9 +307,9 @@ const styles = StyleSheet.create({
       flex: 1,
   },
   scrollContent: {
-      paddingHorizontal: 200,
-      paddingBottom: 20,
-      gap: 20
+    paddingHorizontal: width * 0.2,
+    paddingBottom: 20,
+    gap: 20
   },
 
  
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
   inputMainContainer:{
     width: '100%',
     height: 'auto',
-    marginVertical: 10,
+    marginVertical: 5,
   },
   input : {
     flex : 1,
@@ -353,12 +353,11 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     borderRadius: 50,
     width: '30%',
-    marginHorizontal: 'auto',
-    overflow: 'hidden'
+    alignSelf: 'center'
   },
   button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.06,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
@@ -367,7 +366,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#000',
     fontFamily: 'Poppins-Bold',
-    fontSize: 24,
+    fontSize: width * 0.02,
   },
 
   registerContainer:{

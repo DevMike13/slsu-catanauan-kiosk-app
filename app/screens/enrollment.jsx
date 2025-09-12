@@ -5,42 +5,42 @@ import { useRouter } from 'expo-router';
 const { width } = Dimensions.get('window');
 import { images } from '../../constants';
 
-const Events = () => {
-  const router = useRouter();
+const Enrollment = () => {
+    const router = useRouter();
 
-  return (
-    <ImageBackground
-      // source={images.background}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <SafeAreaView style={styles.container}>
-
-        <View style={styles.cardContainer}>
-          {/* BACK CARD */}
-          <View style={styles.backCard} />
-
-          {/* FRONT ROTATED CARD */}
-          <View style={styles.frontCard}>
-            {/* Counter-rotated content */}
-            <View style={styles.innerCard}>
-              <ScrollView
-                style={styles.scrollArea}
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={false}
-              >
-                
-              </ScrollView>
+    return (
+      <ImageBackground
+        // source={images.background}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <SafeAreaView style={styles.container}>
+  
+          <View style={styles.cardContainer}>
+            {/* BACK CARD */}
+            <View style={styles.backCard} />
+  
+            {/* FRONT ROTATED CARD */}
+            <View style={styles.frontCard}>
+              {/* Counter-rotated content */}
+              <View style={styles.innerCard}>
+                <ScrollView
+                  style={styles.scrollArea}
+                  contentContainerStyle={styles.scrollContent}
+                  showsVerticalScrollIndicator={false}
+                >
+                  
+                </ScrollView>
+              </View>
             </View>
           </View>
-        </View>
-
-      </SafeAreaView>
-    </ImageBackground>
-  );
+  
+        </SafeAreaView>
+      </ImageBackground>
+    );
 }
 
-export default Events
+export default Enrollment
 
 const styles = StyleSheet.create({
     background: {

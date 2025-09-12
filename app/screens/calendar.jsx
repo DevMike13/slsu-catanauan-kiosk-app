@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
-
+const { width } = Dimensions.get('window');
 import { images } from '../../constants';
 
 const Calendar = () => {
@@ -10,52 +10,29 @@ const Calendar = () => {
 
   return (
     <ImageBackground
-      source={images.background}
+      // source={images.background}
       style={styles.background}
       resizeMode="cover"
     >
         
         <SafeAreaView style={styles.container}>
-            <View style={styles.headerContainer}>
-                <Image 
-                    source={images.mainLogo}
-                    style={styles.imageLogo}
-                    resizeMode='contain'
-                />
-                <Text style={styles.headerText}>SLSU CALENDAR</Text>
-                <Image 
-                    source={images.mainLogo}
-                    style={styles.imageLogo}
-                    resizeMode='contain'
-                />
-            </View>
-            <ScrollView 
-              style={styles.scrollArea} 
-              contentContainerStyle={styles.scrollContent}
-              showsVerticalScrollIndicator={false}
-            >
-              <Image 
-                source={images.calendarOne}
-                style={[styles.image, { marginBottom: 30 }]}
-                resizeMode='contain'
-              />
-              <Image 
-                source={images.calendarTwo}
-                style={styles.image}
-                resizeMode='contain'
-              />
-            </ScrollView>
-        </SafeAreaView>
-        <TouchableOpacity 
-            style={styles.navButtonContainer}
-            onPress={() => router.back()}
-        >
+          <ScrollView
+            style={styles.scrollArea}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
             <Image 
-                source={images.backIcon}
-                style={styles.navButtonImage}
-                resizeMode='contain'
+              source={images.calendarOne}
+              style={[styles.image, { marginBottom: 30 }]}
+              resizeMode="contain"
             />
-        </TouchableOpacity>
+            <Image 
+              source={images.calendarTwo}
+              style={styles.image}
+              resizeMode="contain"
+            />
+          </ScrollView>
+        </SafeAreaView>
     </ImageBackground>
   )
 }
@@ -71,7 +48,7 @@ const styles = StyleSheet.create({
     },
     container: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.3)',
+      // backgroundColor: 'rgba(0,0,0,0.3)',
       paddingHorizontal: 20,
     },
   
@@ -80,7 +57,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: 50,
+      paddingHorizontal: width * 0.01,
       paddingVertical: 8
     },
     imageLogo: {
@@ -89,23 +66,27 @@ const styles = StyleSheet.create({
     },
     headerText: {
       fontFamily: 'Poppins-Bold',
-      fontSize: 70,
-      marginBottom: -12
+      fontSize: width * 0.06,
+      marginBottom: -20
     },
 
     scrollArea: {
       flex: 1,
     },
     scrollContent: {
-      flexGrow: 1,
-      justifyContent: 'center',
       alignItems: 'center',
-      paddingVertical: 30,
+      paddingVertical: 20,
+      gap: 30,
     },
+    
     image: {
-      width: '90%'
+      width: width - 40,     // full width minus horizontal padding
+      aspectRatio: 1.4,      // adjust this based on your image shape
+      height: undefined,
     },
-
+    
+    
+    
     navButtonContainer:{
         position: 'absolute',
         bottom: 10,

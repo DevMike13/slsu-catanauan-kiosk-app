@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, Dimensions, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-
-
 import { images } from '../constants';
+
+const { width, height } = Dimensions.get('window');
 
 const Index = () => {
   const router = useRouter();
@@ -16,36 +16,42 @@ const Index = () => {
       resizeMode="cover"
     >
       <SafeAreaView style={styles.container}>
-        <View style={styles.headerContainer}>
-          <Image 
-            source={images.mainLogo}
-            style={styles.imageLogo}
-            resizeMode='contain'
-          />
-          <Text style={styles.headerText}></Text>
-          <Image 
-            source={images.mainLogo}
-            style={styles.imageLogo}
-            resizeMode='contain'
-          />
-        </View>
-        <View>
-          <Text style={styles.headerText}>WELCOME TO SLSU CATANAUAN!</Text>
-          <TouchableOpacity 
-            activeOpacity={0.8} 
-            style={styles.buttonWrapper}
-            onPress={() => router.push('/jumps/SelectionScreen')}
-          >
-            <LinearGradient
-              colors={['#d0f58d', '#8DC63F']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.button}
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          {/* HEADER */}
+          <View style={styles.headerContainer}>
+            <Image 
+              source={images.mainLogo}
+              style={styles.imageLogo}
+              resizeMode="contain"
+            />
+            <Text style={styles.headerText}></Text>
+            <Image 
+              source={images.mainLogo}
+              style={styles.imageLogo}
+              resizeMode="contain"
+            />
+          </View>
+
+          {/* MAIN CONTENT */}
+          <View style={styles.contentWrapper}>
+            <Text style={styles.welcomeText}>WELCOME TO SLSU CATANAUAN!</Text>
+
+            <TouchableOpacity 
+              activeOpacity={0.8} 
+              style={styles.buttonWrapper}
+              onPress={() => router.push('/jumps/SelectionScreen')}
             >
-              <Text style={styles.buttonText}>Start</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
+              <LinearGradient
+                colors={['#d0f58d', '#8DC63F']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>Start</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -62,38 +68,44 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff4c',
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.08,
   },
 
   headerContainer: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 50,
-    paddingVertical: 8
+    paddingHorizontal: width * 0.02,
+    paddingVertical: height * 0.02,
   },
   imageLogo: {
-    width: 140,
-    height: 140
+    width: width * 0.12,
+    height: undefined,
+    aspectRatio: 1,
   },
-  headerText: {
+
+  contentWrapper: {
+    alignItems: 'center',
+    marginTop: height * 0.05,
+  },
+
+  welcomeText: {
     fontFamily: 'Poppins-Bold',
-    fontSize: 60,
+    fontSize: width * 0.05,
     textAlign: 'center',
-    width: '60%',
-    marginHorizontal: 'auto'
+    paddingHorizontal: width * 0.05,
   },
+
   buttonWrapper: {
     borderRadius: 10,
-    width: '30%',
-    marginHorizontal: 'auto',
+    width: width * 0.3,
+    alignSelf: 'center',
     overflow: 'hidden',
-    marginTop: 80
+    marginTop: height * 0.08,
   },
   button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.06,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -101,6 +113,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#000',
     fontFamily: 'Poppins-Bold',
-    fontSize: 24,
+    fontSize: width * 0.02,
   },
 });

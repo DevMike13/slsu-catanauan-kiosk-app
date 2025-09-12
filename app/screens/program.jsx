@@ -109,77 +109,61 @@ const Program = () => {
     };
     return (
       <ImageBackground
-          source={images.background}
+        //   source={images.background}
           style={styles.background}
           resizeMode="cover"
       >
           
           <SafeAreaView style={styles.container}>
-              <View style={styles.headerContainer}>
-                  <Image 
-                      source={images.mainLogo}
-                      style={styles.imageLogo}
-                      resizeMode='contain'
-                  />
-                  <Text style={styles.headerText}>PROGRAM OFFERED</Text>
-                  <Image 
-                      source={images.mainLogo}
-                      style={styles.imageLogo}
-                      resizeMode='contain'
-                  />
-              </View>
               <View style={styles.bodyContainer}>
-                  <View style={styles.tabContainer}>
-                      <FlatList
-                      data={tabList}
-                      keyExtractor={(item, index) => index.toString()}
-                      renderItem={({ item }) => (
-                          <TouchableOpacity
-                              onPress={() => setActiveTab(item)}
-                              activeOpacity={0.8}
-                              style={{ marginBottom: 10, borderRadius: 8, overflow: 'hidden' }}
-                          >
-                              <LinearGradient
-                                  colors={
-                                      activeTab === item
-                                      ? ['#07a751', '#8DC63F']
-                                      : ['#ffffffbb', '#ffffff58']
-                                  }
-                                  start={{ x: 0, y: 0 }}
-                                  end={{ x: 1, y: 0 }}
-                                  style={styles.tabButton}
-                              >
-                                  <Text
-                                      style={[
-                                      styles.tabText,
-                                      activeTab === item ? styles.activeTabText : styles.inactiveTabText
-                                      ]}
-                                  >
-                                      {item}
-                                  </Text>
-                              </LinearGradient>
-                          </TouchableOpacity>
-                      )}
-                      showsVerticalScrollIndicator={false}
-                      contentContainerStyle={styles.flatlistContainer}
-                      />
-                  </View>
+                    <View style={styles.cardContainer}>
+                        <View style={styles.backCard} />
+                        <View style={styles.frontCard}>
+                            <View style={styles.innerCard}>
+                                <View style={styles.tabContainer}>
+                                    <FlatList
+                                    data={tabList}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacity
+                                            onPress={() => setActiveTab(item)}
+                                            activeOpacity={0.8}
+                                            style={{ marginBottom: 10, borderRadius: 8, overflow: 'hidden' }}
+                                        >
+                                            <LinearGradient
+                                                colors={
+                                                    activeTab === item
+                                                    ? ['transparent', 'transparent']
+                                                    : ['transparent', 'transparent']
+                                                }
+                                                start={{ x: 0, y: 0 }}
+                                                end={{ x: 1, y: 0 }}
+                                                style={styles.tabButton}
+                                            >
+                                                <Text
+                                                    style={[
+                                                    styles.tabText,
+                                                    activeTab === item ? styles.activeTabText : styles.inactiveTabText
+                                                    ]}
+                                                >
+                                                    {item}
+                                                </Text>
+                                            </LinearGradient>
+                                        </TouchableOpacity>
+                                    )}
+                                    showsVerticalScrollIndicator={false}
+                                    contentContainerStyle={styles.flatlistContainer}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </View>
   
                   <ScrollView style={styles.contentWrapper} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
                       {renderContent()}
                   </ScrollView>
               </View>
           </SafeAreaView>
-          <TouchableOpacity 
-              style={styles.navButtonContainer}
-              onPress={() => router.back()}
-          >
-              <Image 
-                  source={images.backIcon}
-                  style={styles.navButtonImage}
-                  resizeMode='contain'
-              />
-          </TouchableOpacity>
       </ImageBackground>
     )
 }
@@ -195,26 +179,26 @@ const styles = StyleSheet.create({
     },
     container: {
       flex: 1,
-      backgroundColor: '#b0b0b071',
+    //   backgroundColor: '#b0b0b071',
       paddingHorizontal: 20,
     },
   
     headerContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: 50,
-      paddingVertical: 8
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: width * 0.01,
+        paddingVertical: 8
     },
     imageLogo: {
-      width: 80,
-      height: 80
+        width: 80,
+        height: 80
     },
     headerText: {
-      fontFamily: 'Poppins-Bold',
-      fontSize: 50,
-      marginBottom: -12
+        fontFamily: 'Poppins-Bold',
+        fontSize: width * 0.06,
+        marginBottom: -20
     },
 
     bodyContainer: {
@@ -223,12 +207,12 @@ const styles = StyleSheet.create({
     },
     tabContainer: {
         width: width * 0.3,
-        paddingVertical: 10,
+        // paddingVertical: 10,
     },
     flatlistContainer:{
         flexGrow: 1,
         justifyContent: 'center',
-        gap: 20
+        // gap: 20
     },
     tabButton: {
         paddingVertical: 10,
@@ -237,21 +221,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     activeTabButton: {
-        backgroundColor: '#07a751'
+        // backgroundColor: '#07a751'
     },
     inactiveTabButton: {
-        backgroundColor: '#ffffffc3',
+        // backgroundColor: '#ffffffc3',
     },
     tabText: {
         fontFamily: 'Poppins-Bold',
-        fontSize: 16,
+        fontSize: 12,
         textAlign: 'center'
     },
     activeTabText: {
-        color: '#fff'
+        color: '#ffffff'
     },
     inactiveTabText: {
-        color: '#000',
+        color: '#b8b8b8',
     },
 
     contentWrapper: {
@@ -282,10 +266,12 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Bold',
         fontSize: 18,
         marginBottom: 4,
+        color: 'white'
     },
     paragraph: {
         fontFamily: 'Poppins-Regular',
         textAlign: 'justify',
+        color: 'white'
     },
 
     navButtonContainer: {
@@ -296,5 +282,39 @@ const styles = StyleSheet.create({
     navButtonImage: {
         width: 50,
         height: 50
-    }
+    },
+    cardContainer: {
+        position: 'relative',
+        alignItems: 'center',
+        justifyContent: 'center'
+      },
+    
+      backCard: {
+        position: 'absolute',
+        width: width * 0.3,
+        height: 400,
+        backgroundColor: '#3dc88c',
+        borderRadius: 16,
+        zIndex: 0
+      },
+    
+      frontCard: {
+        width: width * 0.3,
+        height: 400,
+        backgroundColor: '#257b3e',
+        borderRadius: 16,
+        paddingHorizontal: 30,
+        // paddingVertical: 60,
+        transform: [{ rotate: '-10deg' }],
+        zIndex: 1,
+        elevation: 5,
+        overflow: 'hidden',
+      },
+      
+      innerCard: {
+        flex: 1,
+        transform: [{ rotate: '10deg' }],  // counter-rotate
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
 });
