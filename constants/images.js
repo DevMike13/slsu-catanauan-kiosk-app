@@ -16,6 +16,7 @@ import commisionSelection from "../assets/images/commision-selection.jpeg";
 import orgChart from "../assets/images/org-chart.jpeg";
 import studentCouncil from "../assets/images/student-council.jpeg";
 import placeholderImage from "../assets/images/placeholder.png";
+import newBG from '../assets/images/slsu-new-bg.jpg';
 
 export default { 
     logo, 
@@ -34,5 +35,6 @@ export default {
     emergencyTeam,
     commisionSelection,
     orgChart,
-    studentCouncil
+    studentCouncil,
+    newBG
 };

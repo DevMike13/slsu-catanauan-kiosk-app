@@ -11,7 +11,7 @@ const Index = () => {
 
   return (
     <ImageBackground
-      source={images.background}
+      source={images.newBG}
       style={styles.background}
       resizeMode="cover"
     >
@@ -24,12 +24,12 @@ const Index = () => {
               style={styles.imageLogo}
               resizeMode="contain"
             />
-            <Text style={styles.headerText}></Text>
-            <Image 
+            <Text style={styles.headerText}>SOUTHERN LUZON STATE UNIVERSITY</Text>
+            {/* <Image 
               source={images.mainLogo}
               style={styles.imageLogo}
               resizeMode="contain"
-            />
+            /> */}
           </View>
 
           {/* MAIN CONTENT */}
@@ -42,8 +42,9 @@ const Index = () => {
               onPress={() => router.push('/jumps/SelectionScreen')}
             >
               <LinearGradient
-                colors={['#d0f58d', '#8DC63F']}
-                start={{ x: 0, y: 0 }}
+                colors={['#00000055', '#ffffffdb']} 
+                locations={[0, 0.15]}
+                start={{ x: 0, y: 1.2 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.button}
               >
@@ -68,18 +69,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff4c',
-    paddingHorizontal: width * 0.08,
+    paddingHorizontal: width * 0.05,
   },
 
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: width * 0.02,
+    // justifyContent: 'space-between',
+    gap: 40,
+    paddingHorizontal: width * 0.0,
     paddingVertical: height * 0.02,
   },
+  headerText: {
+    fontFamily: 'BaraBara',
+    fontSize: width * 0.035,
+    color: '#284615',
+    textShadowColor: '#3b6620',   
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 16,
+  },
   imageLogo: {
-    width: width * 0.12,
+    width: width * 0.10,
     height: undefined,
     aspectRatio: 1,
   },
@@ -90,14 +100,15 @@ const styles = StyleSheet.create({
   },
 
   welcomeText: {
-    fontFamily: 'Poppins-Bold',
-    fontSize: width * 0.05,
+    fontFamily: 'BaraBara',
+    fontSize: width * 0.046,
     textAlign: 'center',
+    color: '#284615',
     paddingHorizontal: width * 0.05,
   },
 
   buttonWrapper: {
-    borderRadius: 10,
+    borderRadius: 50,
     width: width * 0.3,
     alignSelf: 'center',
     overflow: 'hidden',
@@ -113,6 +124,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#000',
     fontFamily: 'Poppins-Bold',
-    fontSize: width * 0.02,
+    fontSize: width * 0.025,
   },
 });

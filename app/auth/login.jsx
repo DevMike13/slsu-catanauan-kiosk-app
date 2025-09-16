@@ -65,23 +65,24 @@ const Login = () => {
 
   return (
     <ImageBackground
-        source={images.background}
+        source={images.newBG}
         style={styles.background}
         resizeMode="cover"
     >
       <SafeAreaView style={styles.container}>
+          {/* HEADER */}
           <View style={styles.headerContainer}>
-              <Image 
-                  source={images.mainLogo}
-                  style={styles.imageLogo}
-                  resizeMode='contain'
-              />
-              <Text style={styles.headerText}>SIGN IN</Text>
-              <Image 
-                  source={images.mainLogo}
-                  style={styles.imageLogo}
-                  resizeMode='contain'
-              />
+            <Image 
+              source={images.mainLogo}
+              style={styles.imageLogo}
+              resizeMode="contain"
+            />
+            <Text style={styles.headerText}>SOUTHERN LUZON STATE UNIVERSITY</Text>
+            {/* <Image 
+              source={images.mainLogo}
+              style={styles.imageLogo}
+              resizeMode="contain"
+            /> */}
           </View>
           <ScrollView 
               style={styles.scrollArea} 
@@ -149,12 +150,13 @@ const Login = () => {
               disabled={loading}
           >
               <LinearGradient
-                  colors={['#07a751', '#8DC63F']}
-                  start={{ x: 0, y: 0 }}
+                  colors={['#00000055', '#ffffffdb']} 
+                  locations={[0, 0.15]}
+                  start={{ x: 0, y: 1.2 }}
                   end={{ x: 1, y: 0 }}
                   style={styles.button}
               >
-                <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Sign In'}</Text>
+                <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Log In'}</Text>
               </LinearGradient>
           </TouchableOpacity>
       </SafeAreaView>
@@ -182,25 +184,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff4c',
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.05,
   },
 
   headerContainer: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: width * 0.02,
-    paddingVertical: 8
-  },
-  imageLogo: {
-    width: 80,
-    height: 80
+    // justifyContent: 'space-between',
+    gap: 40,
+    paddingHorizontal: width * 0.0,
+    paddingVertical: height * 0.02,
   },
   headerText: {
-    fontFamily: 'Poppins-Bold',
-    fontSize: width * 0.06,
-    marginBottom: -12
+    fontFamily: 'BaraBara',
+    fontSize: width * 0.035,
+    color: '#284615',
+    textShadowColor: '#3b6620',   
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 16,
+  },
+  imageLogo: {
+    width: width * 0.10,
+    height: undefined,
+    aspectRatio: 1,
   },
 
   scrollArea: {
@@ -215,9 +221,9 @@ const styles = StyleSheet.create({
  
   label: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 20,
+    fontSize: 24,
     marginBottom: 8,
-    color: '#333',
+    color: '#ffffff',
   },
   inputMainContainer:{
     width: '100%',

@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '../../store/useAuthStore';
 import { images } from '../../constants';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 // Breakpoints for scaling
 const isSmallScreen = width < 380;
@@ -143,7 +143,7 @@ const Main = () => {
 
   return (
     <ImageBackground
-      source={images.background}
+      source={images.newBG}
       style={styles.background}
       resizeMode="cover"
     >
@@ -201,23 +201,27 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    // backgroundColor: 'rgba(0,0,0,0.3)',
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 20,
-    // padding: 10,
-    paddingHorizontal: 20
+    // justifyContent: 'space-between',
+    gap: 40,
+    paddingHorizontal: width * 0.04,
+    paddingVertical: height * 0.02,
   },
   imageLogo: {
     width: 100,
     height: 100
   },
   headerText: {
-    fontFamily: 'Poppins-Bold',
+    fontFamily: 'BaraBara',
     fontSize: width * 0.04,
-    color: '#fff'
+    color: '#284615',
+    textShadowColor: '#3b6620',   
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 16,
   },
   scrollArea: {
     flex: 1,
