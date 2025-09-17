@@ -56,8 +56,25 @@ const Login = () => {
       }
 
     } catch (error) {
-      console.error(error);
-      Alert.alert('Login Failed', error.message);
+      let message = 'Something went wrong. Please try again.';
+      switch (error.code) {
+        case 'auth/invalid-credential':
+        case 'auth/invalid-login-credentials':
+        case 'auth/wrong-password':
+        case 'auth/user-not-found':
+          message = 'Invalid email or password. Please check your credentials and try again.';
+          break;
+    
+        case 'auth/too-many-requests':
+          message = 'Too many failed login attempts. Please wait a few minutes before trying again.';
+          break;
+    
+        case 'auth/network-request-failed':
+          message = 'Network error. Please check your internet connection and try again.';
+          break;
+      }
+    
+      Alert.alert('Login Failed', message);
     } finally {
       setLoading(false);
     }

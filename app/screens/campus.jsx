@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
 
 import { images } from '../../constants';
@@ -10,6 +11,14 @@ import { images } from '../../constants';
 const { width } = Dimensions.get('window');
 
 const Campus = () => {
+    const [location] = useState({
+        latitude:  13.567799,
+        longitude: 122.342373, 
+        latitudeDelta: 0.002,
+        longitudeDelta: 0.002,
+      });
+      
+
   return (
     <ImageBackground
         // source={images.background}
@@ -20,11 +29,26 @@ const Campus = () => {
         <SafeAreaView style={styles.container}>
             <View style={styles.bodyContainer}>
                 <View style={styles.contentContainer}>
-                    <Image 
+                    {/* <Image 
                         source={images.placeholderImage}
                         style={styles.contentImage}
                         resizeMode='contain'
-                    />
+                    /> */}
+                    <View style={styles.contentContainer}>
+                        <MapView
+                            style={styles.map}
+                            // initialRegion={location}
+                            region={location}
+                            provider={PROVIDER_GOOGLE}
+                            mapType="satellite"
+                        >
+                            <Marker
+                                coordinate={location}
+                                title="SLSU Catanauan"
+                                description="This is the campus location"
+                            />
+                        </MapView>
+                    </View>
                 </View>
             </View>
         </SafeAreaView>
@@ -70,5 +94,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    contentContainer: {
+        flex: 1,           // <---- add this
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    map: {
+        width: '70%',
+        height: '90%',     // <---- was '80%' before
+        borderRadius: 15,
     },
 });
