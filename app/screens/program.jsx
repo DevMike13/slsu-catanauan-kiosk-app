@@ -148,13 +148,20 @@ const Program = () => {
       >
             {user?.role === 'admin' && (
                 <View style={styles.funtionButtonContainer}>
-                <TouchableOpacity
-                    style={styles.editButton}
-                    onPress={openEditor}
-                >
-                    <Ionicons name="create" size={32} color="#333" style={styles.buttonIcon} />
-                    <Text style={styles.editButtonText}>Edit</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.logoutButton}
+                        // onPress={pickAndUploadImage}
+                    >
+                        <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
+                        <Text style={styles.logoutButtonText}>Logout</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.editButton}
+                        onPress={openEditor}
+                    >
+                        <Ionicons name="create" size={32} color="#333" style={styles.buttonIcon} />
+                        <Text style={styles.editButtonText}>Edit</Text>
+                    </TouchableOpacity>
                 </View>
             )}
           <SafeAreaView style={styles.container}>

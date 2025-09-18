@@ -77,7 +77,7 @@ const Orgchart = () => {
         <View style={styles.funtionButtonContainer}>
           <TouchableOpacity
             style={styles.logoutButton}
-            onPress={pickAndUploadImage}
+            // onPress={pickAndUploadImage}
           >
             <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
             <Text style={styles.logoutButtonText}>Logout</Text>

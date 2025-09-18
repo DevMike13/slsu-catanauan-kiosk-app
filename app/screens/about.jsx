@@ -59,6 +59,13 @@ const About = () => {
       {user?.role === 'admin' && (
         <View style={styles.funtionButtonContainer}>
           <TouchableOpacity
+            style={styles.logoutButton}
+            // onPress={openEditor}
+          >
+            <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
+            <Text style={styles.logoutButtonText}>Logout</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             style={styles.editButton}
             onPress={openEditor}
           >
@@ -323,6 +330,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#257b3e',
       padding: 10,
       borderRadius: 20,
+      gap: 20
     },
     editButton: {
       flexDirection: 'row',
@@ -430,5 +438,21 @@ const styles = StyleSheet.create({
       borderRadius: 8,
       marginVertical: 8,
       marginBottom: 20
-    }
+    },
+    logoutButton: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'red',
+      paddingHorizontal: 15,
+      paddingVertical: 6,
+      borderRadius: 8
+    },
+  
+    logoutButtonText: {
+      color: 'white',
+      fontFamily: 'Poppins-Bold'
+    },
+
   });

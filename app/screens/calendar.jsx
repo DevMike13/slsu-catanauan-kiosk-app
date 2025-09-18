@@ -108,6 +108,13 @@ const Calendar = () => {
     >
         {user?.role === 'admin' && (
           <View style={styles.funtionButtonContainer}>
+            <TouchableOpacity
+              style={styles.logoutButton}
+              // onPress={pickAndUploadImage}
+            >
+              <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
+              <Text style={styles.logoutButtonText}>Logout</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.editButton} onPress={addImage}>
               <Ionicons name="images" size={32} color="#333" style={styles.buttonIcon} />
               <Text style={styles.editButtonText}>Add Image</Text>
@@ -120,7 +127,25 @@ const Calendar = () => {
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
-            {imagesList.length === 0 && <Text style={{ color: '#999' }}>No calendar images uploaded yet.</Text>}
+            {imagesList.length === 0 && (
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'Poppins-SemiBold',
+                  fontStyle: 'italic',
+                  fontWeight: '600',
+                  borderWidth: 2,
+                  borderColor: '#fff',
+                  borderStyle: 'dashed',
+                  padding: 10,
+                  borderRadius: 10,
+                  textAlign: 'center'
+                }}
+              >
+                No calendar images uploaded yet.
+              </Text>
+            )}
+
 
             {imagesList.map((img, index) => (
               <View key={index} style={styles.imageRow}>
@@ -262,4 +287,19 @@ const styles = StyleSheet.create({
     },
     editButtonOnImage: { backgroundColor: '#257b3e', padding: 8, borderRadius: 50 },
     deleteButtonOnImage: { backgroundColor: 'red', padding: 8, borderRadius: 50 },
+    logoutButton: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'red',
+      paddingHorizontal: 15,
+      paddingVertical: 6,
+      borderRadius: 8
+    },
+  
+    logoutButtonText: {
+      color: 'white',
+      fontFamily: 'Poppins-Bold'
+    },
 });
