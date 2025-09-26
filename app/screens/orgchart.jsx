@@ -221,4 +221,7 @@ const styles = StyleSheet.create({
       color: '#257b3e',
       fontFamily: 'Poppins-Bold'
     },
+    buttonIcon: { 
+      marginRight: 6 
+    },
 });

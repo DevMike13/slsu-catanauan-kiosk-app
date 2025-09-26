@@ -69,7 +69,7 @@ const About = () => {
             style={styles.editButton}
             onPress={openEditor}
           >
-            <Ionicons name="create" size={28} color="#333" style={styles.buttonIcon} />
+            <Ionicons name="create" size={32} color="#333" style={styles.buttonIcon} />
             <Text style={styles.editButtonText}>Edit</Text>
           </TouchableOpacity>
         </View>
@@ -333,6 +333,7 @@ const styles = StyleSheet.create({
       gap: 20
     },
     editButton: {
+      flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
@@ -341,11 +342,10 @@ const styles = StyleSheet.create({
       paddingVertical: 6,
       borderRadius: 8
     },
-    editButtonText: { 
-      color: '#257b3e', 
-      fontFamily: 'Poppins-Bold',
-      fontSize: 16,
-      letterSpacing: 0.5
+  
+    editButtonText: {
+      color: '#257b3e',
+      fontFamily: 'Poppins-Bold'
     },
     
     buttonIcon: { 

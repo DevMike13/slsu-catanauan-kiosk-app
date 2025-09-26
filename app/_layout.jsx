@@ -6,6 +6,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import * as NavigationBar from 'expo-navigation-bar';
 
+import InactivityWrapper from '../app/screens/InactivityScreen'
+
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
@@ -32,7 +34,7 @@ export default function Layout() {
 
   useEffect(() => {
     NavigationBar.setVisibilityAsync("hidden");
-    NavigationBar.setBehaviorAsync('inset-swipe'); 
+    NavigationBar.setBehaviorAsync("inset-swipe"); 
   }, [segments]);
 
   if (!fontsLoaded && !error) {
@@ -46,7 +48,9 @@ export default function Layout() {
   return (
     <>
       <StatusBar hidden />
-      <Stack screenOptions={{ headerShown: false }} />
+      <InactivityWrapper>
+        <Stack screenOptions={{ headerShown: false }} />
+      </InactivityWrapper>
     </>
   );
 }
