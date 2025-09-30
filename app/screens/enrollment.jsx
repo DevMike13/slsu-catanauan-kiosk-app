@@ -108,20 +108,26 @@ const Enrollment = () => {
     setTempData({
       programName,
       year,
-      male: yearData?.male ?? 0,
-      female: yearData?.female ?? 0,
+      male: String(yearData?.male ?? "0"), 
+      female: String(yearData?.female ?? "0"),
     });
     setModalVisible(true);
   };
+  
 
   const saveData = async () => {
     try {
       const updated = { ...enrollmentData };
       updated.yearStats = updated.yearStats.map((y) =>
         y.year === tempData.year
-          ? { ...y, male: tempData.male, female: tempData.female }
+          ? { 
+              ...y, 
+              male: parseInt(tempData.male) || 0, 
+              female: parseInt(tempData.female) || 0 
+            }
           : y
       );
+  
       await setDoc(doc(firestoreDB, "enrollment", activeTab), updated);
       setEnrollmentData(updated);
       setModalVisible(false);
@@ -129,6 +135,7 @@ const Enrollment = () => {
       console.error("Error saving:", err);
     }
   };
+  
 
   const renderYearBlock = (yearIndex, yearLabel) => {
     const male = enrollmentData?.yearStats?.[yearIndex]?.male ?? 0;
@@ -235,11 +242,9 @@ const Enrollment = () => {
               <Text style={{ marginBottom: 10, fontFamily: 'Poppins-SemiBold'}}>Male</Text>
               <TextInput
                 style={styles.modalInput}
-                value={String(tempData?.male ?? 0)}
+                value={tempData?.male}
                 keyboardType="numeric"
-                onChangeText={(text) =>
-                  setTempData({ ...tempData, male: parseInt(text) || 0 })
-                }
+                onChangeText={(text) => setTempData({ ...tempData, male: text })}
               />
             </View>
 
@@ -247,11 +252,9 @@ const Enrollment = () => {
               <Text style={{ marginBottom: 10, fontFamily: 'Poppins-SemiBold'}}>Female</Text>
               <TextInput
                 style={styles.modalInput}
-                value={String(tempData?.female ?? 0)}
+                value={tempData?.female}
                 keyboardType="numeric"
-                onChangeText={(text) =>
-                  setTempData({ ...tempData, female: parseInt(text) || 0 })
-                }
+                onChangeText={(text) => setTempData({ ...tempData, female: text })}
               />
             </View>
 

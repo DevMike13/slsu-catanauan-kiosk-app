@@ -28,6 +28,7 @@ import Studorg from './studorg';
 import Events from './events';
 import Attire from './attire';
 import Enrollment from './enrollment';
+import Overlay from './overlay';
 
 const tabs = [
   { label: 'Campus Map', key: 'map', icon: 'location-outline' },
@@ -39,10 +40,15 @@ const tabs = [
   { label: 'Student Organizations', key: 'studorg', icon: 'people-circle-outline' },
   { label: 'University Events', key: 'events', icon: 'volume-high-outline' },
   { label: 'Enrollment Summary', key: 'enroll', icon: 'analytics-outline' },
-  { label: 'Prescribed Attire', key: 'attire', icon: 'shirt-outline' },
+  { label: 'Prescribed Attire', key: 'attire', icon: 'shirt-outline' }
+];
+
+const adminTabs = [
+  { label: 'Overlay Video', key: 'overlay', icon: 'videocam-outline' },
 ];
 
 const Main = () => {
+  const { user } = useAuthStore();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -114,7 +120,8 @@ const Main = () => {
   
 
   const renderContent = () => {
-    const activeTab = tabs[activeIndex].key;
+    const allTabs = user?.role === 'admin' ? [...tabs, ...adminTabs] : tabs;
+    const activeTab = allTabs[activeIndex]?.key;
     switch (activeTab) {
       case 'map':
         return <Campus />;
@@ -136,6 +143,8 @@ const Main = () => {
         return <Enrollment />;
       case 'attire':
         return <Attire />;
+      case 'overlay': 
+        return <Overlay />;
       default:
         return null;
     }
@@ -172,7 +181,7 @@ const Main = () => {
             </View>
 
             <FlatList
-              data={tabs}
+              data={user?.role === 'admin' ? [...tabs, ...adminTabs] : tabs}
               keyExtractor={(item, index) => index.toString()}
               renderItem={renderButton}
               horizontal

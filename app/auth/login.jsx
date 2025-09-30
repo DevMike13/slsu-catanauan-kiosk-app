@@ -106,7 +106,10 @@ const Login = () => {
               contentContainerStyle={styles.scrollContent}
               showsVerticalScrollIndicator={false}
           >
-            
+            <View style={styles.userIconWrapper}>
+              <Ionicons name="person-circle-outline" size={100} color="#a7a6a5" />
+              <Text style={styles.titleText}>Log In</Text>
+            </View>
 
             <View style={styles.inputMainContainer}>
               <Text style={styles.label}>Username</Text>
@@ -314,6 +317,15 @@ const styles = StyleSheet.create({
   navButtonImage: {
       width: 50,
       height: 50
+  },
+  userIconWrapper: {
+    alignItems: 'center',
+    marginBottom: -20
+  },
+  titleText: {
+    fontFamily: 'Poppins-Bold',
+    fontSize: 30,
+    color: "#284615"
   }
 });
 

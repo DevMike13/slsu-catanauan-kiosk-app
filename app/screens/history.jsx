@@ -96,7 +96,7 @@ const History = () => {
         >
           <View style={styles.modalBackdrop}>
             <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>Edit About Page</Text>
+              <Text style={styles.modalTitle}>Edit History Page</Text>
               <TextInput
                 multiline
                 value={tempContent}
@@ -283,23 +283,34 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     gap: 20
   },
-  actionButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginHorizontal: 5,
+  actionButton: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    paddingVertical: 14, 
+    borderRadius: 12, 
+    flex: 1 
   },
   
-  cancelButton: {
-    backgroundColor: '#eee',
+  cancelButton: { 
+    backgroundColor: '#f1f1f1' 
   },
   
-  saveButton: {
-    backgroundColor: '#257b3e',
+  saveButton: { 
+    backgroundColor: '#257b3e' 
   },
+  
+  actionButtonText: { 
+    fontWeight: '600', 
+    fontSize: 16, 
+    color: 'white', 
+    fontFamily: 'Poppins-SemiBold'
+  },
+  
+  cancelText: { 
+    color: '#333', 
+    fontFamily: 'Poppins-SemiBold' 
+  },  
   
   buttonIcon: {
     marginRight: 6,

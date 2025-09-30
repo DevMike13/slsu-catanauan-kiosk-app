@@ -82,7 +82,18 @@ const Attire = () => {
           {current.boyUrl ? (
             <Image source={{ uri: current.boyUrl }} style={styles.contentImage} resizeMode="contain" />
           ) : (
-            <Text style={{ color: '#999' }}>No boy attire yet.</Text>
+            <Text style={{
+              color: '#fff',
+              fontFamily: 'Poppins-SemiBold',
+              fontStyle: 'italic',
+              fontWeight: '600',
+              borderWidth: 2,
+              borderColor: '#fff',
+              borderStyle: 'dashed',
+              padding: 10,
+              borderRadius: 10,
+              textAlign: 'center'
+            }}>No boy attire yet.</Text>
           )}
           {user?.role === 'admin' && (
             <TouchableOpacity style={styles.editButton} onPress={() => pickAndUploadImage(activeTab, 'boy')}>
@@ -97,7 +108,18 @@ const Attire = () => {
           {current.girlUrl ? (
             <Image source={{ uri: current.girlUrl }} style={styles.contentImage} resizeMode="contain" />
           ) : (
-            <Text style={{ color: '#999' }}>No girl attire yet.</Text>
+            <Text style={{
+              color: '#fff',
+              fontFamily: 'Poppins-SemiBold',
+              fontStyle: 'italic',
+              fontWeight: '600',
+              borderWidth: 2,
+              borderColor: '#fff',
+              borderStyle: 'dashed',
+              padding: 10,
+              borderRadius: 10,
+              textAlign: 'center'
+            }}>No girl attire yet.</Text>
           )}
           {user?.role === 'admin' && (
             <TouchableOpacity style={styles.editButton} onPress={() => pickAndUploadImage(activeTab, 'girl')}>
