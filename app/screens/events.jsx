@@ -13,8 +13,8 @@ import { images } from '../../constants';
 const Events = () => {
   const router = useRouter();
 
-  const { user } = useAuthStore();
-   const [events, setEvents] = useState([]);
+  const { user, clearUser } = useAuthStore();
+  const [events, setEvents] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [newEvent, setNewEvent] = useState('');
   
@@ -54,6 +54,11 @@ const Events = () => {
     await deleteDoc(doc(firestoreDB, 'events', id));
   };
 
+  const handleLogout = () => {
+    clearUser();         
+    router.replace("/");
+  };
+
   return (
     <ImageBackground
       // source={images.background}
@@ -64,7 +69,7 @@ const Events = () => {
         <View style={styles.funtionButtonContainer}>
           <TouchableOpacity
             style={styles.logoutButton}
-            // onPress={pickAndUploadImage}
+            onPress={handleLogout}
           >
             <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
             <Text style={styles.logoutButtonText}>Logout</Text>
@@ -186,7 +191,7 @@ const styles = StyleSheet.create({
       position: 'absolute',
       width: width * 0.5,
       height: 450,
-      backgroundColor: '#3dc88c',
+      backgroundColor: '#257b3e',
       borderRadius: 16,
       zIndex: 0
     },
@@ -194,13 +199,13 @@ const styles = StyleSheet.create({
     frontCard: {
       width: width * 0.5,
       height: 450,
-      backgroundColor: '#257b3e',
+      backgroundColor: 'transparent',
       borderRadius: 16,
       paddingHorizontal: 30,
       paddingVertical: 60,
       transform: [{ rotate: '-10deg' }],
       zIndex: 1,
-      elevation: 5,
+      // elevation: 5,
       overflow: 'hidden',
     },
     

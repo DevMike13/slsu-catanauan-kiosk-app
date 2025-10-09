@@ -16,7 +16,7 @@ const { width, height } = Dimensions.get('window');
 const Orgchart = () => {
   const router = useRouter();
 
-  const { user } = useAuthStore();
+  const { user, clearUser } = useAuthStore();
 
   const [orgImage, setOrgImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -66,6 +66,10 @@ const Orgchart = () => {
     }
   };
   
+  const handleLogout = () => {
+    clearUser();         
+    router.replace("/");
+  };
 
   return (
     <ImageBackground
@@ -77,7 +81,7 @@ const Orgchart = () => {
         <View style={styles.funtionButtonContainer}>
           <TouchableOpacity
             style={styles.logoutButton}
-            // onPress={pickAndUploadImage}
+            onPress={handleLogout}
           >
             <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
             <Text style={styles.logoutButtonText}>Logout</Text>

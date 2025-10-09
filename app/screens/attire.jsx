@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   editButtonText: { color: '#257b3e', fontFamily: 'Poppins-Bold', marginLeft: 6 },
 
   cardContainer: { position: 'relative', alignItems: 'center', justifyContent: 'center' },
-  backCard: { position: 'absolute', width: width * 0.3, height: 400, backgroundColor: '#3dc88c', borderRadius: 16, zIndex: 0 },
-  frontCard: { width: width * 0.3, height: 400, backgroundColor: '#257b3e', borderRadius: 16, paddingHorizontal: 30, transform: [{ rotate: '-10deg' }], zIndex: 1, elevation: 5, overflow: 'hidden' },
+  backCard: { position: 'absolute', width: width * 0.3, height: 400, backgroundColor: '#257b3e', borderRadius: 16, zIndex: 0 },
+  frontCard: { width: width * 0.3, height: 400, backgroundColor: 'transparent', borderRadius: 16, paddingHorizontal: 30, transform: [{ rotate: '-10deg' }], zIndex: 1, overflow: 'hidden' },
   innerCard: { flex: 1, transform: [{ rotate: '10deg' }], justifyContent: 'center', alignItems: 'center' },
 });

@@ -26,7 +26,7 @@ const tabList = [
 
 const Studorg = () => {
   const router = useRouter();
-  const { user } = useAuthStore();
+  const { user, clearUser } = useAuthStore();
 
   const [activeTab, setActiveTab] = useState(tabList[0]);
   const [orgImages, setOrgImages] = useState({}); // store all tab images
@@ -120,6 +120,11 @@ const Studorg = () => {
     }
   };
 
+  const handleLogout = () => {
+    clearUser();         
+    router.replace("/");
+  };
+
   const renderContent = () => {
     return (
       <View style={styles.contentContainer}>
@@ -153,7 +158,7 @@ const Studorg = () => {
         <View style={styles.funtionButtonContainer}>
             <TouchableOpacity
                 style={styles.logoutButton}
-                // onPress={pickAndUploadImage}
+                onPress={handleLogout}
             >
                 <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
                 <Text style={styles.logoutButtonText}>Logout</Text>
@@ -307,12 +312,12 @@ const styles = StyleSheet.create({
   cardContainer: { position: 'relative', alignItems: 'center', justifyContent: 'center' },
   backCard: {
     position: 'absolute', width: width * 0.3, height: 400,
-    backgroundColor: '#3dc88c', borderRadius: 16, zIndex: 0
+    backgroundColor: '#257b3e', borderRadius: 16, zIndex: 0
   },
   frontCard: {
     width: width * 0.3, height: 400,
-    backgroundColor: '#257b3e', borderRadius: 16, paddingHorizontal: 30,
-    transform: [{ rotate: '-10deg' }], zIndex: 1, elevation: 5, overflow: 'hidden',
+    backgroundColor: 'transparent', borderRadius: 16, paddingHorizontal: 30,
+    transform: [{ rotate: '-10deg' }], zIndex: 1, overflow: 'hidden',
   },
   innerCard: { flex: 1, transform: [{ rotate: '10deg' }], justifyContent: 'center', alignItems: 'center' },
 

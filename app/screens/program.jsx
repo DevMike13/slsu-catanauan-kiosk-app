@@ -22,7 +22,7 @@ const tabList = [
 
 const Program = () => {
     const router = useRouter();
-    const { user } = useAuthStore();
+    const { user, clearUser } = useAuthStore();
 
     const [activeTab, setActiveTab] = useState(tabList[0]);
     const [tabContent, setTabContent] = useState({ objectives: '', goals: '' });
@@ -140,6 +140,12 @@ const Program = () => {
     
       return null;
     };
+
+    const handleLogout = () => {
+        clearUser();         
+        router.replace("/");
+    };
+
     return (
       <ImageBackground
         //   source={images.background}
@@ -150,7 +156,7 @@ const Program = () => {
                 <View style={styles.funtionButtonContainer}>
                     <TouchableOpacity
                         style={styles.logoutButton}
-                        // onPress={pickAndUploadImage}
+                        onPress={handleLogout}
                     >
                         <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
                         <Text style={styles.logoutButtonText}>Logout</Text>
@@ -382,7 +388,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: width * 0.3,
         height: 400,
-        backgroundColor: '#3dc88c',
+        backgroundColor: '#257b3e',
         borderRadius: 16,
         zIndex: 0
       },
@@ -390,13 +396,13 @@ const styles = StyleSheet.create({
       frontCard: {
         width: width * 0.3,
         height: 400,
-        backgroundColor: '#257b3e',
+        backgroundColor: 'transparent',
         borderRadius: 16,
         paddingHorizontal: 30,
         // paddingVertical: 60,
         transform: [{ rotate: '-10deg' }],
         zIndex: 1,
-        elevation: 5,
+        // elevation: 5,
         overflow: 'hidden',
       },
       

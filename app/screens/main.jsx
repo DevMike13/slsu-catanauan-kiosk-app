@@ -164,7 +164,7 @@ const Main = () => {
             style={styles.imageLogo}
             resizeMode='contain'
           />
-          <Text style={styles.headerText}>SCHOOL FEATURES</Text>
+          <Text style={styles.headerText}>SLSU   CATANAUAN</Text>
         </View>
 
         {/* Content */}

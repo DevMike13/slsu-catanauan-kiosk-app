@@ -16,7 +16,7 @@ import { images } from '../../constants';
 const Calendar = () => {
   const router = useRouter();
 
-  const { user } = useAuthStore();
+  const { user, clearUser } = useAuthStore();
 
   const [imagesList, setImagesList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -99,6 +99,11 @@ const Calendar = () => {
   };
 
   const addImage = () => pickAndUploadImage();
+  
+  const handleLogout = () => {
+    clearUser();         
+    router.replace("/");
+  };
 
   return (
     <ImageBackground
@@ -110,7 +115,7 @@ const Calendar = () => {
           <View style={styles.funtionButtonContainer}>
             <TouchableOpacity
               style={styles.logoutButton}
-              // onPress={pickAndUploadImage}
+              onPress={handleLogout}
             >
               <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
               <Text style={styles.logoutButtonText}>Logout</Text>
