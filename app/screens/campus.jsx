@@ -103,7 +103,8 @@ const styles = StyleSheet.create({
     },
     map: {
         width: '70%',
-        height: '90%',     // <---- was '80%' before
+        height: '110%',     // <---- was '80%' before
         borderRadius: 15,
+        marginTop: 30
     },
 });

@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { images } from '../../constants';
 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const { width, height } = Dimensions.get('window');
 
@@ -120,10 +121,13 @@ const Register = () => {
               resizeMode="contain"
             /> */}
           </View>
-          <ScrollView 
-              style={styles.scrollArea} 
+          <KeyboardAwareScrollView
+              style={styles.scrollArea}
               contentContainerStyle={styles.scrollContent}
               showsVerticalScrollIndicator={false}
+              enableOnAndroid={true}
+              extraScrollHeight={100} // give more space when keyboard is open
+              keyboardShouldPersistTaps="handled"
           >
             <View style={styles.userIconWrapper}>
               <Ionicons name="person-circle-outline" size={100} color="#a7a6a5" />
@@ -246,7 +250,7 @@ const Register = () => {
                 />
               </View>
             </View>
-          </ScrollView>
+          </KeyboardAwareScrollView>
           <TouchableOpacity 
               activeOpacity={0.8} 
               style={styles.buttonWrapper}

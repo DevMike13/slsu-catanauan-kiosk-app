@@ -253,25 +253,26 @@ const styles = StyleSheet.create({
     cardContainer: {
       position: 'relative',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      marginTop: 40,
     },
   
     backCard: {
       position: 'absolute',
       width: width * 0.5,
-      height: 450,
+      height: 330,
       backgroundColor: '#257b3e',
       borderRadius: 16,
       zIndex: 0
     },
   
     frontCard: {
-      width: width * 0.5,
-      height: 450,
+      width: width * 0.7,
+      height: 330,
       backgroundColor: 'transparent',
       borderRadius: 16,
       paddingHorizontal: 30,
-      paddingVertical: 60,
+      paddingVertical: 30,
       transform: [{ rotate: '-10deg' }],
       zIndex: 1,
       // elevation: 5,

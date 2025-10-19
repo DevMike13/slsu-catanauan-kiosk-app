@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
       flex: 1,
       width: '100%',
       height: '100%',
-      position: 'relative'
+      position: 'relative',
     },
     container: {
       flex: 1,
@@ -155,12 +155,15 @@ const styles = StyleSheet.create({
 
     scrollArea: {
       flex: 1,
+      marginTop: 20,
+      height: '100%',
+      // backgroundColor: 'red'
     },
     scrollContent: {
       flexGrow: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      paddingHorizontal: 50
+      paddingHorizontal: 50,
     },
     imageWrapper: {
       marginTop: -50,
@@ -171,6 +174,7 @@ const styles = StyleSheet.create({
     image: {
       width: '100%',
       height: '100%',
+      resizeMode: 'contain',
     },
     navButtonContainer:{
         position: 'absolute',

@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
   editButton: { marginTop: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', padding: 6, borderRadius: 8 },
   editButtonText: { color: '#257b3e', fontFamily: 'Poppins-Bold', marginLeft: 6 },
 
-  cardContainer: { position: 'relative', alignItems: 'center', justifyContent: 'center' },
-  backCard: { position: 'absolute', width: width * 0.3, height: 400, backgroundColor: '#257b3e', borderRadius: 16, zIndex: 0 },
-  frontCard: { width: width * 0.3, height: 400, backgroundColor: 'transparent', borderRadius: 16, paddingHorizontal: 30, transform: [{ rotate: '-10deg' }], zIndex: 1, overflow: 'hidden' },
+  cardContainer: { position: 'relative', alignItems: 'center', justifyContent: 'center', marginTop: 55 },
+  backCard: { position: 'absolute', width: width * 0.3, height: 330, backgroundColor: '#257b3e', borderRadius: 16, zIndex: 0 },
+  frontCard: { width: width * 0.3, height: 330, backgroundColor: 'transparent', borderRadius: 16, paddingHorizontal: 30, transform: [{ rotate: '-10deg' }], zIndex: 1, overflow: 'hidden' },
   innerCard: { flex: 1, transform: [{ rotate: '10deg' }], justifyContent: 'center', alignItems: 'center' },
 });

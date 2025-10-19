@@ -309,13 +309,13 @@ const styles = StyleSheet.create({
   },
   
 
-  cardContainer: { position: 'relative', alignItems: 'center', justifyContent: 'center' },
+  cardContainer: { position: 'relative', alignItems: 'center', justifyContent: 'center', marginTop: 55 },
   backCard: {
-    position: 'absolute', width: width * 0.3, height: 400,
+    position: 'absolute', width: width * 0.3, height: 330,
     backgroundColor: '#257b3e', borderRadius: 16, zIndex: 0
   },
   frontCard: {
-    width: width * 0.3, height: 400,
+    width: width * 0.3, height: 330,
     backgroundColor: 'transparent', borderRadius: 16, paddingHorizontal: 30,
     transform: [{ rotate: '-10deg' }], zIndex: 1, overflow: 'hidden',
   },

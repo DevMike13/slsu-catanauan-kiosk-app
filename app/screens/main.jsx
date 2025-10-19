@@ -156,7 +156,7 @@ const Main = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         {/* Header */}
         <View style={styles.headerContainer}>
           <Image 
@@ -218,7 +218,8 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
     gap: 40,
     paddingHorizontal: width * 0.04,
-    paddingVertical: height * 0.02,
+    // paddingVertical: height * 0.02,
+    // backgroundColor: 'green',
   },
   imageLogo: {
     width: 100,
@@ -247,7 +248,7 @@ const styles = StyleSheet.create({
 
   bottomBar: {
     paddingVertical: 12,
-    // backgroundColor: 'rgba(255,255,255,0.2)',
+    // backgroundColor: 'rgba(255,255,255,0.2)', // optional
   },
   navList: {
     paddingHorizontal: 10,

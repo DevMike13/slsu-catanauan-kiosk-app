@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { images } from '../../constants';
 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useAuthStore } from '../../store/useAuthStore';
 
 const { width, height } = Dimensions.get('window');
@@ -101,11 +102,14 @@ const Login = () => {
               resizeMode="contain"
             /> */}
           </View>
-          <ScrollView 
-              style={styles.scrollArea} 
+            <KeyboardAwareScrollView
+              style={styles.scrollArea}
               contentContainerStyle={styles.scrollContent}
               showsVerticalScrollIndicator={false}
-          >
+              enableOnAndroid={true}
+              extraScrollHeight={50} // give more space when keyboard is open
+              keyboardShouldPersistTaps="handled"
+            >
             <View style={styles.userIconWrapper}>
               <Ionicons name="person-circle-outline" size={100} color="#a7a6a5" />
               <Text style={styles.titleText}>Log In</Text>
@@ -162,7 +166,7 @@ const Login = () => {
               </View>
             </View>
 
-          </ScrollView>
+          </KeyboardAwareScrollView>
           <TouchableOpacity 
               activeOpacity={0.8} 
               style={styles.buttonWrapper}

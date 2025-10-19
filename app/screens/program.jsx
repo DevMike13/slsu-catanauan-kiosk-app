@@ -381,13 +381,14 @@ const styles = StyleSheet.create({
     cardContainer: {
         position: 'relative',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginTop: 55,
       },
     
       backCard: {
         position: 'absolute',
         width: width * 0.3,
-        height: 400,
+        height: 330,
         backgroundColor: '#257b3e',
         borderRadius: 16,
         zIndex: 0
@@ -395,7 +396,7 @@ const styles = StyleSheet.create({
     
       frontCard: {
         width: width * 0.3,
-        height: 400,
+        height: 330,
         backgroundColor: 'transparent',
         borderRadius: 16,
         paddingHorizontal: 30,
