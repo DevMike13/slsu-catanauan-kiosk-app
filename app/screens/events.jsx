@@ -65,7 +65,7 @@ const Events = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      {user?.role === 'admin' && (
+      {(user?.role === 'admin' || user?.role === 'super-admin') && (
         <View style={styles.funtionButtonContainer}>
           <TouchableOpacity
             style={styles.logoutButton}
@@ -105,7 +105,7 @@ const Events = () => {
                       <Ionicons name="star-half" size={24} color="#ffff" style={styles.pinIcon} />
                       <Text style={styles.eventText}>{event.title}</Text>
                     </View>
-                    {user && user.role === 'admin' && (
+                    {(user?.role === 'admin' || user?.role === 'super-admin') && (
                       <TouchableOpacity 
                         style={styles.deleteButton} 
                         onPress={() => confirmDeleteEvent(event.id)}

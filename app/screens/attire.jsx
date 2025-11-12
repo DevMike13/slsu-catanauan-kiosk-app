@@ -95,7 +95,7 @@ const Attire = () => {
               textAlign: 'center'
             }}>No boy attire yet.</Text>
           )}
-          {user?.role === 'admin' && (
+          {(user?.role === 'admin' || user?.role === 'super-admin') && (
             <TouchableOpacity style={styles.editButton} onPress={() => pickAndUploadImage(activeTab, 'boy')}>
               <Ionicons name="create" size={20} color="#257b3e" />
               <Text style={styles.editButtonText}>Edit</Text>
@@ -121,7 +121,7 @@ const Attire = () => {
               textAlign: 'center'
             }}>No girl attire yet.</Text>
           )}
-          {user?.role === 'admin' && (
+          {(user?.role === 'admin' || user?.role === 'super-admin') && (
             <TouchableOpacity style={styles.editButton} onPress={() => pickAndUploadImage(activeTab, 'girl')}>
               <Ionicons name="create" size={20} color="#257b3e" />
               <Text style={styles.editButtonText}>Edit</Text>

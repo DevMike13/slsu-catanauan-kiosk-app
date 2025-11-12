@@ -148,7 +148,7 @@ const Enrollment = () => {
           <SemiCircle value={female} color="#ff6ec7" label="Female" />
           <SemiCircle value={male} color="#4facfe" label="Male" />
         </View>
-        {user?.role === "admin" && (
+        {(user?.role === 'admin' || user?.role === 'super-admin') && (
           <TouchableOpacity
             style={styles.yearEditButton}
             onPress={() => openYearEditor(activeTab, yearLabel)}

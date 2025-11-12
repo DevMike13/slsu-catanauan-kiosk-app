@@ -88,7 +88,9 @@ const Register = () => {
         institutionalEmail,
         phoneNumber,
         address,
-        role
+        role,
+        isAccepted: false,
+        isRejected: false,
       });
       Alert.alert("Success", "Account created successfully!");
       setLoading(false);

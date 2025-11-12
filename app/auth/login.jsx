@@ -47,6 +47,22 @@ const Login = () => {
           return;
         }
 
+        if (userData.isRejected === true) {
+          Alert.alert(
+            'Account Rejected',
+            'Your account has been rejected by an admin. You cannot log in.'
+          );
+          return;
+        }
+        
+        if (userData.isAccepted === false) {
+          Alert.alert(
+            'Pending Approval',
+            'Your account has not yet been approved by an admin. Please wait for confirmation before logging in.'
+          );
+          return;
+        }
+
         setUser(userData);
   
         console.log("User logged in:", userData);

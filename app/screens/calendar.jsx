@@ -111,7 +111,7 @@ const Calendar = () => {
       style={styles.background}
       resizeMode="cover"
     >
-        {user?.role === 'admin' && (
+        {(user?.role === 'admin' || user?.role === 'super-admin') && (
           <View style={styles.funtionButtonContainer}>
             <TouchableOpacity
               style={styles.logoutButton}
@@ -155,7 +155,7 @@ const Calendar = () => {
             {imagesList.map((img, index) => (
               <View key={index} style={styles.imageRow}>
                 <Image source={{ uri: img }} style={styles.image} resizeMode="contain" />
-                {user?.role === 'admin' && (
+                {(user?.role === 'admin' || user?.role === 'super-admin') && (
                   <View style={styles.imageButtons}>
                     <TouchableOpacity style={styles.editButtonOnImage} onPress={() => pickAndUploadImage(index)}>
                       <Ionicons name="create" size={24} color="#fff" />

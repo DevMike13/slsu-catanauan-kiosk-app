@@ -29,6 +29,7 @@ import Events from './events';
 import Attire from './attire';
 import Enrollment from './enrollment';
 import Overlay from './overlay';
+import Accounts from './accounts';
 
 const tabs = [
   { label: 'Campus Map', key: 'map', icon: 'location-outline' },
@@ -45,6 +46,10 @@ const tabs = [
 
 const adminTabs = [
   { label: 'Overlay Video', key: 'overlay', icon: 'videocam-outline' },
+];
+
+const superAdminTabs = [
+  { label: 'Admin Controls', key: 'superadmin', icon: 'settings-outline' },
 ];
 
 const Main = () => {
@@ -120,8 +125,16 @@ const Main = () => {
   
 
   const renderContent = () => {
-    const allTabs = user?.role === 'admin' ? [...tabs, ...adminTabs] : tabs;
+    let allTabs = [...tabs];
+  
+    if (user?.role === 'admin') {
+      allTabs = [...tabs, ...adminTabs];
+    } else if (user?.role === 'super-admin') {
+      allTabs = [...tabs, ...adminTabs, ...superAdminTabs];
+    }
+  
     const activeTab = allTabs[activeIndex]?.key;
+  
     switch (activeTab) {
       case 'map':
         return <Campus />;
@@ -143,12 +156,15 @@ const Main = () => {
         return <Enrollment />;
       case 'attire':
         return <Attire />;
-      case 'overlay': 
+      case 'overlay':
         return <Overlay />;
+      case 'superadmin':
+        return <Accounts />;
       default:
         return null;
     }
   };
+  
 
   return (
     <ImageBackground
@@ -181,7 +197,13 @@ const Main = () => {
             </View>
 
             <FlatList
-              data={user?.role === 'admin' ? [...tabs, ...adminTabs] : tabs}
+              data={
+                user?.role === 'super-admin'
+                  ? [...tabs, ...adminTabs, ...superAdminTabs]
+                  : user?.role === 'admin'
+                  ? [...tabs, ...adminTabs]
+                  : tabs
+              }
               keyExtractor={(item, index) => index.toString()}
               renderItem={renderButton}
               horizontal

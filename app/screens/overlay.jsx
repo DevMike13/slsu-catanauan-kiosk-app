@@ -20,7 +20,7 @@ const Overlay = () => {
     const [uploading, setUploading] = useState(false);
 
   const { user } = useAuthStore(); // ✅ get user role
-  const isAdmin = user?.role === "admin";
+  const isAdmin = user?.role === "admin" || user?.role === "super-admin";
 
   useEffect(() => {
     const fetchVideo = async () => {

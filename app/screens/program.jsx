@@ -152,7 +152,7 @@ const Program = () => {
           style={styles.background}
           resizeMode="cover"
       >
-            {user?.role === 'admin' && (
+            {(user?.role === 'admin' || user?.role === 'super-admin') && (
                 <View style={styles.funtionButtonContainer}>
                     <TouchableOpacity
                         style={styles.logoutButton}
