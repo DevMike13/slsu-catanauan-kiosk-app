@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView, Dimensions, Modal, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView, Dimensions, Modal, Button, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 import { firestoreDB, storage } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { deleteObject, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useAuthStore } from '../../store/useAuthStore';
+import { initCalendarDB, getCalendarImages, addCalendarImage, updateCalendarImage, deleteCalendarImage } from '../../database/calendar';
 
 const { width } = Dimensions.get('window');
 import { images } from '../../constants';
@@ -16,92 +18,74 @@ import { images } from '../../constants';
 const Calendar = () => {
   const router = useRouter();
 
-  const { user, clearUser } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   const [imagesList, setImagesList] = useState([]);
   const [loading, setLoading] = useState(false);
   
   useEffect(() => {
-    const fetchImages = async () => {
-      const snap = await getDoc(doc(firestoreDB, 'pages', 'calendar'));
-      if (snap.exists()) {
-        setImagesList(snap.data().urls || []);
-      }
+    const initDB = async () => {
+      await initCalendarDB();
+      const images = await getCalendarImages();
+      setImagesList(images);
     };
-    fetchImages();
+    initDB();
   }, []);
 
-  const pickAndUploadImage = async (index) => {
+  const pickImage = async (index) => {
     try {
-      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permission.granted) return alert('Permission to access media library is required.');
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') return alert('Permission required to access photos.');
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         quality: 0.8,
       });
 
-      if (!result.canceled && result.assets?.length > 0) {
-        setLoading(true);
-        const imageUri = result.assets[0].uri;
+      if (result.canceled) return;
 
-        const response = await fetch(imageUri);
-        const blob = await response.blob();
+      const assetUri = result.assets?.[0]?.uri;
+      if (!assetUri) return alert('No image selected.');
 
-        const storageRef = ref(storage, `calendar/${Date.now()}.jpg`);
-        await uploadBytes(storageRef, blob);
+      const localUri = `${FileSystem.documentDirectory}calendar_${Date.now()}.jpg`;
 
-        const downloadURL = await getDownloadURL(storageRef);
+      // Copy file
+      await FileSystem.copyAsync({ from: assetUri, to: localUri });
 
-        const newImagesList = [...imagesList];
-        if (index !== undefined) {
-          newImagesList[index] = downloadURL;
-        } else {
-          newImagesList.push(downloadURL);
-        }
-
-        await setDoc(doc(firestoreDB, 'pages', 'calendar'), { urls: newImagesList });
-
-        setImagesList(newImagesList);
-        setLoading(false);
+      if (index !== undefined) {
+        await updateCalendarImage(imagesList[index].id, localUri);
+      } else {
+        await addCalendarImage(localUri);
       }
-    } catch (error) {
-      setLoading(false);
-      alert('Failed to upload image.');
+
+      const updatedImages = await getCalendarImages();
+      setImagesList(updatedImages);
+    } catch (err) {
+      console.log('File pick/save error:', err);
+      alert('Failed to pick or save image. Check console.');
     }
   };
+  
 
-  const deleteImage = async (index) => {
+  const removeImage = (index) => {
     Alert.alert(
-      "Delete Image",
-      "Are you sure you want to delete this image?",
+      'Delete Image',
+      'Are you sure you want to delete this image?',
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Delete", style: "destructive", onPress: async () => {
-            try {
-              const urlToDelete = imagesList[index];
-              // remove from storage if possible
-              const storageRef = ref(storage, urlToDelete);
-              await deleteObject(storageRef).catch(() => null);
-
-              const newImagesList = [...imagesList];
-              newImagesList.splice(index, 1);
-
-              await setDoc(doc(firestoreDB, 'pages', 'calendar'), { urls: newImagesList });
-              setImagesList(newImagesList);
-            } catch (err) {
-              alert('Failed to delete image.');
-            }
-        }}
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: async () => {
+          const newImages = await deleteCalendarImage(imagesList[index].id);
+          setImagesList(newImages);
+        }},
       ]
     );
   };
 
-  const addImage = () => pickAndUploadImage();
+  // const addImage = () => pickAndUploadImage();
   
   const handleLogout = () => {
-    clearUser();         
+    logout();         
     router.replace("/");
   };
 
@@ -120,7 +104,7 @@ const Calendar = () => {
               <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
               <Text style={styles.logoutButtonText}>Logout</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.editButton} onPress={addImage}>
+            <TouchableOpacity style={styles.editButton} onPress={() => pickImage()}>
               <Ionicons name="images" size={32} color="#333" style={styles.buttonIcon} />
               <Text style={styles.editButtonText}>Add Image</Text>
             </TouchableOpacity>
@@ -154,13 +138,13 @@ const Calendar = () => {
 
             {imagesList.map((img, index) => (
               <View key={index} style={styles.imageRow}>
-                <Image source={{ uri: img }} style={styles.image} resizeMode="contain" />
+                <Image source={{ uri: img.uri }} style={styles.image} resizeMode="contain" />
                 {(user?.role === 'admin' || user?.role === 'super-admin') && (
                   <View style={styles.imageButtons}>
-                    <TouchableOpacity style={styles.editButtonOnImage} onPress={() => pickAndUploadImage(index)}>
+                    <TouchableOpacity style={styles.editButtonOnImage} onPress={() => pickImage(index)}>
                       <Ionicons name="create" size={24} color="#fff" />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.deleteButtonOnImage} onPress={() => deleteImage(index)}>
+                    <TouchableOpacity style={styles.deleteButtonOnImage} onPress={() => removeImage(index)}>
                       <Ionicons name="trash" size={24} color="#fff" />
                     </TouchableOpacity>
                   </View>

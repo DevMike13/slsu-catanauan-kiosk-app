@@ -5,6 +5,7 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import * as NavigationBar from 'expo-navigation-bar';
+import { initDB, prepopulateUsers } from '../database/db';
 
 import InactivityWrapper from '../app/screens/InactivityScreen'
 
@@ -36,6 +37,15 @@ export default function Layout() {
     NavigationBar.setVisibilityAsync("hidden");
     NavigationBar.setBehaviorAsync("inset-swipe"); 
   }, [segments]);
+
+  useEffect(() => {
+    const setup = async () => {
+      await initDB();
+      await prepopulateUsers();
+    };
+    setup();
+  }, []);
+  
 
   if (!fontsLoaded && !error) {
     return (

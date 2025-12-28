@@ -11,6 +11,7 @@ import { firestoreDB, storage } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useAuthStore } from '../../store/useAuthStore';
+import { initStudorgDB, fetchAllTabs, updateImage, updateQrEmail, deleteImage } from '../../database/studorg';
 import { images } from '../../constants';
 
 const { width } = Dimensions.get('window');
@@ -26,7 +27,7 @@ const tabList = [
 
 const Studorg = () => {
   const router = useRouter();
-  const { user, clearUser } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   const [activeTab, setActiveTab] = useState(tabList[0]);
   const [orgImages, setOrgImages] = useState({}); // store all tab images
@@ -40,24 +41,14 @@ const Studorg = () => {
 
   // 🔹 Fetch images for all tabs on mount
   useEffect(() => {
-    const fetchData = async () => {
-      let imagesData = {};
-      let qrData = {};
-      let emailData = {};
-      for (let tab of tabList) {
-        const snap = await getDoc(doc(firestoreDB, "studorg", tab));
-        if (snap.exists()) {
-          const data = snap.data();
-          imagesData[tab] = data.url;
-          qrData[tab] = data.qrLink || "";
-          emailData[tab] = data.email || "";
-        }
-      }
+    const initDB = async () => {
+      await initStudorgDB(tabList);
+      const { imagesData, qrData, emailData } = await fetchAllTabs(tabList);
       setOrgImages(imagesData);
       setQrLinks(qrData);
       setEmails(emailData);
     };
-    fetchData();
+    initDB();
   }, []);
   
   const pickAndUploadImage = async () => {
@@ -66,7 +57,7 @@ const Studorg = () => {
       if (!permission.granted) return alert('Permission to access media library is required.');
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         quality: 0.8,
       });
@@ -75,26 +66,23 @@ const Studorg = () => {
         setLoading(true);
         const imageUri = result.assets[0].uri;
 
+        // Upload to Firebase Storage
         const response = await fetch(imageUri);
         const blob = await response.blob();
-
         const storageRef = ref(storage, `studorg/${activeTab}_${Date.now()}.jpg`);
         await uploadBytes(storageRef, blob);
-
         const downloadURL = await getDownloadURL(storageRef);
 
-        await setDoc(doc(firestoreDB, 'studorg', activeTab), { 
-          url: downloadURL, 
-          qrLink: qrLinks[activeTab] || "" 
-        });
-
+        // Update SQLite DB
+        await updateImage(activeTab, downloadURL);
         setOrgImages((prev) => ({ ...prev, [activeTab]: downloadURL }));
+
         setLoading(false);
       }
-    } catch (error) {
-      console.error('Upload failed:', error);
+    } catch (err) {
+      console.error("Upload failed:", err);
       setLoading(false);
-      alert('Failed to upload image.');
+      alert("Failed to upload image.");
     }
   };
 
@@ -106,22 +94,18 @@ const Studorg = () => {
 
   const saveQrLink = async () => {
     try {
-      await setDoc(doc(firestoreDB, "studorg", activeTab), {
-        url: orgImages[activeTab] || "",
-        qrLink: tempQrLink,
-        email: tempEmail,
-      });
+      await updateQrEmail(activeTab, tempQrLink, tempEmail);
       setQrLinks((prev) => ({ ...prev, [activeTab]: tempQrLink }));
       setEmails((prev) => ({ ...prev, [activeTab]: tempEmail }));
       setModalVisible(false);
     } catch (err) {
       console.error("Save failed:", err);
-      alert("Failed to save QR code link.");
+      alert("Failed to save QR code or email.");
     }
   };
 
   const handleLogout = () => {
-    clearUser();         
+    logout();         
     router.replace("/");
   };
 

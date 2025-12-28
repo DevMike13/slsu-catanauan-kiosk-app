@@ -9,6 +9,8 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import { initOrgchartDB, getOrgchartData, updateOrgchartData } from '../../database/orgchart';
 
 
 const { width, height } = Dimensions.get('window');
@@ -16,58 +18,51 @@ const { width, height } = Dimensions.get('window');
 const Orgchart = () => {
   const router = useRouter();
 
-  const { user, clearUser } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   const [orgImage, setOrgImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchOrgchart = async () => {
-      const snap = await getDoc(doc(firestoreDB, 'pages', 'orgchart'));
-      if (snap.exists()) {
-        setOrgImage(snap.data().url);
-      }
+    const fetchData = async () => {
+      await initOrgchartDB();
+      const uri = await getOrgchartData();
+      setOrgImage(uri);
     };
-    fetchOrgchart();
+    fetchData();
   }, []);
 
-  const pickAndUploadImage = async () => {
+  const pickAndSaveImage = async () => {
     try {
       const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permission.granted) return alert('Permission to access media library is required.');
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         quality: 0.8,
       });
 
       if (!result.canceled && result.assets?.length > 0) {
-        setLoading(true);
-        const imageUri = result.assets[0].uri;
+        const uri = result.assets[0].uri;
+        const fileName = `orgchart_${Date.now()}.jpg`;
+        const destPath = `${FileSystem.documentDirectory}${fileName}`;
 
-        const response = await fetch(imageUri);
-        const blob = await response.blob();
+        // copy image to persistent storage
+        await FileSystem.copyAsync({ from: uri, to: destPath });
 
-        const storageRef = ref(storage, `orgchart/${Date.now()}.jpg`);
-        await uploadBytes(storageRef, blob);
-
-        const downloadURL = await getDownloadURL(storageRef);
-
-        await setDoc(doc(firestoreDB, 'pages', 'orgchart'), { url: downloadURL });
-
-        setOrgImage(downloadURL);
-        setLoading(false);
+        // save local URI in SQLite
+        await updateOrgchartData(destPath);
+        setOrgImage(destPath);
       }
     } catch (error) {
-      // console.error('Upload failed:', error);
-      setLoading(false);
-      alert('Failed to upload image.');
+      console.error('Error saving image:', error);
+      alert('Failed to save image locally.');
     }
   };
   
   const handleLogout = () => {
-    clearUser();         
+    logout();         
     router.replace("/");
   };
 
@@ -88,7 +83,7 @@ const Orgchart = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.editButton}
-            onPress={pickAndUploadImage}
+            onPress={pickAndSaveImage}
           >
             <Ionicons name="create" size={32} color="#333" style={styles.buttonIcon} />
             <Text style={styles.editButtonText}>Edit</Text>

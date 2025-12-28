@@ -67,8 +67,8 @@ const Main = () => {
           {
             text: 'Yes',
             onPress: () => {
-              const { clearUser } = useAuthStore.getState();
-              clearUser();
+              const { logout  } = useAuthStore.getState();
+              logout ();
               router.replace('/');
               if (RNExitApp?.exitApp) {
                 RNExitApp.exitApp();

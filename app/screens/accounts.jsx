@@ -17,81 +17,67 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
 import { images } from '../../constants';
 
+import {
+  initAccountsDB,
+  fetchPendingUsers,
+  fetchApprovedUsers,
+  approveUser,
+  rejectUser,
+} from '../../database/accounts';
+
 const { width } = Dimensions.get('window');
 
 const Accounts = () => {
   const router = useRouter();
-  const { user, clearUser } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const [pendingUsers, setPendingUsers] = useState([]);
   const [approvedUsers, setApprovedUsers] = useState([]);
 
   // ✅ Fetch users in realtime (exclude super-admin)
   useEffect(() => {
-    const unsub = onSnapshot(collection(firestoreDB, 'users'), (snapshot) => {
-      const allUsers = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-  
-      setPendingUsers(
-        allUsers.filter(
-          (u) =>
-            u.isAccepted === false &&
-            u.isRejected !== true && 
-            u.institutionalEmail !== 'slsuadmin@slsu.edu.ph'
-        )
-      );
-  
-      setApprovedUsers(
-        allUsers.filter(
-          (u) => u.isAccepted === true && u.institutionalEmail !== 'slsuadmin@slsu.edu.ph'
-        )
-      );
-    });
-  
-    return () => unsub();
+    const init = async () => {
+      await initAccountsDB();
+      await loadUsers();
+    };
+    init();
   }, []);
   
+  const loadUsers = async () => {
+    const pending = await fetchPendingUsers();
+    const approved = await fetchApprovedUsers();
+    setPendingUsers(pending);
+    setApprovedUsers(approved);
+  };
 
   const handleApprove = (id) => {
-    Alert.alert(
-      'Approve User',
-      'Are you sure you want to approve this user?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Approve',
-          onPress: async () => {
-            await updateDoc(doc(firestoreDB, 'users', id), {
-              isAccepted: true,
-            });
-          },
+    Alert.alert('Approve User', 'Approve this user?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Approve',
+        onPress: async () => {
+          await approveUser(id);
+          loadUsers();
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const handleReject = (id) => {
-    Alert.alert(
-      'Reject User',
-      'Are you sure you want to reject this user?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Reject',
-          style: 'destructive',
-          onPress: async () => {
-            await updateDoc(doc(firestoreDB, 'users', id), {
-              isRejected: true,
-            });
-          },
+    Alert.alert('Reject User', 'Reject this user?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Reject',
+        style: 'destructive',
+        onPress: async () => {
+          await rejectUser(id);
+          loadUsers();
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const handleLogout = () => {
-    clearUser();
+    logout();
     router.replace('/');
   };
 
@@ -136,7 +122,7 @@ const Accounts = () => {
                   <View key={u.id} style={styles.userItem}>
                     <View>
                       <Text style={styles.userName}>{u.fullName || u.username}</Text>
-                      <Text style={styles.userEmail}>{u.institutionalEmail}</Text>
+                      <Text style={styles.userEmail}>{u.email}</Text>
                     </View>
                     <View style={styles.actionButtons}>
                       <TouchableOpacity
@@ -169,7 +155,7 @@ const Accounts = () => {
                   >
                     <View>
                       <Text style={styles.userName}>{u.fullName || u.username}</Text>
-                      <Text style={styles.userEmail}>{u.institutionalEmail}</Text>
+                      <Text style={styles.userEmail}>{u.email}</Text>
                     </View>
                   </View>
                 ))}

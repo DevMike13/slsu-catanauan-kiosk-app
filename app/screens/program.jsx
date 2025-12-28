@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { firestoreDB } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { initProgramDB, getProgramData, updateProgramData } from '../../database/program';
 
 import { images } from '../../constants';
 
@@ -22,7 +23,7 @@ const tabList = [
 
 const Program = () => {
     const router = useRouter();
-    const { user, clearUser } = useAuthStore();
+    const { user, logout } = useAuthStore();
 
     const [activeTab, setActiveTab] = useState(tabList[0]);
     const [tabContent, setTabContent] = useState({ objectives: '', goals: '' });
@@ -30,17 +31,21 @@ const Program = () => {
     const [tempContent, setTempContent] = useState({ objectives: '', goals: '' });
     
     useEffect(() => {
+        const initDB = async () => {
+          await initProgramDB();
+          const data = await getProgramData(activeTab);
+          setTabContent(data || { objectives: '', goals: '' });
+        };
+        initDB();
+    }, []);
+
+    useEffect(() => {
         const fetchTabContent = async () => {
-          const ref = doc(firestoreDB, 'program_texts', activeTab);
-          const snap = await getDoc(ref);
-          if (snap.exists()) {
-            setTabContent(snap.data());
-          } else {
-            setTabContent({ objectives: '', goals: '' });
-          }
+          const data = await getProgramData(activeTab);
+          setTabContent(data || { objectives: '', goals: '' });
         };
         fetchTabContent();
-      }, [activeTab]);
+    }, [activeTab]);
 
     const openEditor = () => {
         setTempContent(tabContent);
@@ -48,7 +53,7 @@ const Program = () => {
     };
 
     const saveContent = async () => {
-        await setDoc(doc(firestoreDB, 'program_texts', activeTab), tempContent);
+        await updateProgramData(activeTab, tempContent);
         setTabContent(tempContent);
         setModalVisible(false);
     };
@@ -142,7 +147,7 @@ const Program = () => {
     };
 
     const handleLogout = () => {
-        clearUser();         
+        logout();         
         router.replace("/");
     };
 

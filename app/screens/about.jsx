@@ -11,13 +11,14 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { images } from '../../constants';
 import { firestoreDB } from '../../firebase';
 import { useAuthStore } from '../../store/useAuthStore';
+import { initAboutDB, getAboutData, updateAboutData } from '../../database/about';
 
 const { width } = Dimensions.get('window');
 
 const About = () => {
   const router = useRouter();
 
-  const { user, clearUser } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   const [aboutData, setAboutData] = useState({
     vision: '',
@@ -30,11 +31,9 @@ const About = () => {
 
   useEffect(() => {
     const fetchContent = async () => {
-      const ref = doc(firestoreDB, 'pages', 'about');
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        setAboutData(snap.data());
-      }
+      await initAboutDB();
+      const data = await getAboutData();
+      setAboutData(data);
     };
     fetchContent();
   }, []);
@@ -45,13 +44,13 @@ const About = () => {
   };
 
   const saveContent = async () => {
-    await setDoc(doc(firestoreDB, 'pages', 'about'), tempData);
+    await updateAboutData(tempData);
     setAboutData(tempData);
     setModalVisible(false);
   };
 
   const handleLogout = () => {
-    clearUser();         
+    logout();         
     router.replace("/");
   };
 

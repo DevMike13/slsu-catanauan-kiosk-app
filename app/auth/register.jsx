@@ -9,6 +9,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { images } from '../../constants';
 
+import { registerUser } from '../../database/auth';
+
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const { width, height } = Dimensions.get('window');
@@ -62,13 +64,13 @@ const Register = () => {
       Alert.alert("Error", "Please enter a valid phone number in +63XXXXXXXXXX format.");
       return;
     }
-
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(institutionalEmail)) {
       Alert.alert('Please enter a valid email address.');
       return;
     }
-
+  
     if (!institutionalEmail.endsWith('@slsu.edu.ph')) {
       Alert.alert('Please use your institutional email (e.g., yourname@slsu.edu.ph).');
       return;
@@ -78,29 +80,40 @@ const Register = () => {
       Alert.alert("Error", "Passwords do not match.");
       return;
     }
-
+  
     try {
       setLoading(true);
-      const userCred = await createUserWithEmailAndPassword(auth, institutionalEmail, password);
-      await setDoc(doc(firestoreDB, 'users', userCred.user.uid), {
+  
+      // Call SQLite registration function
+      await registerUser({
         fullName,
         username,
-        institutionalEmail,
+        email: institutionalEmail,
+        password,
         phoneNumber,
         address,
         role,
-        isAccepted: false,
-        isRejected: false,
       });
+  
       Alert.alert("Success", "Account created successfully!");
-      setLoading(false);
       router.push('/auth/login');
-    } catch (e) {
+  
+    } catch (err) {
+      console.error(err);
+  
+      let message = "Registration failed.";
+  
+      if (err.message === 'EMAIL_EXISTS') {
+        message = "This email is already registered.";
+      }
+  
+      Alert.alert("Error", message);
+  
+    } finally {
       setLoading(false);
-      console.error(e);
-      Alert.alert("Error", "Registration failed.");
     }
   };
+  
 
   return (
     <ImageBackground

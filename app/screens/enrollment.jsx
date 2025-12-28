@@ -12,6 +12,12 @@ import Svg, { Path } from 'react-native-svg';
 import { firestoreDB } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { 
+  initEnrollmentDB, 
+  fetchEnrollmentByProgram, 
+  addEnrollmentRow, 
+  updateEnrollmentRow 
+} from '../../database/enrollment';
 
 const { width } = Dimensions.get('window');
 import { images } from '../../constants';
@@ -71,88 +77,58 @@ const Enrollment = () => {
   const { user } = useAuthStore();
 
   const [activeTab, setActiveTab] = useState(tabList[0]);
-  const [enrollmentData, setEnrollmentData] = useState({});
+  const [enrollmentData, setEnrollmentData] = useState([]);
   const [tempData, setTempData] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // 🔹 Fetch data
   useEffect(() => {
-    const fetchEnrollment = async () => {
-      try {
-        const ref = doc(firestoreDB, "enrollment", activeTab);
-        const snap = await getDoc(ref);
-
-        if (snap.exists()) {
-          setEnrollmentData(snap.data());
-        } else {
-          const initialData = {
-            name: activeTab,
-            yearStats: [
-              { year: "1st Year", male: 0, female: 0 },
-              { year: "2nd Year", male: 0, female: 0 },
-              { year: "3rd Year", male: 0, female: 0 },
-              { year: "4th Year", male: 0, female: 0 },
-            ],
-          };
-          setEnrollmentData(initialData);
-        }
-      } catch (err) {
-        console.error("Error fetching:", err);
-      }
+    const init = async () => {
+      await initEnrollmentDB();
+      await loadEnrollment(activeTab);
     };
-    fetchEnrollment();
+    init();
+  }, []);
+
+  useEffect(() => {
+    loadEnrollment(activeTab);
   }, [activeTab]);
 
-  const openYearEditor = (programName, year) => {
-    const yearData = enrollmentData?.yearStats?.find((y) => y.year === year);
-    setTempData({
-      programName,
-      year,
-      male: String(yearData?.male ?? "0"), 
-      female: String(yearData?.female ?? "0"),
-    });
+  const loadEnrollment = async (program) => {
+    let data = await fetchEnrollmentByProgram(program);
+    // Initialize default rows if empty
+    if (data.length === 0) {
+      const years = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
+      for (let y of years) {
+        await addEnrollmentRow(program, y, 0, 0);
+      }
+      data = await fetchEnrollmentByProgram(program);
+    }
+    setEnrollmentData(data);
+  };
+
+  const openYearEditor = (item) => {
+    setTempData({ ...item });
     setModalVisible(true);
   };
   
 
   const saveData = async () => {
-    try {
-      const updated = { ...enrollmentData };
-      updated.yearStats = updated.yearStats.map((y) =>
-        y.year === tempData.year
-          ? { 
-              ...y, 
-              male: parseInt(tempData.male) || 0, 
-              female: parseInt(tempData.female) || 0 
-            }
-          : y
-      );
-  
-      await setDoc(doc(firestoreDB, "enrollment", activeTab), updated);
-      setEnrollmentData(updated);
-      setModalVisible(false);
-    } catch (err) {
-      console.error("Error saving:", err);
-    }
+    await updateEnrollmentRow(tempData.id, parseInt(tempData.male) || 0, parseInt(tempData.female) || 0);
+    await loadEnrollment(activeTab);
+    setModalVisible(false);
   };
   
 
-  const renderYearBlock = (yearIndex, yearLabel) => {
-    const male = enrollmentData?.yearStats?.[yearIndex]?.male ?? 0;
-    const female = enrollmentData?.yearStats?.[yearIndex]?.female ?? 0;
-
+  const renderYearBlock = (item) => {
     return (
-      <View style={styles.column}>
-        <Text style={styles.heading}>{yearLabel}</Text>
+      <View style={styles.column} key={item.id}>
+        <Text style={styles.heading}>{item.year}</Text>
         <View style={{ flexDirection: "row" }}>
-          <SemiCircle value={female} color="#ff6ec7" label="Female" />
-          <SemiCircle value={male} color="#4facfe" label="Male" />
+          <SemiCircle value={item.female} color="#ff6ec7" label="Female" />
+          <SemiCircle value={item.male} color="#4facfe" label="Male" />
         </View>
         {(user?.role === 'admin' || user?.role === 'super-admin') && (
-          <TouchableOpacity
-            style={styles.yearEditButton}
-            onPress={() => openYearEditor(activeTab, yearLabel)}
-          >
+          <TouchableOpacity style={styles.yearEditButton} onPress={() => openYearEditor(item)}>
             <Ionicons name="create" size={20} color="#257b3e" />
             <Text style={styles.yearEditText}>Edit</Text>
           </TouchableOpacity>
@@ -218,12 +194,10 @@ const Enrollment = () => {
           >
             <View style={styles.contentContainer}>
               <View style={styles.section}>
-                {renderYearBlock(0, "1st Year")}
-                {renderYearBlock(1, "2nd Year")}
+                {enrollmentData.slice(0,2).map(renderYearBlock)}
               </View>
               <View style={styles.section}>
-                {renderYearBlock(2, "3rd Year")}
-                {renderYearBlock(3, "4th Year")}
+                {enrollmentData.slice(2,4).map(renderYearBlock)}
               </View>
             </View>
           </ScrollView>

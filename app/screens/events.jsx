@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
 import { firestoreDB } from '../../firebase';
 import { useAuthStore } from '../../store/useAuthStore';
+import { initEventsDB, fetchAllEvents, addEvent, deleteEvent } from '../../database/events';
 import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
@@ -13,28 +14,25 @@ import { images } from '../../constants';
 const Events = () => {
   const router = useRouter();
 
-  const { user, clearUser } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const [events, setEvents] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [newEvent, setNewEvent] = useState('');
   
   useEffect(() => {
-    const unsub = onSnapshot(collection(firestoreDB, 'events'), (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setEvents(data);
-    });
-    return () => unsub();
+    const init = async () => {
+      await initEventsDB();
+      const allEvents = await fetchAllEvents();
+      setEvents(allEvents);
+    };
+    init();
   }, []);
 
   const handleAddEvent = async () => {
     if (!newEvent.trim()) return;
-    await addDoc(collection(firestoreDB, 'events'), {
-      title: newEvent,
-      createdAt: new Date(),
-    });
+    await addEvent(newEvent);
+    const allEvents = await fetchAllEvents();
+    setEvents(allEvents);
     setNewEvent('');
     setModalVisible(false);
   };
@@ -51,11 +49,13 @@ const Events = () => {
   };
 
   const handleDeleteEvent = async (id) => {
-    await deleteDoc(doc(firestoreDB, 'events', id));
+    await deleteEvent(id);
+    const allEvents = await fetchAllEvents();
+    setEvents(allEvents);
   };
 
   const handleLogout = () => {
-    clearUser();         
+    logout();         
     router.replace("/");
   };
 

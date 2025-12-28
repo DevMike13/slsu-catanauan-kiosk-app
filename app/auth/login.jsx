@@ -1,5 +1,5 @@
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Alert, ImageBackground, ScrollView } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, firestoreDB } from '../../firebase';
@@ -12,9 +12,13 @@ import { images } from '../../constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useAuthStore } from '../../store/useAuthStore';
 
+import { db, prepopulateUsers, initDB, showAllUsers, deleteAllUsers } from '../../database/db';
+
+
 const { width, height } = Dimensions.get('window');
 
 const Login = () => {
+
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [institutionalEmail, setInstitutionalEmail] = useState('');
@@ -25,72 +29,39 @@ const Login = () => {
   
   const setUser = useAuthStore((state) => state.setUser);
 
+  const login = useAuthStore((state) => state.login);
+
   const handleLogin = async () => {
     if (!username || !institutionalEmail || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
-  
+
     try {
       setLoading(true);
-      const userCredential = await signInWithEmailAndPassword(auth, institutionalEmail, password);
-      const userId = userCredential.user.uid;
 
-      const docRef = doc(firestoreDB, 'users', userId);
-      const docSnap = await getDoc(docRef);
+      await login(username, institutionalEmail, password);
 
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-
-        if (userData.username !== username) {
-          Alert.alert('Error', 'Username does not match');
-          return;
-        }
-
-        if (userData.isRejected === true) {
-          Alert.alert(
-            'Account Rejected',
-            'Your account has been rejected by an admin. You cannot log in.'
-          );
-          return;
-        }
-        
-        if (userData.isAccepted === false) {
-          Alert.alert(
-            'Pending Approval',
-            'Your account has not yet been approved by an admin. Please wait for confirmation before logging in.'
-          );
-          return;
-        }
-
-        setUser(userData);
-  
-        console.log("User logged in:", userData);
-
-        router.push("/screens/main");
-      } else {
-        Alert.alert('Error', 'No user profile found');
-      }
+      router.push('/screens/main');
 
     } catch (error) {
-      let message = 'Something went wrong. Please try again.';
-      switch (error.code) {
-        case 'auth/invalid-credential':
-        case 'auth/invalid-login-credentials':
-        case 'auth/wrong-password':
-        case 'auth/user-not-found':
-          message = 'Invalid email or password. Please check your credentials and try again.';
+      let message = 'Something went wrong';
+
+      switch (error.message) {
+        case 'INVALID_CREDENTIALS':
+          message = 'Invalid email or password.';
           break;
-    
-        case 'auth/too-many-requests':
-          message = 'Too many failed login attempts. Please wait a few minutes before trying again.';
+        case 'USERNAME_MISMATCH':
+          message = 'Username does not match.';
           break;
-    
-        case 'auth/network-request-failed':
-          message = 'Network error. Please check your internet connection and try again.';
+        case 'REJECTED':
+          message = 'Your account has been rejected by admin.';
+          break;
+        case 'PENDING':
+          message = 'Your account is pending approval.';
           break;
       }
-    
+
       Alert.alert('Login Failed', message);
     } finally {
       setLoading(false);

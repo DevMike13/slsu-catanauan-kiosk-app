@@ -13,18 +13,20 @@ import { ref, getDownloadURL } from "firebase/storage";
 import { Video } from "expo-av";
 import { storage } from "../../firebase";
 import { useAuthStore } from "../../store/useAuthStore";
+import { initOverlayDB, fetchOverlayVideo } from "../../database/overlay";
+
 
 // const INACTIVITY_TIMEOUT = 500 * 60 * 1000;
 const INACTIVITY_TIMEOUT = 5 * 60 * 1000;
 
 export default function InactivityWrapper({ children }) {
   const [inactive, setInactive] = useState(false);
-  const [videoUrl, setVideoUrl] = useState(null);
+  const [videoUri, setVideoUri] = useState(null);
   const timeoutRef = useRef(null);
   const appState = useRef(AppState.currentState);
   const router = useRouter();
 
-  const clearUser = useAuthStore((state) => state.clearUser);
+  const clearUser = useAuthStore((state) => state.logout);
 
   const resetTimer = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -38,16 +40,15 @@ export default function InactivityWrapper({ children }) {
   useEffect(() => {
     resetTimer();
 
-    const fetchVideo = async () => {
-      try {
-        const videoRef = ref(storage, "videos/ScreenSaver.mp4");
-        const url = await getDownloadURL(videoRef);
-        setVideoUrl(url);
-      } catch (error) {
-        console.error("Error fetching video:", error);
+    const loadOverlayVideo = async () => {
+      await initOverlayDB();
+      const row = await fetchOverlayVideo();
+      if (row?.fileUri) {
+        setVideoUri(row.fileUri);
       }
     };
-    fetchVideo();
+
+    loadOverlayVideo();
 
     // Reset when app comes foreground
     const subscription = AppState.addEventListener("change", (nextAppState) => {
@@ -93,9 +94,9 @@ export default function InactivityWrapper({ children }) {
         }}
       >
         <View style={{ flex: 1, backgroundColor: "black" }}>
-          {videoUrl ? (
+          {videoUri ? (
             <Video
-              source={{ uri: videoUrl }}
+              source={{ uri: videoUri }}
               style={{ flex: 1 }}
               resizeMode="cover"
               shouldPlay

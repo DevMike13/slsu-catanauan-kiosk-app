@@ -10,6 +10,7 @@ import { firestoreDB, storage } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useAuthStore } from '../../store/useAuthStore';
+import { initAttireDB, fetchAttireByTab, upsertAttireImage, saveImageLocally } from '../../database/attire';
 
 import { images } from '../../constants';
 
@@ -24,110 +25,67 @@ const Attire = () => {
   const [attireImages, setAttireImages] = useState({}); // { "School Uniform": { boyUrl, girlUrl } }
 
   useEffect(() => {
-    const fetchAttires = async () => {
-      const snap = await getDoc(doc(firestoreDB, 'pages', 'attire'));
-      if (snap.exists()) {
-        setAttireImages(snap.data());
-      }
+    const init = async () => {
+      await initAttireDB();
+      await loadAttire(activeTab);
     };
-    fetchAttires();
+    init();
   }, []);
 
-  const pickAndUploadImage = async (tab, gender) => {
-    try {
-      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permission.granted) return alert('Permission to access media library is required.');
+  const loadAttire = async (tab) => {
+    const rows = await fetchAttireByTab(tab);
+    const data = {};
+    for (const row of rows) data[row.gender] = row.imageUri;
+    setAttireImages(prev => ({ ...prev, [tab]: data }));
+  };
 
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
-        allowsEditing: true,
-        quality: 0.8,
-      });
+  useEffect(() => {
+    loadAttire(activeTab);
+  }, [activeTab]);
 
-      if (!result.canceled && result.assets?.length > 0) {
-        const imageUri = result.assets[0].uri;
+  const pickAndSaveImage = async (tab, gender) => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) return alert('Permission required to access media library.');
 
-        const response = await fetch(imageUri);
-        const blob = await response.blob();
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 0.8,
+    });
 
-        const storageRef = ref(storage, `attire/${tab}/${gender}-${Date.now()}.jpg`);
-        await uploadBytes(storageRef, blob);
-
-        const downloadURL = await getDownloadURL(storageRef);
-
-        // update firestore
-        const updated = {
-          ...attireImages,
-          [tab]: {
-            ...(attireImages[tab] || {}),
-            [`${gender}Url`]: downloadURL,
-          },
-        };
-        await setDoc(doc(firestoreDB, 'pages', 'attire'), updated);
-
-        setAttireImages(updated);
-      }
-    } catch (error) {
-      console.error('Upload failed:', error);
-      alert('Failed to upload image.');
+    if (!result.canceled && result.assets?.length > 0) {
+      const pickedUri = result.assets[0].uri;
+      const localUri = await saveImageLocally(pickedUri, tab, gender);
+      await upsertAttireImage(tab, gender, localUri);
+      loadAttire(tab);
     }
   };
 
   const renderContent = () => {
     const current = attireImages[activeTab] || {};
     return (
-      <View style={styles.rowContainer}>
-        {/* BOY */}
-        <View style={styles.imageWrapper}>
-          {current.boyUrl ? (
-            <Image source={{ uri: current.boyUrl }} style={styles.contentImage} resizeMode="contain" />
-          ) : (
-            <Text style={{
-              color: '#fff',
-              fontFamily: 'Poppins-SemiBold',
-              fontStyle: 'italic',
-              fontWeight: '600',
-              borderWidth: 2,
-              borderColor: '#fff',
-              borderStyle: 'dashed',
-              padding: 10,
-              borderRadius: 10,
-              textAlign: 'center'
-            }}>No boy attire yet.</Text>
-          )}
-          {(user?.role === 'admin' || user?.role === 'super-admin') && (
-            <TouchableOpacity style={styles.editButton} onPress={() => pickAndUploadImage(activeTab, 'boy')}>
-              <Ionicons name="create" size={20} color="#257b3e" />
-              <Text style={styles.editButtonText}>Edit</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {/* GIRL */}
-        <View style={styles.imageWrapper}>
-          {current.girlUrl ? (
-            <Image source={{ uri: current.girlUrl }} style={styles.contentImage} resizeMode="contain" />
-          ) : (
-            <Text style={{
-              color: '#fff',
-              fontFamily: 'Poppins-SemiBold',
-              fontStyle: 'italic',
-              fontWeight: '600',
-              borderWidth: 2,
-              borderColor: '#fff',
-              borderStyle: 'dashed',
-              padding: 10,
-              borderRadius: 10,
-              textAlign: 'center'
-            }}>No girl attire yet.</Text>
-          )}
-          {(user?.role === 'admin' || user?.role === 'super-admin') && (
-            <TouchableOpacity style={styles.editButton} onPress={() => pickAndUploadImage(activeTab, 'girl')}>
-              <Ionicons name="create" size={20} color="#257b3e" />
-              <Text style={styles.editButtonText}>Edit</Text>
-            </TouchableOpacity>
-          )}
-        </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 20, width: '100%' }}>
+        {['boy', 'girl'].map(gender => (
+          <View key={gender} style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            {current[gender] ? (
+              <Image source={{ uri: current[gender] }} style={{ width: '100%', height: 400 }} resizeMode="contain" />
+            ) : (
+              <Text style={{
+                color: '#fff', fontFamily: 'Poppins-SemiBold', fontStyle: 'italic', fontWeight: '600',
+                borderWidth: 2, borderColor: '#fff', borderStyle: 'dashed', padding: 10, borderRadius: 10, textAlign: 'center'
+              }}>
+                {`No ${gender} attire yet.`}
+              </Text>
+            )}
+            {(user?.role === 'admin' || user?.role === 'super-admin') && (
+              <TouchableOpacity style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', padding: 6, borderRadius: 8 }}
+                                onPress={() => pickAndSaveImage(activeTab, gender)}>
+                <Ionicons name="create" size={20} color="#257b3e" />
+                <Text style={{ color: '#257b3e', fontFamily: 'Poppins-Bold', marginLeft: 6 }}>Edit</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        ))}
       </View>
     );
   };

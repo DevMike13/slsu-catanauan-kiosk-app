@@ -7,13 +7,14 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { firestoreDB } from '../../firebase';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
+import { initPagesDB, getPageContent, updatePageContent } from '../../database/pages';
 
 const { width } = Dimensions.get('window');
 
 const History = () => {
   const router = useRouter();
 
-  const { user, clearUser } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   const [content, setContent] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -21,11 +22,9 @@ const History = () => {
 
   useEffect(() => {
     const fetchContent = async () => {
-      const ref = doc(firestoreDB, 'pages', 'history');
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        setContent(snap.data().text || '');
-      }
+      await initPagesDB(); 
+      const text = await getPageContent('history');
+      setContent(text);
     };
     fetchContent();
   }, []);
@@ -36,15 +35,13 @@ const History = () => {
   };
 
   const saveContent = async () => {
-    await setDoc(doc(firestoreDB, 'pages', 'history'), {
-      text: tempContent,
-    });
+    await updatePageContent('history', tempContent);
     setContent(tempContent);
     setModalVisible(false);
   };
 
   const handleLogout = () => {
-    clearUser();         
+    logout();         
     router.replace("/");
   };
 

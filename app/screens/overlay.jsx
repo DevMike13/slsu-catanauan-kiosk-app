@@ -15,62 +15,42 @@ import { storage } from "../../firebase";
 import { useAuthStore } from "../../store/useAuthStore";
 import { MaterialIcons } from "@expo/vector-icons";
 
+import { initOverlayDB, fetchOverlayVideo, upsertOverlayVideo, saveVideoLocally } from '../../database/overlay';
+
 const Overlay = () => {
-    const [videoUrl, setVideoUrl] = useState(null);
+    const [videoUri, setVideoUri] = useState(null);
     const [uploading, setUploading] = useState(false);
 
   const { user } = useAuthStore(); // ✅ get user role
   const isAdmin = user?.role === "admin" || user?.role === "super-admin";
 
   useEffect(() => {
-    const fetchVideo = async () => {
-      try {
-        const videoRef = ref(storage, "videos/ScreenSaver.mp4");
-        const url = await getDownloadURL(videoRef);
-        setVideoUrl(url);
-      } catch (error) {
-        console.log("No overlay video found yet:", error.message);
-      }
+    const init = async () => {
+      await initOverlayDB();
+      const row = await fetchOverlayVideo();
+      if (row) setVideoUri(row.fileUri);
     };
-    fetchVideo();
+    init();
   }, []);
 
-  const pickAndUploadVideo = async () => {
+  const pickAndSaveVideo = async () => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: "video/*",
-        copyToCacheDirectory: true,
-      });
-
+      const result = await DocumentPicker.getDocumentAsync({ type: "video/*", copyToCacheDirectory: true });
       if (result.canceled) return;
 
       const file = result.assets[0];
       setUploading(true);
 
-      const response = await fetch(file.uri);
-      const blob = await response.blob();
+      const localUri = await saveVideoLocally(file.uri);
+      await upsertOverlayVideo(localUri);
 
-      const storageRef = ref(storage, "videos/ScreenSaver.mp4"); // overwrite same file
-      const uploadTask = uploadBytesResumable(storageRef, blob);
-
-      uploadTask.on(
-        "state_changed",
-        null,
-        (error) => {
-          console.error("Upload failed:", error);
-          Alert.alert("Error", "Upload failed. Please try again.");
-          setUploading(false);
-        },
-        async () => {
-          const url = await getDownloadURL(uploadTask.snapshot.ref);
-          setVideoUrl(url);
-          setUploading(false);
-          Alert.alert("Success", "Overlay video updated!");
-        }
-      );
+      setVideoUri(localUri);
+      setUploading(false);
+      alert("Overlay video updated!");
     } catch (err) {
       console.error(err);
       setUploading(false);
+      alert("Upload failed.");
     }
   };
 
@@ -80,9 +60,9 @@ const Overlay = () => {
 
       {uploading && <ActivityIndicator size="large" color="blue" />}
 
-        {videoUrl ? (
+        {videoUri ? (
             <Video
-                source={{ uri: videoUrl }}
+                source={{ uri: videoUri }}
                 resizeMode="cover" 
                 shouldPlay
                 isLooping               
@@ -112,7 +92,7 @@ const Overlay = () => {
 
 
         {isAdmin && (
-            <TouchableOpacity style={styles.editButton} onPress={pickAndUploadVideo}>
+            <TouchableOpacity style={styles.editButton} onPress={pickAndSaveVideo}>
                 <MaterialIcons name="edit" size={20} color="#257b3e" />
                 <Text style={styles.editText}> Edit Overlay Video</Text>
             </TouchableOpacity>
