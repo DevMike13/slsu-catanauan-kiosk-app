@@ -136,6 +136,7 @@ const Register = () => {
               resizeMode="contain"
             /> */}
           </View>
+          <View style={{ flex: 1 }}>
           <KeyboardAwareScrollView
               style={styles.scrollArea}
               contentContainerStyle={styles.scrollContent}
@@ -145,45 +146,45 @@ const Register = () => {
               keyboardShouldPersistTaps="handled"
           >
             <View style={styles.userIconWrapper}>
-              <Ionicons name="person-circle-outline" size={100} color="#a7a6a5" />
+              <Ionicons name="person-circle-outline" size={80} color="#a7a6a5" />
               <Text style={styles.titleText}>Sign Up</Text>
             </View>
-            <View style={styles.inputMainContainer}>
-              <Text style={styles.label}>Full Name</Text>
-              <View style={[styles.inputContainer, isFocused.fullName && styles.inputContainerFocused]}>
+
+            <View style={styles.inputCnt}>
+              <Text style={styles.inputLabel}>Full name:</Text>
+              <View>
                 <TextInput
                   placeholder="Enter full name"
                   value={fullName}
                   onChangeText={setFullName}
-                  style={styles.input}
+                  style={styles.inputMain}
                   onFocus={() => setIsFocused(prev => ({ ...prev, fullName: true }))}
                   onBlur={() => setIsFocused(prev => ({ ...prev, fullName: false }))}
                 />
               </View>
             </View>
-
-            <View style={styles.inputMainContainer}>
-              <Text style={styles.label}>Username</Text>
-              <View style={[styles.inputContainer, isFocused.username && styles.inputContainerFocused]}>
+            <View style={styles.inputCnt}>
+              <Text style={styles.inputLabel}>Username:</Text>
+              <View>
                 <TextInput
                   placeholder="Enter username"
                   value={username}
                   onChangeText={setUsername}
-                  style={styles.input}
+                  style={styles.inputMain}
                   onFocus={() => setIsFocused(prev => ({ ...prev, username: true }))}
                   onBlur={() => setIsFocused(prev => ({ ...prev, username: false }))}
                 />
               </View>
             </View>
 
-            <View style={styles.inputMainContainer}>
-              <Text style={styles.label}>Institutional Email</Text>
-              <View style={[styles.inputContainer, isFocused.institutionalEmail && styles.inputContainerFocused]}>
+            <View style={styles.inputCnt}>
+              <Text style={styles.inputLabel}>Institutional Email:</Text>
+              <View>
                 <TextInput
                   placeholder="Enter institutional email"
                   value={institutionalEmail}
                   onChangeText={setInstitutionalEmail}
-                  style={styles.input}
+                  style={styles.inputMain}
                   keyboardType="email-address"
                   onFocus={() => setIsFocused(prev => ({ ...prev, institutionalEmail: true }))}
                   onBlur={() => setIsFocused(prev => ({ ...prev, institutionalEmail: false }))}
@@ -191,31 +192,32 @@ const Register = () => {
               </View>
             </View>
 
-            <View style={styles.inputMainContainer}>
-              <Text style={styles.label}>Password</Text>
-              <View style={[styles.inputContainer, isFocused.password && styles.inputContainerFocused]}>
+            <View style={styles.inputCnt}>
+              <Text style={styles.inputLabel}>Password:</Text>
+              <View>
                 <TextInput
+                  key={showPassword ? 'text' : 'password'}
                   placeholder="Enter password"
                   onFocus={() => setIsFocused(prev => ({ ...prev, password: true }))}
                   onBlur={() => setIsFocused(prev => ({ ...prev, password: false }))}
                   secureTextEntry={!showPassword}
                   value={password}
                   onChangeText={setPassword}
-                  style={styles.input}
+                  style={styles.inputMain}
                 />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 0, top: 10}}>
                   <Ionicons
                     name={!showPassword ? 'eye-off-outline' : "eye-outline"}
                     size={28}
-                    color='blue'
+                    color='#284615'
                   />
                 </TouchableOpacity>
               </View>
             </View>
 
-            <View style={styles.inputMainContainer}>
-              <Text style={styles.label}>Confirm Password</Text>
-              <View style={[styles.inputContainer, isFocused.confirmPassword && styles.inputContainerFocused]}>
+            <View style={styles.inputCnt}>
+              <Text style={styles.inputLabel}>Confirm Password:</Text>
+              <View>
                 <TextInput
                   placeholder="Confirm password"
                   onFocus={() => setIsFocused(prev => ({ ...prev, confirmPassword: true }))}
@@ -223,26 +225,26 @@ const Register = () => {
                   secureTextEntry={!showConfirmPassword}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
-                  style={styles.input}
+                  style={styles.inputMain}
                 />
-                <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={{ position: 'absolute', right: 105, top: 10}}>
                   <Ionicons
                     name={!showConfirmPassword ? 'eye-off-outline' : "eye-outline"}
                     size={28}
-                    color='blue'
+                    color='#284615'
                   />
                 </TouchableOpacity>
               </View>
             </View>
 
-            <View style={styles.inputMainContainer}>
-              <Text style={styles.label}>Phone Number</Text>
-              <View style={[styles.inputContainer, isFocused.phoneNumber && styles.inputContainerFocused]}>
+            <View style={styles.inputCnt}>
+              <Text style={styles.inputLabel}>Phone Number:</Text>
+              <View>
                 <TextInput
                   placeholder="+63XXXXXXXXXX"
                   value={phoneNumber}
                   onChangeText={handlePhoneChange}
-                  style={styles.input}
+                  style={styles.inputMain}
                   keyboardType="phone-pad"
                   onFocus={() => setIsFocused(prev => ({ ...prev, phoneNumber: true }))}
                   onBlur={() => setIsFocused(prev => ({ ...prev, phoneNumber: false }))}
@@ -251,14 +253,14 @@ const Register = () => {
               </View>
             </View>
 
-            <View style={styles.inputMainContainer}>
-              <Text style={styles.label}>Address</Text>
-              <View style={[styles.inputContainer, isFocused.address && styles.inputContainerFocused]}>
+            <View style={styles.inputCnt}>
+              <Text style={styles.inputLabel}>Address:</Text>
+              <View>
                 <TextInput
                   placeholder="Enter address"
                   value={address}
                   onChangeText={setAddress}
-                  style={styles.input}
+                  style={styles.inputMain}
                   multiline
                   onFocus={() => setIsFocused(prev => ({ ...prev, address: true }))}
                   onBlur={() => setIsFocused(prev => ({ ...prev, address: false }))}
@@ -266,6 +268,7 @@ const Register = () => {
               </View>
             </View>
           </KeyboardAwareScrollView>
+          </View>
           <TouchableOpacity 
               activeOpacity={0.8} 
               style={styles.buttonWrapper}
@@ -273,7 +276,7 @@ const Register = () => {
               disabled={loading}
           >
               <LinearGradient
-                  colors={['#00000055', '#ffffffdb']} 
+                  colors={['#0000006f', '#fffffff1']} 
                   locations={[0, 0.15]}
                   start={{ x: 0, y: 1.2 }}
                   end={{ x: 1, y: 0 }}
@@ -306,7 +309,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#ffffff4c',
+    // backgroundColor: '#ffffff4c',
     paddingHorizontal: width * 0.05,
   },
 
@@ -315,16 +318,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // justifyContent: 'space-between',
     gap: 40,
-    paddingHorizontal: width * 0.0,
-    paddingVertical: height * 0.02,
+    // paddingHorizontal: width * 0.0,
+    // paddingVertical: height * 0.02,
   },
   headerText: {
-    fontFamily: 'BaraBara',
-    fontSize: width * 0.035,
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 45,
     color: '#284615',
-    textShadowColor: '#3b6620',   
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 16,
   },
   imageLogo: {
     width: width * 0.10,
@@ -334,11 +334,15 @@ const styles = StyleSheet.create({
 
   scrollArea: {
       flex: 1,
+      marginTop: -20
   },
   scrollContent: {
+    flexGrow: 1,
     paddingHorizontal: width * 0.2,
     paddingBottom: 20,
-    gap: 20
+    gap: 10,
+    // backgroundColor: 'green',
+    // height: 100
   },
 
  
@@ -381,21 +385,24 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     borderRadius: 50,
-    width: '30%',
-    alignSelf: 'center'
+    width: '18%',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: 10,
+    right: 40
   },
   button: {
-    paddingVertical: height * 0.015,
-    paddingHorizontal: width * 0.06,
+    // paddingVertical: height * 0.015,
+    // paddingHorizontal: width * 0.06,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20
   },
   buttonText: {
-    color: '#000',
-    fontFamily: 'Poppins-Bold',
-    fontSize: width * 0.02,
+    color: '#284615',
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 26,
   },
 
   registerContainer:{
@@ -423,13 +430,38 @@ const styles = StyleSheet.create({
   },
   userIconWrapper: {
     alignItems: 'center',
-    marginBottom: -20
+    marginTop: -8
+    // marginBottom: -20
   },
   titleText: {
     fontFamily: 'Poppins-Bold',
-    fontSize: 30,
+    fontSize: 26,
     color: "#284615"
-  }
+  },
+
+  // NEW INPUT
+  inputCnt:{
+    width: 'auto',
+    flexDirection: 'row',
+    // justifyContent: 'between',
+    alignItems: 'center',
+    backgroundColor: '#ffffffce',
+    borderRadius: 50,
+    paddingHorizontal: 20,
+    overflow: 'hidden',
+    gap: 5,
+    position: 'relative'
+  },
+  inputLabel:{
+    color: '#284615',
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 26
+  },
+  inputMain : {
+    width: 400,
+    fontFamily: 'Arial-Regular',
+    fontSize: 20
+  },
 });
 
 export default Register;

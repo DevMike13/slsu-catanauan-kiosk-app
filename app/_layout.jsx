@@ -25,6 +25,10 @@ export default function Layout() {
     "Poppins-SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
     "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
     "BaraBara": require("../assets/fonts/BARABARA-final.otf"),
+    "Arial-Regular": require("../assets/fonts/Arial-Regular.ttf"),
+    "Arial-Medium": require("../assets/fonts/Arial-Medium.ttf"),
+    "Arial-Bold": require("../assets/fonts/Arial-Bold.ttf"),
+    "Arial-Bold-1": require("../assets/fonts/Arial-Bold-1.ttf"),
   });
 
   useEffect(() => {

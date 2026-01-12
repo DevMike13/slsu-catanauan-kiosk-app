@@ -34,7 +34,8 @@ const AdminSelectionScreen = () => {
 
           {/* CONTENT */}
           <View style={styles.contentWrapper}>
-            <Text style={styles.welcomeText}>WELCOME TO SLSU CATANAUAN!</Text>
+            <Text style={styles.welcomeText}>WELCOME TO</Text>
+            <Text style={styles.welcomeTextBottom}>SLSU CATANAUAN</Text>
 
             <View style={styles.buttonContainer}>
               <TouchableOpacity 
@@ -43,7 +44,7 @@ const AdminSelectionScreen = () => {
                 onPress={() => router.push('/auth/register')}
               >
                 <LinearGradient
-                  colors={['#00000055', '#ffffffdb']} 
+                  colors={['#0000006f', '#fffffff1']} 
                   locations={[0, 0.15]}
                   start={{ x: 0, y: 1.2 }}
                   end={{ x: 1, y: 0 }}
@@ -59,13 +60,13 @@ const AdminSelectionScreen = () => {
                 onPress={() => router.push('/auth/login')}
               >
                 <LinearGradient
-                  colors={['#00000055', '#ffffffdb']} 
+                  colors={['#0000006f', '#fffffff1']} 
                   locations={[0, 0.15]}
                   start={{ x: 0, y: 1.2 }}
                   end={{ x: 1, y: 0 }}
                   style={styles.button}
                 >
-                  <Text style={styles.buttonText}>Login</Text>
+                  <Text style={styles.buttonText}>Log In</Text>
                 </LinearGradient>
               </TouchableOpacity>
             </View>
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#ffffff4c',
+    // backgroundColor: '#ffffff4c',
     paddingHorizontal: width * 0.05,
   },
   headerContainer: {
@@ -98,12 +99,9 @@ const styles = StyleSheet.create({
     paddingVertical: height * 0.02,
   },
   headerText: {
-    fontFamily: 'BaraBara',
-    fontSize: width * 0.035,
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 45,
     color: '#284615',
-    textShadowColor: '#3b6620',   
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 16,
   },
   imageLogo: {
     width: width * 0.12,
@@ -116,11 +114,17 @@ const styles = StyleSheet.create({
     marginTop: height * 0.03,
   },
   welcomeText: {
-    fontFamily: 'BaraBara',
-    fontSize: width * 0.046,
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 65,
     textAlign: 'center',
     color: '#284615',
-    paddingHorizontal: width * 0.05,
+  },
+  welcomeTextBottom: {
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 65,
+    textAlign: 'center',
+    color: '#284615',
+    marginTop: -10,
   },
   buttonContainer: {
     marginTop: height * 0.02,
@@ -142,8 +146,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#000',
-    fontFamily: 'Poppins-Bold',
-    fontSize: width * 0.025,
+    color: '#284615',
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 38,
   },
 });
