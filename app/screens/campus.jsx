@@ -101,9 +101,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
+    // map: {
+    //     width: '70%',
+    //     height: '110%',     // <---- was '80%' before
+    //     borderRadius: 15,
+    //     marginTop: 30
+    // },
     map: {
-        width: '70%',
-        height: '110%',     // <---- was '80%' before
+        width: 800,
+        height: 450,     // <---- was '80%' before
         borderRadius: 15,
         marginTop: 30
     },

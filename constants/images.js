@@ -18,6 +18,18 @@ import studentCouncil from "../assets/images/student-council.jpeg";
 import placeholderImage from "../assets/images/placeholder.png";
 import newBG from '../assets/images/slsu-new-bg.jpg';
 
+import pin from '../assets/images/pin.png';
+import history from '../assets/images/history.png';
+import vmgo from '../assets/images/vmgo.png';
+import org from '../assets/images/org.png';
+import program from '../assets/images/program.png';
+import calendar from '../assets/images/calendar.png';
+import events from '../assets/images/events.png';
+import attire from '../assets/images/attire.png';
+import summary from '../assets/images/summary.png';
+import edit from '../assets/images/edit.png';
+import back from '../assets/images/back.png';
+
 export default { 
     logo, 
     backgroundTop, 
@@ -36,5 +48,16 @@ export default {
     commisionSelection,
     orgChart,
     studentCouncil,
-    newBG
+    newBG,
+    pin,
+    history,
+    vmgo,
+    org,
+    program,
+    calendar,
+    events,
+    attire,
+    summary,
+    edit,
+    back
 };

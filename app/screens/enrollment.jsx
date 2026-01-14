@@ -154,10 +154,10 @@ const Enrollment = () => {
                       <TouchableOpacity
                         onPress={() => setActiveTab(item)}
                         activeOpacity={0.8}
-                        style={{ marginBottom: 10, borderRadius: 8, overflow: "hidden" }}
+                        style={[{ marginBottom: 30, backgroundColor: "#fff" }, activeTab === item ? styles.activeTabButton : styles.inactiveTabButton]}
                       >
                         <LinearGradient
-                          colors={["transparent", "transparent"]}
+                          colors={["#fff", "#fff"]}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 0 }}
                           style={styles.tabButton}
@@ -304,25 +304,26 @@ const styles = StyleSheet.create({
   tabButton: {
       paddingVertical: 10,
       paddingHorizontal: 20,
-      borderRadius: 50,
+      // borderRadius: 50,
       alignItems: 'center',
   },
   activeTabButton: {
-      // backgroundColor: '#07a751'
+    backgroundColor: '#fff'
   },
   inactiveTabButton: {
       // backgroundColor: '#ffffffc3',
+      opacity: 0.5
   },
   tabText: {
-      fontFamily: 'Poppins-Bold',
-      fontSize: 12,
-      textAlign: 'center'
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 18,
+    textAlign: 'center'
   },
   activeTabText: {
-      color: '#ffffff'
+      color: '#215024'
   },
   inactiveTabText: {
-      color: '#b8b8b8',
+      color: '#215024',
   },
 
   contentWrapper: {
@@ -382,21 +383,23 @@ const styles = StyleSheet.create({
       position: 'relative',
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: 55
+      marginTop: 55,
+      marginLeft: 50,
+      marginRight: 50
     },
   
     backCard: {
       position: 'absolute',
       width: width * 0.3,
-      height: 330,
-      backgroundColor: '#257b3e',
+      height: 500,
+      // backgroundColor: '#257b3e',
       borderRadius: 16,
       zIndex: 0
     },
   
     frontCard: {
       width: width * 0.3,
-      height: 330,
+      height: 500,
       backgroundColor: 'transparent',
       borderRadius: 16,
       paddingHorizontal: 30,
@@ -404,7 +407,7 @@ const styles = StyleSheet.create({
       transform: [{ rotate: '-10deg' }],
       zIndex: 1,
       // elevation: 5,
-      overflow: 'hidden',
+      // overflow: 'hidden',
     },
     
     innerCard: {

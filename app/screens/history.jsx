@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, ScrollView, Dimensions, TextInput, Button, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, Dimensions, TextInput, Button, Modal, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { images } from '../../constants';
@@ -57,15 +57,23 @@ const History = () => {
             style={styles.logoutButton}
             onPress={handleLogout}
           >
-            <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
-            <Text style={styles.logoutButtonText}>Logout</Text>
+            <Image 
+              source={images.back}
+              style={styles.editIcon}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.editButton}
             onPress={openEditor}
           >
-            <Ionicons name="create" size={32} color="#333" style={styles.buttonIcon} />
-            <Text style={styles.editButtonText}>Edit</Text>
+            <Image 
+              source={images.edit}
+              style={styles.editIcon}
+              resizeMode="contain"
+            />
+            {/* <Ionicons name="create" size={32} color="#333" style={styles.buttonIcon} /> */}
+            {/* <Text style={styles.editButtonText}>Edit</Text> */}
           </TouchableOpacity>
         </View>
       )}
@@ -154,15 +162,15 @@ const styles = StyleSheet.create({
   backCard: {
     position: 'absolute',
     width: width * 0.5,
-    height: 330,
-    backgroundColor: '#257b3e',
+    height: 500,
+    backgroundColor: '#257b3d7c',
     borderRadius: 16,
     zIndex: 0
   },
 
   frontCard: {
     width: width * 0.5,
-    height: 330,
+    height: 500,
     backgroundColor: 'transparent',
     borderRadius: 16,
     paddingHorizontal: 30,
@@ -194,29 +202,30 @@ const styles = StyleSheet.create({
   
   contentText: {
     width: '100%',
-    fontFamily: 'Poppins-Regular',
+    fontFamily: 'Arial-Bold-1',
     fontSize: 15,
     color: 'white',
     textAlign: 'center',
   },
   funtionButtonContainer: {
     position: 'absolute',
-    left: 10,                 
+    left: -30,                 
     top: '50%',              
     transform: [{ translateY: -20 }],
     zIndex: 50,
-    backgroundColor: '#257b3e',
-    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    paddingHorizontal: 0,
     paddingVertical: 10,
-    borderRadius: 20,
-    gap: 20
+    borderTopRightRadius: 40,
+    borderBottomRightRadius: 40,
+    gap: 8
   },
   logoutButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
     paddingHorizontal: 15,
     paddingVertical: 6,
     borderRadius: 8
@@ -232,9 +241,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
-    paddingHorizontal: 15,
-    paddingVertical: 6,
+    // backgroundColor: '#fff',
+    // paddingHorizontal: 15,
+    // paddingVertical: 6,
     borderRadius: 8
   },
 
@@ -328,4 +337,9 @@ const styles = StyleSheet.create({
   cancelText: {
     color: '#333',
   },
+
+  editIcon:{
+    width: 30,
+    height: 30
+  }
 });

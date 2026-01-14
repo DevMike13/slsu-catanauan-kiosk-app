@@ -16,8 +16,8 @@ import { useAuthStore } from "../../store/useAuthStore";
 import { initOverlayDB, fetchOverlayVideo } from "../../database/overlay";
 
 
-// const INACTIVITY_TIMEOUT = 500 * 60 * 1000;
-const INACTIVITY_TIMEOUT = 5 * 60 * 1000;
+const INACTIVITY_TIMEOUT = 500 * 60 * 1000;
+// const INACTIVITY_TIMEOUT = 5 * 60 * 1000;
 
 export default function InactivityWrapper({ children }) {
   const [inactive, setInactive] = useState(false);

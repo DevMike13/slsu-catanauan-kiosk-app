@@ -129,7 +129,8 @@ const Studorg = () => {
             borderStyle: 'dashed',
             padding: 10,
             borderRadius: 10,
-            textAlign: 'center'
+            textAlign: 'center',
+            marginTop: 250
           }}>No image uploaded yet.</Text>
         )}
       </View>
@@ -144,23 +145,29 @@ const Studorg = () => {
                 style={styles.logoutButton}
                 onPress={handleLogout}
             >
-                <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
-                <Text style={styles.logoutButtonText}>Logout</Text>
+              <Image 
+                source={images.back}
+                style={styles.editIcon}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.editButton}
                 onPress={pickAndUploadImage}
             >
-                <Ionicons name="create" size={28} color="#333" style={styles.buttonIcon} />
-                <Text style={styles.editButtonText}>{loading ? 'Uploading...' : 'Edit Image'}</Text>
+              <Image 
+                source={images.edit}
+                style={styles.editIcon}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
                 style={styles.editButton}
                 onPress={openQrEditor}
             >
-                <Ionicons name="qr-code" size={22} color="#333" style={styles.buttonIcon} />
-                <Text style={styles.editButtonText}>Edit Info</Text>
+                <Ionicons name="qr-code" size={30} color="#333" style={[styles.buttonIcon, { marginTop: 10 }]} />
+                {/* <Text style={styles.editButtonText}>Edit Info</Text> */}
             </TouchableOpacity>
         </View>
       )}
@@ -180,10 +187,10 @@ const Studorg = () => {
                       <TouchableOpacity
                         onPress={() => setActiveTab(item)}
                         activeOpacity={0.8}
-                        style={{ marginBottom: 10, borderRadius: 8, overflow: 'hidden' }}
+                        style={[{ marginBottom: 30, overflow: 'hidden', backgroundColor: "#fff" }, activeTab === item ? styles.activeTabButton : styles.inactiveTabButton]}
                       >
                         <LinearGradient
-                          colors={['transparent', 'transparent']}
+                          colors={['#fff', '#fff']}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 0 }}
                           style={styles.tabButton}
@@ -216,13 +223,15 @@ const Studorg = () => {
             {renderContent()}
             {qrLinks[activeTab] && (
               <View style={styles.qrContainer}>
-                <Text style={styles.qrTitle}>Scan to visit our Facebook page</Text>
-                <QRCode
-                  value={qrLinks[activeTab]}
-                  size={160}
-                  bgColor="black"
-                  fgColor="white"
-                />
+                {/* <Text style={styles.qrTitle}>Scan to visit our Facebook page</Text> */}
+                <View style={{ padding: 10, backgroundColor: "#fff", marginTop: -50}}>
+                  <QRCode
+                    value={qrLinks[activeTab]}
+                    size={100}
+                    bgColor="black"
+                    fgColor="white"
+                  />
+                </View>
                 {emails[activeTab] ? (
                   <Text style={styles.emailText}>
                     📧 {emails[activeTab]}
@@ -278,52 +287,66 @@ const styles = StyleSheet.create({
   bodyContainer: { flex: 1, flexDirection: 'row' },
   tabContainer: { width: width * 0.3 },
   flatlistContainer: { flexGrow: 1, justifyContent: 'center' },
-  tabButton: { paddingVertical: 10, borderRadius: 30, alignItems: 'center' },
-  tabText: { fontFamily: 'Poppins-Bold', fontSize: 12, textAlign: 'center' },
-  activeTabText: { color: '#ffffff' },
-  inactiveTabText: { color: '#b8b8b8' },
-  contentWrapper: { flex: 1, paddingHorizontal: 20 },
-  contentContainer: { flex: 1, paddingHorizontal: 20 },
-  contentImage: { 
-    width: '100%', 
-    height: undefined,      // ✅ let height adjust automatically
-    aspectRatio: 1.5,       // ✅ adjust this based on your images (e.g. 16:10)
-    resizeMode: 'contain',  // ✅ keeps aspect ratio
-    marginBottom: 20,
+  tabButton: { paddingVertical: 10, alignItems: 'center' },
+  tabText: { fontFamily: 'Arial-Bold-1', fontSize: 16, textAlign: 'center' },
+  activeTabText: {
+    color: '#215024'
   },
-  
+  inactiveTabText: {
+      color: '#215024',
+  },
+  contentWrapper: { flex: 1, paddingHorizontal: 20 },
+  contentContainer: { flex: 1, paddingHorizontal: 20, marginTop: 70 },
+  // contentImage: { 
+  //   width: '100%', 
+  //   height: undefined,     
+  //   aspectRatio: 1.5,       
+  //   resizeMode: 'contain',  
+  //   marginBottom: 20,
+  // },
+  contentImage: { 
+    width: 400, 
+    height: 400,          
+    resizeMode: 'contain',  
+    marginBottom: 0,
+    marginHorizontal: 'auto'
+  },
 
-  cardContainer: { position: 'relative', alignItems: 'center', justifyContent: 'center', marginTop: 55 },
+  cardContainer: { position: 'relative', alignItems: 'center', justifyContent: 'center', marginTop: 55, marginLeft: 50 },
   backCard: {
-    position: 'absolute', width: width * 0.3, height: 330,
-    backgroundColor: '#257b3e', borderRadius: 16, zIndex: 0
+    position: 'absolute', width: width * 0.3, height: 500,
+    // backgroundColor: '#257b3e', 
+    borderRadius: 16, zIndex: 0
   },
   frontCard: {
-    width: width * 0.3, height: 330,
+    width: width * 0.3, height: 500,
     backgroundColor: 'transparent', borderRadius: 16, paddingHorizontal: 30,
-    transform: [{ rotate: '-10deg' }], zIndex: 1, overflow: 'hidden',
+    transform: [{ rotate: '-10deg' }], zIndex: 1, 
+    // overflow: 'hidden',
   },
   innerCard: { flex: 1, transform: [{ rotate: '10deg' }], justifyContent: 'center', alignItems: 'center' },
 
   funtionButtonContainer: {
     position: 'absolute',
-    right: 10,                 
+    left: -30,                 
     top: '50%',              
     transform: [{ translateY: -20 }],
     zIndex: 50,
-    backgroundColor: '#257b3e',
-    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    paddingHorizontal: 0,
     paddingVertical: 10,
-    borderRadius: 20,
-    gap: 20
+    borderTopRightRadius: 40,
+    borderBottomRightRadius: 40,
+    gap: 8
   },
   editButton: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
-    paddingHorizontal: 15,
-    paddingVertical: 6,
+    // backgroundColor: '#fff',
+    // paddingHorizontal: 15,
+    // paddingVertical: 6,
     borderRadius: 8
   },
   editButtonText: {
@@ -335,7 +358,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
     paddingHorizontal: 15,
     paddingVertical: 6,
     borderRadius: 8
@@ -454,5 +477,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Bold',
     fontSize: 18,
     textDecorationLine: 'underline',
+  },
+  editIcon:{
+    width: 30,
+    height: 30
+  },
+  activeTabButton: {
+    backgroundColor: '#fff'
+  },
+  inactiveTabButton: {
+      // backgroundColor: '#ffffffc3',
+      opacity: 0.5
   },
 });

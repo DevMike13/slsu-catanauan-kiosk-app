@@ -101,12 +101,18 @@ const Calendar = () => {
               style={styles.logoutButton}
               onPress={handleLogout}
             >
-              <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
-              <Text style={styles.logoutButtonText}>Logout</Text>
+              <Image 
+                source={images.back}
+                style={styles.editIcon}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
             <TouchableOpacity style={styles.editButton} onPress={() => pickImage()}>
-              <Ionicons name="images" size={32} color="#333" style={styles.buttonIcon} />
-              <Text style={styles.editButtonText}>Add Image</Text>
+              <Image 
+                source={images.edit}
+                style={styles.editIcon}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
           </View>
         )}
@@ -239,23 +245,25 @@ const styles = StyleSheet.create({
     },
     funtionButtonContainer: {
       position: 'absolute',
-      left: 10,                 
+      left: -30,                 
       top: '50%',              
       transform: [{ translateY: -20 }],
       zIndex: 50,
-      backgroundColor: '#257b3e',
-      paddingHorizontal: 10,
+      backgroundColor: '#fff',
+      paddingHorizontal: 0,
       paddingVertical: 10,
-      borderRadius: 20,
-      gap: 20
+      borderTopRightRadius: 40,
+      borderBottomRightRadius: 40,
+      gap: 8
     },
     editButton: {
+      flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#fff',
-      paddingHorizontal: 15,
-      paddingVertical: 6,
+      // backgroundColor: '#fff',
+      // paddingHorizontal: 15,
+      // paddingVertical: 6,
       borderRadius: 8
     },
     editButtonText: {
@@ -281,7 +289,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'red',
+      // backgroundColor: 'red',
       paddingHorizontal: 15,
       paddingVertical: 6,
       borderRadius: 8
@@ -291,4 +299,8 @@ const styles = StyleSheet.create({
       color: 'white',
       fontFamily: 'Poppins-Bold'
     },
+    editIcon:{
+      width: 30,
+      height: 30
+    }
 });

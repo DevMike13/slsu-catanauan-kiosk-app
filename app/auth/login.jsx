@@ -98,27 +98,27 @@ const Login = () => {
               keyboardShouldPersistTaps="handled"
             >
             <View style={styles.userIconWrapper}>
-              <Ionicons name="person-circle-outline" size={100} color="#a7a6a5" />
+              <Ionicons name="person" size={70} color="#686868" />
               <Text style={styles.titleText}>Log In</Text>
             </View>
 
-            <View style={styles.inputMainContainer}>
-              <Text style={styles.label}>Username</Text>
-              <View style={[styles.inputContainer, isFocused.username && styles.inputContainerFocused]}>
+            <View style={styles.inputCnt}>
+              <Text style={styles.inputLabel}>Username:</Text>
+              <View>
                 <TextInput
                   placeholder="Enter username"
                   value={username}
                   onChangeText={setUsername}
-                  style={styles.input}
+                  style={styles.inputMain}
                   onFocus={() => setIsFocused(prev => ({ ...prev, username: true }))}
                   onBlur={() => setIsFocused(prev => ({ ...prev, username: false }))}
                 />
               </View>
             </View>
 
-            <View style={styles.inputMainContainer}>
-              <Text style={styles.label}>Institutional Email</Text>
-              <View style={[styles.inputContainer, isFocused.institutionalEmail && styles.inputContainerFocused]}>
+            <View style={styles.inputCnt}>
+              <Text style={styles.inputLabel}>Institutional Email:</Text>
+              <View>
                 <TextInput
                   placeholder="Enter institutional email"
                   value={institutionalEmail}
@@ -131,9 +131,9 @@ const Login = () => {
               </View>
             </View>
 
-            <View style={styles.inputMainContainer}>
-              <Text style={styles.label}>Password</Text>
-              <View style={[styles.inputContainer, isFocused.password && styles.inputContainerFocused]}>
+            <View style={styles.inputCnt}>
+              <Text style={styles.inputLabel}>Password:</Text>
+              <View>
                 <TextInput
                   placeholder="Enter password"
                   onFocus={() => setIsFocused(prev => ({ ...prev, password: true }))}
@@ -141,13 +141,13 @@ const Login = () => {
                   secureTextEntry={!showPassword}
                   value={password}
                   onChangeText={setPassword}
-                  style={styles.input}
+                  style={styles.inputMain}
                 />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 0, top: 10}}>
                   <Ionicons
                     name={!showPassword ? 'eye-off-outline' : "eye-outline"}
                     size={28}
-                    color='blue'
+                    color='#284615'
                   />
                 </TouchableOpacity>
               </View>
@@ -207,12 +207,9 @@ const styles = StyleSheet.create({
     paddingVertical: height * 0.02,
   },
   headerText: {
-    fontFamily: 'BaraBara',
-    fontSize: width * 0.035,
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 45,
     color: '#284615',
-    textShadowColor: '#3b6620',   
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 16,
   },
   imageLogo: {
     width: width * 0.10,
@@ -269,21 +266,24 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     borderRadius: 50,
-    width: '30%',
-    alignSelf: 'center'
+    width: '18%',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: 10,
+    right: 40
   },
   button: {
-    paddingVertical: height * 0.015,
-    paddingHorizontal: width * 0.06,
+    // paddingVertical: height * 0.015,
+    // paddingHorizontal: width * 0.06,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30
+    marginBottom: 20
   },
   buttonText: {
-    color: '#000',
-    fontFamily: 'Poppins-Bold',
-    fontSize: width * 0.02,
+    color: '#284615',
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 26,
   },
 
   registerContainer:{
@@ -310,14 +310,37 @@ const styles = StyleSheet.create({
       height: 50
   },
   userIconWrapper: {
-    alignItems: 'center',
-    marginBottom: -20
+    alignItems: 'center'
   },
   titleText: {
     fontFamily: 'Poppins-Bold',
     fontSize: 30,
     color: "#284615"
-  }
+  },
+
+  // NEW INPUT
+  inputCnt:{
+    width: 'auto',
+    flexDirection: 'row',
+    // justifyContent: 'between',
+    alignItems: 'center',
+    backgroundColor: '#ffffffce',
+    borderRadius: 50,
+    paddingHorizontal: 20,
+    overflow: 'hidden',
+    gap: 5,
+    position: 'relative'
+  },
+  inputLabel:{
+    color: '#284615',
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 26
+  },
+  inputMain : {
+    width: 400,
+    fontFamily: 'Arial-Regular',
+    fontSize: 20
+  },
 });
 
 export default Login;

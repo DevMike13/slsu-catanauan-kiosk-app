@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { 
   View, Text, StyleSheet, ImageBackground, TouchableOpacity, 
-  ScrollView, Dimensions, Modal, TextInput, Button
+  ScrollView, Dimensions, Modal, TextInput, Button, Image
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -24,6 +24,7 @@ const About = () => {
     vision: '',
     mission: '',
     core: [],
+    goals: '',
   });
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -66,15 +67,21 @@ const About = () => {
             style={styles.logoutButton}
             onPress={handleLogout}
           >
-            <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
-            <Text style={styles.logoutButtonText}>Logout</Text>
+            <Image 
+              source={images.back}
+              style={styles.editIcon}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.editButton}
             onPress={openEditor}
           >
-            <Ionicons name="create" size={32} color="#333" style={styles.buttonIcon} />
-            <Text style={styles.editButtonText}>Edit</Text>
+            <Image 
+              source={images.edit}
+              style={styles.editIcon}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
         </View>
       )}
@@ -108,6 +115,9 @@ const About = () => {
                         </Text>
                       ))}
                     </View>
+
+                    <Text style={styles.contentTitleText}>SLSU Catanauan Goals</Text>
+                    <Text style={styles.contentText}>{aboutData.goals}</Text>
                 </ScrollView>
             </View>
           </View>
@@ -207,6 +217,14 @@ const About = () => {
                 <Ionicons name="add" size={16} color="#333" style={{ marginRight: 4 }} />
                 <Text style={{ fontSize: 14, color: '#333', fontFamily: 'Poppins-Regular' }}>Add Core Value</Text>
               </TouchableOpacity>
+
+              <TextInput
+                multiline
+                value={tempData.goals}
+                onChangeText={(t)=>setTempData({...tempData, goals:t})}
+                style={styles.modalInput}
+                placeholder="Goals"
+              />
             </ScrollView>
 
             <View style={styles.modalActions}>
@@ -259,15 +277,15 @@ const styles = StyleSheet.create({
     backCard: {
       position: 'absolute',
       width: width * 0.5,
-      height: 330,
-      backgroundColor: '#257b3e',
+      height: 500,
+      backgroundColor: '#257b3d7c',
       borderRadius: 16,
       zIndex: 0
     },
   
     frontCard: {
       width: width * 0.7,
-      height: 330,
+      height: 500,
       backgroundColor: 'transparent',
       borderRadius: 16,
       paddingHorizontal: 30,
@@ -298,7 +316,7 @@ const styles = StyleSheet.create({
     },
 
     contentTitleText:{
-        fontFamily: 'Poppins-SemiBold',
+        fontFamily: 'Arial-Bold-1',
         fontSize: 18,
         color: 'white',
         textAlign: 'center',
@@ -306,7 +324,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     contentText:{
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Arial-Regular',
         fontSize: 14,
         color: 'white',
         textAlign: 'center'
@@ -328,26 +346,39 @@ const styles = StyleSheet.create({
     
     funtionButtonContainer: {
       position: 'absolute',
-      left: 10,                 
+      left: -30,                 
       top: '50%',              
       transform: [{ translateY: -20 }],
       zIndex: 50,
-      backgroundColor: '#257b3e',
-      padding: 10,
-      borderRadius: 20,
-      gap: 20
+      backgroundColor: '#fff',
+      paddingHorizontal: 0,
+      paddingVertical: 10,
+      borderTopRightRadius: 40,
+      borderBottomRightRadius: 40,
+      gap: 8
     },
     editButton: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#fff',
+      // backgroundColor: '#fff',
+      // paddingHorizontal: 15,
+      // paddingVertical: 6,
+      borderRadius: 8
+    },
+    
+    logoutButton: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      // backgroundColor: 'red',
       paddingHorizontal: 15,
       paddingVertical: 6,
       borderRadius: 8
     },
-  
+
     editButtonText: {
       color: '#257b3e',
       fontFamily: 'Poppins-Bold'
@@ -444,20 +475,13 @@ const styles = StyleSheet.create({
       marginVertical: 8,
       marginBottom: 20
     },
-    logoutButton: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: 'red',
-      paddingHorizontal: 15,
-      paddingVertical: 6,
-      borderRadius: 8
-    },
-  
+    
     logoutButtonText: {
       color: 'white',
       fontFamily: 'Poppins-Bold'
     },
-
+    editIcon:{
+      width: 30,
+      height: 30
+    }
   });

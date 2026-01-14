@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, ScrollView, Dimensions, TextInput, Modal, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, Dimensions, TextInput, Modal, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -163,15 +163,21 @@ const Program = () => {
                         style={styles.logoutButton}
                         onPress={handleLogout}
                     >
-                        <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
-                        <Text style={styles.logoutButtonText}>Logout</Text>
+                        <Image 
+                            source={images.back}
+                            style={styles.editIcon}
+                            resizeMode="contain"
+                        />
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.editButton}
                         onPress={openEditor}
                     >
-                        <Ionicons name="create" size={32} color="#333" style={styles.buttonIcon} />
-                        <Text style={styles.editButtonText}>Edit</Text>
+                        <Image 
+                            source={images.edit}
+                            style={styles.editIcon}
+                            resizeMode="contain"
+                        />
                     </TouchableOpacity>
                 </View>
             )}
@@ -189,13 +195,13 @@ const Program = () => {
                                         <TouchableOpacity
                                             onPress={() => setActiveTab(item)}
                                             activeOpacity={0.8}
-                                            style={{ marginBottom: 10, borderRadius: 8, overflow: 'hidden' }}
+                                            style={[{ marginBottom: 30, overflow: 'hidden', backgroundColor: "#fff" }, activeTab === item ? styles.activeTabButton : styles.inactiveTabButton]}
                                         >
                                             <LinearGradient
                                                 colors={
                                                     activeTab === item
-                                                    ? ['transparent', 'transparent']
-                                                    : ['transparent', 'transparent']
+                                                    ? ['#ffff', '#ffff']
+                                                    : ['#ffff', '#ffff']
                                                 }
                                                 start={{ x: 0, y: 0 }}
                                                 end={{ x: 1, y: 0 }}
@@ -296,14 +302,15 @@ const styles = StyleSheet.create({
         height: 80
     },
     headerText: {
-        fontFamily: 'Poppins-Bold',
+        fontFamily: 'Arial-Bold-1',
         fontSize: width * 0.06,
         marginBottom: -20
     },
 
     bodyContainer: {
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        // backgroundColor: 'yellow'
     },
     tabContainer: {
         width: width * 0.3,
@@ -317,59 +324,64 @@ const styles = StyleSheet.create({
     tabButton: {
         paddingVertical: 10,
         paddingHorizontal: 20,
-        borderRadius: 50,
+        // borderRadius: 50,
         alignItems: 'center',
     },
     activeTabButton: {
-        // backgroundColor: '#07a751'
+        backgroundColor: '#fff'
     },
     inactiveTabButton: {
         // backgroundColor: '#ffffffc3',
+        opacity: 0.5
     },
     tabText: {
-        fontFamily: 'Poppins-Bold',
-        fontSize: 12,
+        fontFamily: 'Arial-Bold-1',
+        fontSize: 18,
         textAlign: 'center'
     },
     activeTabText: {
-        color: '#ffffff'
+        color: '#215024'
     },
     inactiveTabText: {
-        color: '#b8b8b8',
+        color: '#215024',
     },
 
     contentWrapper: {
         flex: 1,
         paddingHorizontal: 20,
+        marginTop: 50,
+        zIndex: 100
         
     },
     contentContainer: {
         marginVertical: 'auto',
         paddingHorizontal: 20,
+        height: 'auto'
     },
     contentInner:{
-        flexDirection: 'row',
+        flexDirection: 'col',
         justifyContent: 'space-around',
         alignItems: 'stretch',
-        borderWidth: 4,
-        borderRadius: 20,
-        minHeight: 400,
+        // borderWidth: 4,
+        backgroundColor: "#257b3d7c",
+        borderRadius: 30,
+        minHeight: 450,
     },
     column: {
-        width: '45%',
+        width: '100%',
         paddingHorizontal: 10,
         paddingVertical: 10,
         justifyContent: 'center',
         alignItems: 'center',
     },
     heading: {
-        fontFamily: 'Poppins-Bold',
+        fontFamily: 'Arial-Bold-1',
         fontSize: 18,
         marginBottom: 4,
         color: 'white'
     },
     paragraph: {
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Arial-Regular',
         textAlign: 'justify',
         color: 'white'
     },
@@ -388,20 +400,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 55,
+        marginLeft: 50
       },
     
       backCard: {
         position: 'absolute',
         width: width * 0.3,
-        height: 330,
-        backgroundColor: '#257b3e',
+        height: 500,
+        // backgroundColor: '#257b3e',
         borderRadius: 16,
         zIndex: 0
       },
     
       frontCard: {
         width: width * 0.3,
-        height: 330,
+        height: 500,
         backgroundColor: 'transparent',
         borderRadius: 16,
         paddingHorizontal: 30,
@@ -409,7 +422,7 @@ const styles = StyleSheet.create({
         transform: [{ rotate: '-10deg' }],
         zIndex: 1,
         // elevation: 5,
-        overflow: 'hidden',
+        // overflow: 'hidden',
       },
       
       innerCard: {
@@ -420,22 +433,23 @@ const styles = StyleSheet.create({
       },
       funtionButtonContainer: {
         position: 'absolute',
-        right: 10,                 
+        left: -30,                 
         top: '50%',              
         transform: [{ translateY: -20 }],
         zIndex: 50,
-        backgroundColor: '#257b3e',
-        paddingHorizontal: 10,
+        backgroundColor: '#fff',
+        paddingHorizontal: 0,
         paddingVertical: 10,
-        borderRadius: 20,
-        gap: 20
+        borderTopRightRadius: 40,
+        borderBottomRightRadius: 40,
+        gap: 8
       },
       logoutButton: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'red',
+        // backgroundColor: 'red',
         paddingHorizontal: 15,
         paddingVertical: 6,
         borderRadius: 8
@@ -443,7 +457,7 @@ const styles = StyleSheet.create({
     
       logoutButtonText: {
         color: 'white',
-        fontFamily: 'Poppins-Bold'
+        fontFamily: 'Arial-Bold-1'
       },
     
       editButton: {
@@ -451,15 +465,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#fff',
-        paddingHorizontal: 15,
-        paddingVertical: 6,
+        // backgroundColor: '#fff',
+        // paddingHorizontal: 15,
+        // paddingVertical: 6,
         borderRadius: 8
       },
     
       editButtonText: {
         color: '#257b3e',
-        fontFamily: 'Poppins-Bold'
+        fontFamily: 'Arial-Bold-1'
       },
     
       modalBackdrop: {
@@ -484,7 +498,7 @@ const styles = StyleSheet.create({
       
       modalTitle: { 
         fontSize: 20, 
-        fontFamily: 'Poppins-Bold', 
+        fontFamily: 'Arial-Bold-1', 
         marginBottom: 16, 
         color: '#257b3e',
         textAlign: 'center'
@@ -500,7 +514,7 @@ const styles = StyleSheet.create({
         borderRadius: 20
       },
       modalLabel: {
-        fontFamily: 'Poppins-SemiBold',
+        fontFamily: 'Arial-Bold-1',
       },
       modalActions: {
         flexDirection: 'row',
@@ -528,12 +542,12 @@ const styles = StyleSheet.create({
         fontWeight: '600', 
         fontSize: 16, 
         color: 'white', 
-        fontFamily: 'Poppins-SemiBold'
+        fontFamily: 'Arial-Bold-1'
       },
       
       cancelText: { 
         color: '#333', 
-        fontFamily: 'Poppins-SemiBold' 
+        fontFamily: 'Arial-Bold-1' 
       },  
       
       buttonIcon: {
@@ -549,4 +563,8 @@ const styles = StyleSheet.create({
       cancelText: {
         color: '#333',
       },
+      editIcon:{
+        width: 30,
+        height: 30
+      }
 });

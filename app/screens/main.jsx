@@ -1,8 +1,9 @@
 import { 
   View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, 
-  BackHandler, NativeModules, Alert, Dimensions, ScrollView, FlatList
+  BackHandler, NativeModules, Alert, Dimensions, ScrollView, FlatList,
+  Animated, Pressable
 } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -32,16 +33,16 @@ import Overlay from './overlay';
 import Accounts from './accounts';
 
 const tabs = [
-  { label: 'Campus Map', key: 'map', icon: 'location-outline' },
-  { label: 'History', key: 'history', icon: 'book-outline' },
-  { label: 'SLSU VMGO', key: 'about', icon: 'information-circle-outline' },
-  { label: 'Organizational Chart', key: 'orgchart', icon: 'people-outline' },
-  { label: 'Program Offered', key: 'program', icon: 'school-outline' },
-  { label: 'SLSU Calendar', key: 'calendar', icon: 'calendar-outline' },
-  { label: 'Student Organizations', key: 'studorg', icon: 'people-circle-outline' },
-  { label: 'University Events', key: 'events', icon: 'volume-high-outline' },
-  { label: 'Enrollment Summary', key: 'enroll', icon: 'analytics-outline' },
-  { label: 'Prescribed Attire', key: 'attire', icon: 'shirt-outline' }
+  { label: 'Campus Map', key: 'map', icon: 'pin' },
+  { label: 'History if SLSU Catanauan', key: 'history', icon: 'history' },
+  { label: 'SLSU VMGO', key: 'about', icon: 'vmgo' },
+  { label: 'Organizational Chart', key: 'orgchart', icon: 'org' },
+  { label: 'Program Offered', key: 'program', icon: 'program' },
+  { label: 'SLSU Calendar', key: 'calendar', icon: 'calendar' },
+  { label: 'Student Organizations', key: 'studorg', icon: 'org' },
+  { label: 'University Events & Announcements', key: 'events', icon: 'events' },
+  { label: 'Enrollment Summary', key: 'enroll', icon: 'summary' },
+  { label: 'Prescribed Attire', key: 'attire', icon: 'attire' }
 ];
 
 const adminTabs = [
@@ -52,10 +53,55 @@ const superAdminTabs = [
   { label: 'Admin Controls', key: 'superadmin', icon: 'settings-outline' },
 ];
 
+const navHeight = 120;
+
 const Main = () => {
   const { user } = useAuthStore();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const translateY = useRef(new Animated.Value(navHeight)).current;
+  const [lastTap, setLastTap] = useState(0);
+  const hideTimeout = useRef(null);
+  
+  const handleDoubleTap = () => {
+    const now = Date.now();
+    const DOUBLE_PRESS_DELAY = 300;
+
+    if (lastTap && (now - lastTap) < DOUBLE_PRESS_DELAY) {
+      // Double tap detected
+      toggleNav();
+    } else {
+      setLastTap(now);
+    }
+  };
+
+  const scheduleAutoHide = () => {
+    if (hideTimeout.current) clearTimeout(hideTimeout.current);
+  
+    hideTimeout.current = setTimeout(() => {
+      Animated.spring(translateY, {
+        toValue: navHeight,
+        useNativeDriver: true,
+      }).start();
+    }, 5000); // 5 seconds
+  };
+
+  const toggleNav = () => {
+    Animated.spring(translateY, {
+      toValue: 0,
+      useNativeDriver: true,
+    }).start();
+
+    scheduleAutoHide();
+  };
+
+  useEffect(() => {
+    // Cleanup timeout when component unmounts
+    return () => {
+      if (hideTimeout.current) clearTimeout(hideTimeout.current);
+    };
+  }, []);
 
   useEffect(() => {
     const backAction = () => {
@@ -95,23 +141,47 @@ const Main = () => {
       <TouchableOpacity
         activeOpacity={0.8}
         style={styles.navButtonWrapper}
-        onPress={() => setActiveIndex(index)}
+        onPress={() => {
+          setActiveIndex(index);
+          scheduleAutoHide();
+        }}
       >
         <LinearGradient
-          colors={isActive ? ['#8DC63F', '#07a751'] : ['#07a751', '#8DC63F']}
+          colors={isActive ? ['#465037', '#465037'] : ['#465037', '#465037']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={[styles.navButton, isActive && styles.activeButton]}
+          style={[styles.navButton, isActive ? styles.activeButton : styles.inactiveButton]}
         >
-          <Ionicons 
-            name={item.icon} 
-            size={46}           // bigger icon
-            color={isActive ? '#fff' : '#000'} 
-          />
+          {['overlay', 'superadmin'].includes(item.key) ? (
+            <Ionicons 
+              name={item.icon} 
+              size={46}           // bigger icon
+              color='#fff'
+            />
+          ) : (
+            <Image 
+              source={images[item.icon]}
+              style={[
+                styles.imgIcon,
+                item.key === 'program' && { width: 65, height: 65 },
+                item.key === 'history' && { width: 65, height: 65 },
+              ]}
+              resizeMode='contain'
+            />
+          )}
+        
           <Text 
             style={[
               styles.navButtonText, 
-              isActive && styles.activeButtonText
+              isActive && styles.activeButtonText,
+              item.key === 'orgchart' && styles.orgChartText,
+              item.key === 'program' && { fontSize: 12, marginTop: -10},
+              item.key === 'history' && { fontSize: 12, marginTop: -10},
+              item.key === 'calendar' && { fontSize: 12},
+              item.key === 'studorg' && { fontSize: 12},
+              item.key === 'events' && { fontSize: 10},
+              item.key === 'enroll' && { fontSize: 12},
+              item.key === 'attire' && { fontSize: 13, marginTop: -10},
             ]}
             numberOfLines={2}
           >
@@ -184,39 +254,52 @@ const Main = () => {
         </View>
 
         {/* Content */}
-        <View style={styles.scrollArea}>
-          {renderContent()}
-        </View>
+        <Pressable style={{ flex: 1 }} onPress={handleDoubleTap}>
+          <View style={styles.scrollArea}>
+            {renderContent()}
+          </View>
+        </Pressable>
 
         {/* Bottom horizontal nav buttons */}
-        <View style={styles.bottomBar}>
+        <Animated.View
+          style={[
+            styles.bottomBar,
+            {
+              transform: [{ translateY }], 
+            },
+          ]}
+        >
           <View style={styles.navWrapper}>
-            {/* Left Chevron (no function) */}
+            
             <View style={[styles.chevron, { left: 0 }]}>
               <Ionicons name="chevron-back" size={40} color="#fff" />
             </View>
 
-            <FlatList
-              data={
-                user?.role === 'super-admin'
-                  ? [...tabs, ...adminTabs, ...superAdminTabs]
-                  : user?.role === 'admin'
-                  ? [...tabs, ...adminTabs]
-                  : tabs
-              }
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderButton}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.navList}
-            />
-
-            {/* Right Chevron (no function) */}
+            <View
+              onTouchStart={scheduleAutoHide}
+              onTouchMove={scheduleAutoHide}
+            >
+              <FlatList
+                data={
+                  user?.role === 'super-admin'
+                    ? [...tabs, ...adminTabs, ...superAdminTabs]
+                    : user?.role === 'admin'
+                    ? [...tabs, ...adminTabs]
+                    : tabs
+                }
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={renderButton}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.navList}
+              />
+            </View>
+            
             <View style={[styles.chevron, { right: 0 }]}>
               <Ionicons name="chevron-forward" size={40} color="#fff" />
             </View>
           </View>
-        </View>
+        </Animated.View>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -235,10 +318,12 @@ const styles = StyleSheet.create({
     // backgroundColor: 'rgba(0,0,0,0.3)',
   },
   headerContainer: {
+    position: 'absolute',
+    top: 30,
     flexDirection: 'row',
     alignItems: 'center',
     // justifyContent: 'space-between',
-    gap: 40,
+    gap: 30,
     paddingHorizontal: width * 0.04,
     // paddingVertical: height * 0.02,
     // backgroundColor: 'green',
@@ -248,12 +333,9 @@ const styles = StyleSheet.create({
     height: 100
   },
   headerText: {
-    fontFamily: 'BaraBara',
-    fontSize: width * 0.04,
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 50,
     color: '#284615',
-    textShadowColor: '#3b6620',   
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 16,
   },
   scrollArea: {
     flex: 1,
@@ -270,7 +352,8 @@ const styles = StyleSheet.create({
 
   bottomBar: {
     paddingVertical: 12,
-    // backgroundColor: 'rgba(255,255,255,0.2)', // optional
+    position: 'absolute',
+    bottom: 0
   },
   navList: {
     paddingHorizontal: 10,
@@ -279,7 +362,7 @@ const styles = StyleSheet.create({
   navButtonWrapper: {
     borderRadius: 16,
     overflow: 'hidden',
-    marginHorizontal: 6,
+    marginHorizontal: 2,
   },
   navWrapper: {
     position: 'relative',
@@ -300,8 +383,8 @@ const styles = StyleSheet.create({
   
   navButton: {
     width: 120,         // bigger square
-    height: 120,
-    borderRadius: 16,
+    height: 95,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 8,
@@ -309,21 +392,35 @@ const styles = StyleSheet.create({
   },
   
   navButtonText: {
-    color: '#000',
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: 13,
+    color: '#fff',
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 16,
     textAlign: 'center',
   },
   
   activeButton: {
-    borderWidth: 2,
-    borderRadius: 16,
-    borderColor: '#fff',
+    // borderWidth: 2,
+    borderRadius: 30,
+    // borderColor: '#fff',
   },
-  
+
+  inactiveButton: {
+    opacity: 0.5,
+  },
+
   activeButtonText: {
     color: '#fff',
   },
   
-  
+  // NEW STYLES
+  orgChartText:{
+    color: '#fff',
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  imgIcon:{
+    width: 50,
+    height: 50
+  }
 });

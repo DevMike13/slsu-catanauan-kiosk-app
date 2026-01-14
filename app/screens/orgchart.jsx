@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, ImageBackground, ScrollView, Dimensions, TextInput, Button, Modal, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -12,17 +12,20 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { initOrgchartDB, getOrgchartData, updateOrgchartData } from '../../database/orgchart';
 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ResumableZoom } from 'react-native-zoom-toolkit';
 
 const { width, height } = Dimensions.get('window');
 
 const Orgchart = () => {
   const router = useRouter();
-
+  
   const { user, logout } = useAuthStore();
 
   const [orgImage, setOrgImage] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const [previewVisible, setPreviewVisible] = useState(false);
+  
   useEffect(() => {
     const fetchData = async () => {
       await initOrgchartDB();
@@ -67,6 +70,7 @@ const Orgchart = () => {
   };
 
   return (
+    
     <ImageBackground
         // source={images.background}
         style={styles.background}
@@ -78,39 +82,80 @@ const Orgchart = () => {
             style={styles.logoutButton}
             onPress={handleLogout}
           >
-            <Ionicons name="log-out" size={32} color="#fff" style={styles.buttonIcon} />
-            <Text style={styles.logoutButtonText}>Logout</Text>
+            <Image 
+              source={images.back}
+              style={styles.editIcon}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.editButton}
             onPress={pickAndSaveImage}
           >
-            <Ionicons name="create" size={32} color="#333" style={styles.buttonIcon} />
-            <Text style={styles.editButtonText}>Edit</Text>
+            <Image 
+              source={images.edit}
+              style={styles.editIcon}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
         </View>
       )}
 
       <SafeAreaView style={styles.container}>
           <ScrollView 
-            style={styles.scrollArea} 
-            contentContainerStyle={styles.scrollContent}
+            // style={styles.scrollArea} 
+            // contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
             bounces={false}
           >
             <View style={styles.imageWrapper}>
               {orgImage ? (
-                <Image 
-                  source={{ uri: orgImage }}
-                  style={styles.image}
-                  resizeMode="contain"
-                />
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => setPreviewVisible(true)}
+                  style={{ width: 500, height: 500, marginHorizontal: 'auto' }}
+                >
+                  <Image
+                    source={{ uri: orgImage }}
+                    style={styles.image}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
               ) : (
                 <Text style={{ color: '#999' }}>No org chart uploaded yet.</Text>
               )}
             </View>
           </ScrollView>
       </SafeAreaView>
+      <Modal visible={previewVisible} transparent animationType="fade">
+        <View style={{ flex: 1, backgroundColor: '#000000dd' }}>
+          {/* Close button */}
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setPreviewVisible(false)}
+          >
+            <Ionicons name="close" size={32} color="#fff" />
+          </TouchableOpacity>
+          <GestureHandlerRootView style={{flex:1}}>
+          {orgImage && (
+            <ResumableZoom
+              style={{
+                width: width,   // explicit width in pixels
+                height: height, // explicit height in pixels
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              maxScale={4}
+            >
+              <Image
+                source={{ uri: orgImage }}
+                style={{ width: width, height: height, resizeMode: 'contain' }}
+              />
+            </ResumableZoom>
+          )}
+          </GestureHandlerRootView>
+        </View>
+      </Modal>
     </ImageBackground>
   )
 }
@@ -160,16 +205,24 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       paddingHorizontal: 50,
     },
-    imageWrapper: {
-      marginTop: -50,
-      width: width - 100, // full screen width
-      paddingHorizontal: 50,
-      aspectRatio: 1080 / 1623,
-    },
+    // imageWrapper: {
+    //   marginTop: -50,
+    //   width: width - 100, // full screen width
+    //   paddingHorizontal: 50,
+    //   aspectRatio: 1080 / 1623,
+    // },
+    // image: {
+    //   width: '100%',
+    //   height: '100%',
+    //   resizeMode: 'contain',
+    // },
     image: {
-      width: '100%',
-      height: '100%',
+      width: 500,
+      height: 500,
       resizeMode: 'contain',
+      marginHorizontal: 'auto',
+      marginTop: 120,
+      // backgroundColor: 'yellow'
     },
     navButtonContainer:{
         position: 'absolute',
@@ -183,22 +236,23 @@ const styles = StyleSheet.create({
 
     funtionButtonContainer: {
       position: 'absolute',
-      left: 10,                 
+      left: -30,                 
       top: '50%',              
       transform: [{ translateY: -20 }],
       zIndex: 50,
-      backgroundColor: '#257b3e',
-      paddingHorizontal: 10,
+      backgroundColor: '#fff',
+      paddingHorizontal: 0,
       paddingVertical: 10,
-      borderRadius: 20,
-      gap: 20
+      borderTopRightRadius: 40,
+      borderBottomRightRadius: 40,
+      gap: 8
     },
     logoutButton: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'red',
+      // backgroundColor: 'red',
       paddingHorizontal: 15,
       paddingVertical: 6,
       borderRadius: 8
@@ -214,9 +268,9 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#fff',
-      paddingHorizontal: 15,
-      paddingVertical: 6,
+      // backgroundColor: '#fff',
+      // paddingHorizontal: 15,
+      // paddingVertical: 6,
       borderRadius: 8
     },
   
@@ -227,4 +281,16 @@ const styles = StyleSheet.create({
     buttonIcon: { 
       marginRight: 6 
     },
+    editIcon:{
+      width: 30,
+      height: 30
+    },
+
+
+    // PREVIEW MODAL
+    previewContainer: { flex: 1, backgroundColor: '#0000002a' },
+  closeButton: { position: 'absolute', top: 50, right: 20, zIndex: 10 },
+  zoomContainer: { flex: 1, width: '100%', height: '100%' },
+  previewImage: { width: '100%', height: '100%' },
+    
 });

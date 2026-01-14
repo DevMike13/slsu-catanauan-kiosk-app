@@ -146,7 +146,7 @@ const Register = () => {
               keyboardShouldPersistTaps="handled"
           >
             <View style={styles.userIconWrapper}>
-              <Ionicons name="person-circle-outline" size={80} color="#a7a6a5" />
+              <Ionicons name="person" size={70} color="#686868" />
               <Text style={styles.titleText}>Sign Up</Text>
             </View>
 
@@ -334,11 +334,12 @@ const styles = StyleSheet.create({
 
   scrollArea: {
       flex: 1,
-      marginTop: -20
+      marginTop: -10
   },
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: width * 0.2,
+    paddingTop: 5,
     paddingBottom: 20,
     gap: 10,
     // backgroundColor: 'green',

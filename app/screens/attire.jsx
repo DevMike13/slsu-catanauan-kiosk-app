@@ -107,10 +107,10 @@ const Attire = () => {
                       <TouchableOpacity
                         onPress={() => setActiveTab(item)}
                         activeOpacity={0.8}
-                        style={{ marginBottom: 10, borderRadius: 8, overflow: 'hidden' }}
+                        style={[{ marginBottom: 30, backgroundColor: "#fff" }, activeTab === item ? styles.activeTabButton : styles.inactiveTabButton]}
                       >
                         <LinearGradient
-                          colors={['transparent', 'transparent']}
+                          colors={['#fff', '#fff']}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 0 }}
                           style={styles.tabButton}
@@ -157,20 +157,59 @@ const styles = StyleSheet.create({
 
   tabContainer: { width: width * 0.3 },
   flatlistContainer: { flexGrow: 1, justifyContent: 'center' },
-  tabButton: { paddingVertical: 10, borderRadius: 30, alignItems: 'center' },
-  tabText: { fontFamily: 'Poppins-Bold', fontSize: 14, textAlign: 'center' },
-  activeTabText: { color: '#ffffff' },
-  inactiveTabText: { color: '#b8b8b8' },
+  tabButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    // borderRadius: 50,
+    alignItems: 'center',
+},
+activeTabButton: {
+  backgroundColor: '#fff'
+},
+inactiveTabButton: {
+    // backgroundColor: '#ffffffc3',
+    opacity: 0.5
+},
+tabText: {
+  fontFamily: 'Arial-Bold-1',
+  fontSize: 18,
+  textAlign: 'center'
+},
+activeTabText: {
+    color: '#215024'
+},
+inactiveTabText: {
+    color: '#215024',
+},
 
   contentWrapper: { flex: 1, paddingHorizontal: 10, marginHorizontal: 20 },
   rowContainer: { flexDirection: 'row', justifyContent: 'space-around', gap: 20, width: '100%' },
   imageWrapper: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   contentImage: { width: '100%', height: 400 },
   editButton: { marginTop: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', padding: 6, borderRadius: 8 },
-  editButtonText: { color: '#257b3e', fontFamily: 'Poppins-Bold', marginLeft: 6 },
+  editButtonText: { color: '#257b3e', fontFamily: 'Arial-Bold-1', marginLeft: 6 },
 
   cardContainer: { position: 'relative', alignItems: 'center', justifyContent: 'center', marginTop: 55 },
-  backCard: { position: 'absolute', width: width * 0.3, height: 330, backgroundColor: '#257b3e', borderRadius: 16, zIndex: 0 },
-  frontCard: { width: width * 0.3, height: 330, backgroundColor: 'transparent', borderRadius: 16, paddingHorizontal: 30, transform: [{ rotate: '-10deg' }], zIndex: 1, overflow: 'hidden' },
+  backCard: {
+    position: 'absolute',
+    width: width * 0.3,
+    height: 500,
+    // backgroundColor: '#257b3e',
+    borderRadius: 16,
+    zIndex: 0
+  },
+
+  frontCard: {
+    width: width * 0.3,
+    height: 500,
+    backgroundColor: 'transparent',
+    borderRadius: 16,
+    paddingHorizontal: 30,
+    // paddingVertical: 60,
+    transform: [{ rotate: '-10deg' }],
+    zIndex: 1,
+    // elevation: 5,
+    // overflow: 'hidden',
+  },
   innerCard: { flex: 1, transform: [{ rotate: '10deg' }], justifyContent: 'center', alignItems: 'center' },
 });
