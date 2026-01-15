@@ -56,7 +56,7 @@ const superAdminTabs = [
 const navHeight = 120;
 
 const Main = () => {
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -133,12 +133,16 @@ const Main = () => {
     return () => backHandler.remove();
   }, []);  
 
+  const handleLogout = () => {
+    logout();         
+    router.replace("/");
+  };
 
   const renderButton = ({ item, index }) => {
     const isActive = activeIndex === index;
   
     return (
-      <TouchableOpacity
+      <Pressable
         activeOpacity={0.8}
         style={styles.navButtonWrapper}
         onPress={() => {
@@ -155,15 +159,16 @@ const Main = () => {
           {['overlay', 'superadmin'].includes(item.key) ? (
             <Ionicons 
               name={item.icon} 
-              size={46}           // bigger icon
+              size={40}           // bigger icon
               color='#fff'
+              style={{ marginBottom: -10}}
             />
           ) : (
             <Image 
               source={images[item.icon]}
               style={[
                 styles.imgIcon,
-                item.key === 'program' && { width: 65, height: 65 },
+                item.key === 'program' && { width: 55, height: 55 },
                 item.key === 'history' && { width: 65, height: 65 },
               ]}
               resizeMode='contain'
@@ -179,7 +184,7 @@ const Main = () => {
               item.key === 'history' && { fontSize: 12, marginTop: -10},
               item.key === 'calendar' && { fontSize: 12},
               item.key === 'studorg' && { fontSize: 12},
-              item.key === 'events' && { fontSize: 10},
+              item.key === 'events' && { fontSize: 9},
               item.key === 'enroll' && { fontSize: 12},
               item.key === 'attire' && { fontSize: 13, marginTop: -10},
             ]}
@@ -188,7 +193,7 @@ const Main = () => {
             {item.label}
           </Text>
         </LinearGradient>
-      </TouchableOpacity>
+      </Pressable>
     );
   };
   
@@ -250,7 +255,20 @@ const Main = () => {
             style={styles.imageLogo}
             resizeMode='contain'
           />
-          <Text style={styles.headerText}>SLSU   CATANAUAN</Text>
+          <Text style={styles.headerText}>SLSU CATANAUAN</Text>
+          
+          {(user?.role != 'admin' || user?.role != 'super-admin') && (
+            <Pressable 
+              style={{ marginLeft: 'auto', width: 40, height: 40, zIndex: 99 }}
+              onPress={handleLogout}
+            >
+              <Image 
+                source={images.backIcon}
+                style={{ width: 40, height: 40 }}
+                resizeMode='contain'
+              />
+            </Pressable>
+          )}
         </View>
 
         {/* Content */}
@@ -259,6 +277,17 @@ const Main = () => {
             {renderContent()}
           </View>
         </Pressable>
+
+        {/* <Pressable
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              zIndex: 20,
+              backgroundColor: 'transparent',
+            },
+          ]}
+          onPress={handleDoubleTap}
+        /> */}
 
         {/* Bottom horizontal nav buttons */}
         <Animated.View
@@ -318,23 +347,23 @@ const styles = StyleSheet.create({
     // backgroundColor: 'rgba(0,0,0,0.3)',
   },
   headerContainer: {
+    width: '100%',
     position: 'absolute',
-    top: 30,
+    top: 20,
     flexDirection: 'row',
     alignItems: 'center',
     // justifyContent: 'space-between',
-    gap: 30,
+    gap: 20,
     paddingHorizontal: width * 0.04,
     // paddingVertical: height * 0.02,
-    // backgroundColor: 'green',
   },
   imageLogo: {
-    width: 100,
-    height: 100
+    width: 80,
+    height: 80
   },
   headerText: {
     fontFamily: 'Arial-Bold-1',
-    fontSize: 50,
+    fontSize: 40,
     color: '#284615',
   },
   scrollArea: {
@@ -382,8 +411,8 @@ const styles = StyleSheet.create({
   },
   
   navButton: {
-    width: 120,         // bigger square
-    height: 95,
+    width: 110,         // bigger square
+    height: 90,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
@@ -394,7 +423,7 @@ const styles = StyleSheet.create({
   navButtonText: {
     color: '#fff',
     fontFamily: 'Arial-Bold-1',
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
   },
   
@@ -416,11 +445,11 @@ const styles = StyleSheet.create({
   orgChartText:{
     color: '#fff',
     fontFamily: 'Arial-Bold-1',
-    fontSize: 14,
+    fontSize: 12,
     textAlign: 'center',
   },
   imgIcon:{
-    width: 50,
-    height: 50
+    width: 40,
+    height: 40
   }
 });

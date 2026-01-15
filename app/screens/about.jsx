@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     backCard: {
       position: 'absolute',
       width: width * 0.5,
-      height: 500,
+      height: 400,
       backgroundColor: '#257b3d7c',
       borderRadius: 16,
       zIndex: 0
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   
     frontCard: {
       width: width * 0.7,
-      height: 500,
+      height: 400,
       backgroundColor: 'transparent',
       borderRadius: 16,
       paddingHorizontal: 30,

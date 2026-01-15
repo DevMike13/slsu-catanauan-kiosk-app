@@ -12,7 +12,10 @@ import { deleteObject, ref, uploadBytes, getDownloadURL } from 'firebase/storage
 import { useAuthStore } from '../../store/useAuthStore';
 import { initCalendarDB, getCalendarImages, addCalendarImage, updateCalendarImage, deleteCalendarImage } from '../../database/calendar';
 
-const { width } = Dimensions.get('window');
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ResumableZoom } from 'react-native-zoom-toolkit';
+
+const { width, height } = Dimensions.get('window');
 import { images } from '../../constants';
 
 const Calendar = () => {
@@ -22,6 +25,7 @@ const Calendar = () => {
 
   const [imagesList, setImagesList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
   
   useEffect(() => {
     const initDB = async () => {
@@ -134,7 +138,8 @@ const Calendar = () => {
                   borderStyle: 'dashed',
                   padding: 10,
                   borderRadius: 10,
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  marginTop: 250
                 }}
               >
                 No calendar images uploaded yet.
@@ -144,7 +149,14 @@ const Calendar = () => {
 
             {imagesList.map((img, index) => (
               <View key={index} style={styles.imageRow}>
-                <Image source={{ uri: img.uri }} style={styles.image} resizeMode="contain" />
+                {/* <Image source={{ uri: img.uri }} style={styles.image} resizeMode="contain" /> */}
+                <TouchableOpacity onPress={() => setPreviewImage(img.uri)} activeOpacity={0.9} >
+                  <Image
+                    source={{ uri: img.uri }}
+                    style={styles.image}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
                 {(user?.role === 'admin' || user?.role === 'super-admin') && (
                   <View style={styles.imageButtons}>
                     <TouchableOpacity style={styles.editButtonOnImage} onPress={() => pickImage(index)}>
@@ -159,6 +171,42 @@ const Calendar = () => {
             ))}
           </ScrollView>
         </SafeAreaView>
+        <Modal visible={!!previewImage} transparent animationType="fade">
+          <View style={{ flex: 1, backgroundColor: '#000000dd' }}>
+            
+            {/* Close button */}
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setPreviewImage(null)}
+            >
+              <Ionicons name="close" size={32} color="#fff" />
+            </TouchableOpacity>
+
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              {previewImage && (
+                <ResumableZoom
+                  style={{
+                    width: width,
+                    height: height,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  maxScale={4}
+                >
+                  <Image
+                    source={{ uri: previewImage }}
+                    style={{
+                      width: width,
+                      height: height,
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </ResumableZoom>
+              )}
+            </GestureHandlerRootView>
+          </View>
+        </Modal>
+
     </ImageBackground>
   )
 }
@@ -200,26 +248,31 @@ const styles = StyleSheet.create({
       flex: 1,
     },
     scrollContent: {
+      flexDirection: 'row',
       alignItems: 'center',
       paddingVertical: 20,
       gap: 30,
     },
 
     imageRow: {
-      width: width - 100,
       flexDirection: 'row',
       alignItems: 'center',
       marginBottom: 20,
-      position: 'relative'
+      position: 'relative',
+      marginTop: 70
     },
+    // image: {
+    //   width: width - 120, // leave space for buttons
+    //   height: (width - 120) * 0.7,
+    //   borderRadius: 16,
+    // },
     image: {
-      width: width - 120, // leave space for buttons
-      height: (width - 120) * 0.7,
-      borderRadius: 16,
+      width: 410, // leave space for buttons
+      height: 400
     },
     imageButtons: {
       position: 'absolute',
-      right: 20,
+      right: 5,
       flexDirection: 'column',
       gap: 10,
     },
@@ -302,5 +355,8 @@ const styles = StyleSheet.create({
     editIcon:{
       width: 30,
       height: 30
-    }
+    },
+    
+    closeButton: { position: 'absolute', top: 50, right: 20, zIndex: 10 },
+    
 });

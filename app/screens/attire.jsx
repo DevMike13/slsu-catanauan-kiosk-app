@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView, FlatList, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView, FlatList, Dimensions, Modal } from 'react-native';
 import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,7 +14,10 @@ import { initAttireDB, fetchAttireByTab, upsertAttireImage, saveImageLocally } f
 
 import { images } from '../../constants';
 
-const { width } = Dimensions.get('window');
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ResumableZoom } from 'react-native-zoom-toolkit';
+
+const { width, height } = Dimensions.get('window');
 
 const tabList = ['School Uniform', 'PE Uniform', 'Washday'];
 
@@ -23,6 +26,8 @@ const Attire = () => {
   const { user } = useAuthStore();
   const [activeTab, setActiveTab] = useState(tabList[0]);
   const [attireImages, setAttireImages] = useState({}); // { "School Uniform": { boyUrl, girlUrl } }
+
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     const init = async () => {
@@ -68,7 +73,9 @@ const Attire = () => {
         {['boy', 'girl'].map(gender => (
           <View key={gender} style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             {current[gender] ? (
-              <Image source={{ uri: current[gender] }} style={{ width: '100%', height: 400 }} resizeMode="contain" />
+              <TouchableOpacity onPress={() => setPreviewImage(current[gender])} activeOpacity={0.9} style={{ width: '100%', height: 400, marginTop: 60}}>
+                <Image source={{ uri: current[gender] }} style={{ width: '100%', height: 400 }} resizeMode="contain" />
+              </TouchableOpacity>
             ) : (
               <Text style={{
                 color: '#fff', fontFamily: 'Poppins-SemiBold', fontStyle: 'italic', fontWeight: '600',
@@ -78,7 +85,7 @@ const Attire = () => {
               </Text>
             )}
             {(user?.role === 'admin' || user?.role === 'super-admin') && (
-              <TouchableOpacity style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', padding: 6, borderRadius: 8 }}
+              <TouchableOpacity style={{ marginTop: 0, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', padding: 6, borderRadius: 8 }}
                                 onPress={() => pickAndSaveImage(activeTab, gender)}>
                 <Ionicons name="create" size={20} color="#257b3e" />
                 <Text style={{ color: '#257b3e', fontFamily: 'Poppins-Bold', marginLeft: 6 }}>Edit</Text>
@@ -144,6 +151,41 @@ const Attire = () => {
           </ScrollView>
         </View>
       </SafeAreaView>
+      <Modal visible={!!previewImage} transparent animationType="fade">
+          <View style={{ flex: 1, backgroundColor: '#000000dd' }}>
+            
+            {/* Close button */}
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setPreviewImage(null)}
+            >
+              <Ionicons name="close" size={32} color="#fff" />
+            </TouchableOpacity>
+
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              {previewImage && (
+                <ResumableZoom
+                  style={{
+                    width: width,
+                    height: height,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  maxScale={4}
+                >
+                  <Image
+                    source={{ uri: previewImage }}
+                    style={{
+                      width: width,
+                      height: height,
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </ResumableZoom>
+              )}
+            </GestureHandlerRootView>
+          </View>
+      </Modal>
     </ImageBackground>
   );
 };
@@ -212,4 +254,5 @@ inactiveTabText: {
     // overflow: 'hidden',
   },
   innerCard: { flex: 1, transform: [{ rotate: '10deg' }], justifyContent: 'center', alignItems: 'center' },
+  closeButton: { position: 'absolute', top: 50, right: 20, zIndex: 10 },
 });

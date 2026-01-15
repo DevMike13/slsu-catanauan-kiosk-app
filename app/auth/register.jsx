@@ -146,7 +146,7 @@ const Register = () => {
               keyboardShouldPersistTaps="handled"
           >
             <View style={styles.userIconWrapper}>
-              <Ionicons name="person" size={70} color="#686868" />
+              <Ionicons name="person" size={45} color="#686868" />
               <Text style={styles.titleText}>Sign Up</Text>
             </View>
 
@@ -205,7 +205,7 @@ const Register = () => {
                   onChangeText={setPassword}
                   style={styles.inputMain}
                 />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 0, top: 10}}>
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 170, top: 6}}>
                   <Ionicons
                     name={!showPassword ? 'eye-off-outline' : "eye-outline"}
                     size={28}
@@ -227,7 +227,7 @@ const Register = () => {
                   onChangeText={setConfirmPassword}
                   style={styles.inputMain}
                 />
-                <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={{ position: 'absolute', right: 105, top: 10}}>
+                <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={{ position: 'absolute', right: 240, top: 6}}>
                   <Ionicons
                     name={!showConfirmPassword ? 'eye-off-outline' : "eye-outline"}
                     size={28}
@@ -317,13 +317,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     // justifyContent: 'space-between',
-    gap: 40,
+    gap: 20,
     // paddingHorizontal: width * 0.0,
     // paddingVertical: height * 0.02,
   },
   headerText: {
     fontFamily: 'Arial-Bold-1',
-    fontSize: 45,
+    fontSize: 38,
     color: '#284615',
   },
   imageLogo: {
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: width * 0.2,
+    paddingHorizontal: 250,
     paddingTop: 5,
     paddingBottom: 20,
     gap: 10,
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
 
  
   label: {
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Arial-Bold-1',
     fontSize: 24,
     marginBottom: 8,
     color: '#ffffff',
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
   },
   input : {
     flex : 1,
-    fontFamily: 'Poppins-Regular',
+    fontFamily: 'Arial-Regular',
     fontSize: 16
   },
   inputContainer: {
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     borderColor: '#d0f58d',
   },
   forgetText: {
-    fontFamily: 'Poppins-Light',
+    fontFamily: 'Arial-Regular',
     color: 'blue'
   },
   buttonContainer:{
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     borderRadius: 50,
-    width: '18%',
+    width: '16%',
     alignSelf: 'center',
     position: 'absolute',
     bottom: 10,
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#284615',
     fontFamily: 'Arial-Bold-1',
-    fontSize: 26,
+    fontSize: 20,
   },
 
   registerContainer:{
@@ -435,8 +435,8 @@ const styles = StyleSheet.create({
     // marginBottom: -20
   },
   titleText: {
-    fontFamily: 'Poppins-Bold',
-    fontSize: 26,
+    fontFamily: 'Arial-Bold-1',
+    fontSize: 20,
     color: "#284615"
   },
 
@@ -456,12 +456,12 @@ const styles = StyleSheet.create({
   inputLabel:{
     color: '#284615',
     fontFamily: 'Arial-Bold-1',
-    fontSize: 26
+    fontSize: 18
   },
   inputMain : {
     width: 400,
     fontFamily: 'Arial-Regular',
-    fontSize: 20
+    fontSize: 14
   },
 });
 

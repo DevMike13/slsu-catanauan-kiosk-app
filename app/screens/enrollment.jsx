@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { 
   View, Text, StyleSheet, ImageBackground, ScrollView, 
-  Dimensions, TextInput, Modal, TouchableOpacity, FlatList 
+  Dimensions, TextInput, Modal, TouchableOpacity, FlatList, Pressable
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -29,45 +29,85 @@ const tabList = [
   'Bachelor of Science in Agriculture Major in Crop Science'
 ];
 
-const SemiCircle = ({ value, max = 100, color, label }) => {
-  const radius = 50;
-  const strokeWidth = 20;
-  const center = radius + strokeWidth;
-  const circumference = Math.PI * radius;
+// const SemiCircle = ({ value, max = 100, color, label }) => {
+//   const radius = 50;
+//   const strokeWidth = 20;
+//   const center = radius + strokeWidth;
+//   const circumference = Math.PI * radius;
 
-  const percentage = Math.min(value / max, 1);
-  const arcLength = circumference * percentage;
-  const dashArray = `${arcLength}, ${circumference}`;
+//   const percentage = Math.min(value / max, 1);
+//   const arcLength = circumference * percentage;
+//   const dashArray = `${arcLength}, ${circumference}`;
+
+//   return (
+//     <View style={{ alignItems: "center" }} pointerEvents="none">
+//       <Svg
+//         width={radius * 1 + strokeWidth * 2}
+//         height={radius + strokeWidth * 2}
+//         viewBox={`0 0 ${center * 2} ${center}`}
+//         pointerEvents="none"
+//       >
+//         <Path
+//           d={`M ${strokeWidth} ${center} A ${radius} ${radius} 0 0 1 ${
+//             center * 2 - strokeWidth
+//           } ${center}`}
+//           stroke="#ccc"
+//           strokeWidth={strokeWidth}
+//           fill="transparent"
+//           pointerEvents="none"
+//         />
+//         <Path
+//           d={`M ${strokeWidth} ${center} A ${radius} ${radius} 0 0 1 ${
+//             center * 2 - strokeWidth
+//           } ${center}`}
+//           stroke={color}
+//           strokeWidth={strokeWidth}
+//           fill="transparent"
+//           strokeDasharray={dashArray}
+//           pointerEvents="none"
+//         />
+//       </Svg>
+//       <Text style={{ fontWeight: "bold", color: "white" }}>{value}</Text>
+//       <Text style={{ color: "white" }}>{label}</Text>
+//     </View>
+//   );
+// };
+
+const BarGraph = ({ value, max = 100, color, label }) => {
+  const BAR_WIDTH = 30;
+  const BAR_HEIGHT = 70;
+
+  const height = Math.max((value / max) * BAR_HEIGHT, 4);
 
   return (
-    <View style={{ alignItems: "center", margin: 6 }}>
-      <Svg
-        width={radius * 2 + strokeWidth * 2}
-        height={radius + strokeWidth * 2}
-        viewBox={`0 0 ${center * 2} ${center}`}
+    <View style={{ alignItems: 'center', marginHorizontal: 12 }}>
+      <View
+        style={{
+          width: BAR_WIDTH,
+          height: BAR_HEIGHT,
+          backgroundColor: '#ffffff30',
+          borderRadius: 6,
+          justifyContent: 'flex-end',
+          overflow: 'hidden',
+        }}
       >
-        {/* Background arc */}
-        <Path
-          d={`M ${strokeWidth} ${center} A ${radius} ${radius} 0 0 1 ${
-            center * 2 - strokeWidth
-          } ${center}`}
-          stroke="#ccc"
-          strokeWidth={strokeWidth}
-          fill="transparent"
+        <View
+          style={{
+            width: '100%',
+            height,
+            backgroundColor: color,
+            borderRadius: 6,
+          }}
         />
-        {/* Progress arc */}
-        <Path
-          d={`M ${strokeWidth} ${center} A ${radius} ${radius} 0 0 1 ${
-            center * 2 - strokeWidth
-          } ${center}`}
-          stroke={color}
-          strokeWidth={strokeWidth}
-          fill="transparent"
-          strokeDasharray={dashArray}
-        />
-      </Svg>
-      <Text style={{ fontWeight: "bold", color: "white" }}>{value}</Text>
-      <Text style={{ color: "white" }}>{label}</Text>
+      </View>
+
+      <Text style={{ color: '#fff', marginTop: 6, fontWeight: 'bold' }}>
+        {value}
+      </Text>
+
+      <Text style={{ color: '#fff', fontSize: 12 }}>
+        {label}
+      </Text>
     </View>
   );
 };
@@ -124,14 +164,26 @@ const Enrollment = () => {
       <View style={styles.column} key={item.id}>
         <Text style={styles.heading}>{item.year}</Text>
         <View style={{ flexDirection: "row" }}>
-          <SemiCircle value={item.female} color="#ff6ec7" label="Female" />
-          <SemiCircle value={item.male} color="#4facfe" label="Male" />
+          {/* <SemiCircle value={item.female} color="#ff6ec7" label="Female" style={{ pointerEvents: 'none' }}/>
+          <SemiCircle value={item.male} color="#4facfe" label="Male" style={{ pointerEvents: 'none' }}/> */}
+          <BarGraph
+            value={item.female}
+            max={Math.max(item.female, item.male, 10)}
+            color="#ff6ec7"
+            label="Female"
+          />
+          <BarGraph
+            value={item.male}
+            max={Math.max(item.female, item.male, 10)}
+            color="#4facfe"
+            label="Male"
+          />
         </View>
         {(user?.role === 'admin' || user?.role === 'super-admin') && (
-          <TouchableOpacity style={styles.yearEditButton} onPress={() => openYearEditor(item)}>
+          <Pressable style={styles.yearEditButton} onPress={() => openYearEditor(item)}>
             <Ionicons name="create" size={20} color="#257b3e" />
             <Text style={styles.yearEditText}>Edit</Text>
-          </TouchableOpacity>
+          </Pressable>
         )}
       </View>
     );
@@ -151,7 +203,7 @@ const Enrollment = () => {
                     data={tabList}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
-                      <TouchableOpacity
+                      <Pressable
                         onPress={() => setActiveTab(item)}
                         activeOpacity={0.8}
                         style={[{ marginBottom: 30, backgroundColor: "#fff" }, activeTab === item ? styles.activeTabButton : styles.inactiveTabButton]}
@@ -171,7 +223,7 @@ const Enrollment = () => {
                             {item}
                           </Text>
                         </LinearGradient>
-                      </TouchableOpacity>
+                      </Pressable>
                     )}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.flatlistContainer}
@@ -193,7 +245,7 @@ const Enrollment = () => {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.contentContainer}>
-              <View style={styles.section}>
+              <View style={styles.section1}>
                 {enrollmentData.slice(0,2).map(renderYearBlock)}
               </View>
               <View style={styles.section}>
@@ -233,20 +285,20 @@ const Enrollment = () => {
             </View>
 
             <View style={styles.modalActions}>
-              <TouchableOpacity
+              <Pressable
                 style={[styles.actionButton, styles.cancelButton]}
                 onPress={() => setModalVisible(false)}
               >
                 <Ionicons name="close" size={18} color="#333" style={styles.buttonIcon} />
                 <Text style={[styles.actionButtonText, styles.cancelText]}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={[styles.actionButton, styles.saveButton]}
                 onPress={saveData}
               >
                 <Ionicons name="save" size={18} color="#fff" style={styles.buttonIcon} />
                 <Text style={styles.actionButtonText}>Save</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </View>
@@ -316,7 +368,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontFamily: 'Arial-Bold-1',
-    fontSize: 18,
+    fontSize: 14,
     textAlign: 'center'
   },
   activeTabText: {
@@ -335,7 +387,8 @@ const styles = StyleSheet.create({
       marginVertical: 'auto',
       // paddingHorizontal: 20,
       backgroundColor: '#257b3d59',
-      borderRadius: 20
+      borderRadius: 20,
+      marginTop: 80
   },
   contentInner:{
       flexDirection: 'col',
@@ -343,12 +396,19 @@ const styles = StyleSheet.create({
       alignItems: 'stretch',
       borderWidth: 4,
       borderRadius: 20,
-      minHeight: 400,
+      minHeight: 400
   },
   section:{
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'stretch',
+    // backgroundColor: 'blue'
+  },
+  section1:{
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'stretch',
+    // backgroundColor: 'blue'
   },
   column: {
       width: '45%',
@@ -360,7 +420,7 @@ const styles = StyleSheet.create({
   },
   heading: {
       fontFamily: 'Poppins-Bold',
-      fontSize: 18,
+      fontSize: 14,
       marginBottom: 4,
       color: 'white'
   },
@@ -384,14 +444,14 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: 55,
-      marginLeft: 50,
+      // marginLeft: 50,
       marginRight: 50
     },
   
     backCard: {
       position: 'absolute',
       width: width * 0.3,
-      height: 500,
+      height: 400,
       // backgroundColor: '#257b3e',
       borderRadius: 16,
       zIndex: 0
@@ -399,7 +459,7 @@ const styles = StyleSheet.create({
   
     frontCard: {
       width: width * 0.3,
-      height: 500,
+      height: 400,
       backgroundColor: 'transparent',
       borderRadius: 16,
       paddingHorizontal: 30,
@@ -450,8 +510,9 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: '#fff',
-      paddingHorizontal: 15,
-      paddingVertical: 6,
+      paddingHorizontal: 10,
+      paddingVertical: 0,
+      marginTop: 10,
       borderRadius: 8
     },
   

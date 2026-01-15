@@ -140,8 +140,8 @@ const Orgchart = () => {
           {orgImage && (
             <ResumableZoom
               style={{
-                width: width,   // explicit width in pixels
-                height: height, // explicit height in pixels
+                width: width,
+                height: height,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
@@ -217,11 +217,11 @@ const styles = StyleSheet.create({
     //   resizeMode: 'contain',
     // },
     image: {
-      width: 500,
-      height: 500,
+      width: 430,
+      height: 430,
       resizeMode: 'contain',
       marginHorizontal: 'auto',
-      marginTop: 120,
+      marginTop: 90,
       // backgroundColor: 'yellow'
     },
     navButtonContainer:{

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView, FlatList, Dimensions, Modal, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ScrollView, FlatList, Dimensions, Modal, TextInput, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,7 +14,10 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { initStudorgDB, fetchAllTabs, updateImage, updateQrEmail, deleteImage } from '../../database/studorg';
 import { images } from '../../constants';
 
-const { width } = Dimensions.get('window');
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ResumableZoom } from 'react-native-zoom-toolkit';
+
+const { width, height } = Dimensions.get('window');
 
 const tabList = [
   'Supreme Student Council', 
@@ -38,6 +41,7 @@ const Studorg = () => {
   const [emails, setEmails] = useState({});
   const [tempEmail, setTempEmail] = useState("");
 
+  const [previewImage, setPreviewImage] = useState(null);
 
   // 🔹 Fetch images for all tabs on mount
   useEffect(() => {
@@ -113,11 +117,13 @@ const Studorg = () => {
     return (
       <View style={styles.contentContainer}>
         {orgImages[activeTab] ? (
-          <Image 
-            source={{ uri: orgImages[activeTab] }}
-            style={styles.contentImage}
-            resizeMode="contain"
-          />
+          <Pressable onPress={() => setPreviewImage(orgImages[activeTab])} activeOpacity={0.9} >
+            <Image 
+              source={{ uri: orgImages[activeTab] }}
+              style={styles.contentImage}
+              resizeMode="contain"
+            />
+          </Pressable>
         ) : (
           <Text style={{
             color: '#fff',
@@ -130,7 +136,7 @@ const Studorg = () => {
             padding: 10,
             borderRadius: 10,
             textAlign: 'center',
-            marginTop: 250
+            marginTop: 200
           }}>No image uploaded yet.</Text>
         )}
       </View>
@@ -141,7 +147,7 @@ const Studorg = () => {
     <ImageBackground style={styles.background} resizeMode="cover">
       {(user?.role === 'admin' || user?.role === 'super-admin') && (
         <View style={styles.funtionButtonContainer}>
-            <TouchableOpacity
+            <Pressable
                 style={styles.logoutButton}
                 onPress={handleLogout}
             >
@@ -150,8 +156,8 @@ const Studorg = () => {
                 style={styles.editIcon}
                 resizeMode="contain"
               />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
                 style={styles.editButton}
                 onPress={pickAndUploadImage}
             >
@@ -160,15 +166,15 @@ const Studorg = () => {
                 style={styles.editIcon}
                 resizeMode="contain"
               />
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity
+            <Pressable
                 style={styles.editButton}
                 onPress={openQrEditor}
             >
                 <Ionicons name="qr-code" size={30} color="#333" style={[styles.buttonIcon, { marginTop: 10 }]} />
                 {/* <Text style={styles.editButtonText}>Edit Info</Text> */}
-            </TouchableOpacity>
+            </Pressable>
         </View>
       )}
 
@@ -180,14 +186,14 @@ const Studorg = () => {
             <View style={styles.frontCard}>
               <View style={styles.innerCard}>
                 <View style={styles.tabContainer}>
-                  <FlatList
+                  {/* <FlatList
                     data={tabList}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         onPress={() => setActiveTab(item)}
                         activeOpacity={0.8}
-                        style={[{ marginBottom: 30, overflow: 'hidden', backgroundColor: "#fff" }, activeTab === item ? styles.activeTabButton : styles.inactiveTabButton]}
+                        style={[{ marginBottom: 15, overflow: 'hidden', backgroundColor: "#fff" }, activeTab === item ? styles.activeTabButton : styles.inactiveTabButton]}
                       >
                         <LinearGradient
                           colors={['#fff', '#fff']}
@@ -208,7 +214,48 @@ const Studorg = () => {
                     )}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.flatlistContainer}
+                  /> */}
+                  <FlatList
+                    data={tabList}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => {
+                      const isActive = activeTab === item;
+
+                      return (
+                        <Pressable
+                          onPress={() => setActiveTab(item)}
+                          style={({ pressed }) => [
+                            {
+                              marginBottom: 15,
+                              overflow: 'hidden',
+                              backgroundColor: '#fff',
+                              opacity: pressed ? 0.7 : 1, // visual feedback on press
+                            },
+                            isActive ? styles.activeTabButton : styles.inactiveTabButton,
+                          ]}
+                        >
+                          <LinearGradient
+                            colors={['#fff', '#fff']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={styles.tabButton}
+                          >
+                            <Text
+                              style={[
+                                styles.tabText,
+                                isActive ? styles.activeTabText : styles.inactiveTabText,
+                              ]}
+                            >
+                              {item}
+                            </Text>
+                          </LinearGradient>
+                        </Pressable>
+                      );
+                    }}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.flatlistContainer}
                   />
+
                 </View>
               </View>
             </View>
@@ -217,7 +264,7 @@ const Studorg = () => {
           {/* 🔹 Content */}
           <ScrollView 
             style={styles.contentWrapper} 
-            contentContainerStyle={{ paddingBottom: 40 }}
+            contentContainerStyle={{ paddingBottom: 0 }}
             showsVerticalScrollIndicator={false}
           >
             {renderContent()}
@@ -263,17 +310,53 @@ const Studorg = () => {
               keyboardType="email-address"
             />
             <View style={styles.modalActions}>
-              <TouchableOpacity style={[styles.actionButton, styles.cancelButton]} onPress={() => setModalVisible(false)}>
+              <Pressable style={[styles.actionButton, styles.cancelButton]} onPress={() => setModalVisible(false)}>
                 <Ionicons name="close" size={18} color="#333" />
                 <Text style={[styles.actionButtonText, styles.cancelText]}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionButton, styles.saveButton]} onPress={saveQrLink}>
+              </Pressable>
+              <Pressable style={[styles.actionButton, styles.saveButton]} onPress={saveQrLink}>
                 <Ionicons name="save" size={18} color="#fff" />
                 <Text style={styles.actionButtonText}>Save</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </View>
+      </Modal>
+
+      <Modal visible={!!previewImage} transparent animationType="fade">
+          <View style={{ flex: 1, backgroundColor: '#000000dd' }}>
+            
+            {/* Close button */}
+            <Pressable
+              style={styles.closeButton}
+              onPress={() => setPreviewImage(null)}
+            >
+              <Ionicons name="close" size={32} color="#fff" />
+            </Pressable>
+
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              {previewImage && (
+                <ResumableZoom
+                  style={{
+                    width: width,
+                    height: height,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  maxScale={4}
+                >
+                  <Image
+                    source={{ uri: previewImage }}
+                    style={{
+                      width: width,
+                      height: height,
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </ResumableZoom>
+              )}
+            </GestureHandlerRootView>
+          </View>
       </Modal>
     </ImageBackground>
   );
@@ -288,7 +371,7 @@ const styles = StyleSheet.create({
   tabContainer: { width: width * 0.3 },
   flatlistContainer: { flexGrow: 1, justifyContent: 'center' },
   tabButton: { paddingVertical: 10, alignItems: 'center' },
-  tabText: { fontFamily: 'Arial-Bold-1', fontSize: 16, textAlign: 'center' },
+  tabText: { fontFamily: 'Arial-Bold-1', fontSize: 14, textAlign: 'center' },
   activeTabText: {
     color: '#215024'
   },
@@ -296,7 +379,7 @@ const styles = StyleSheet.create({
       color: '#215024',
   },
   contentWrapper: { flex: 1, paddingHorizontal: 20 },
-  contentContainer: { flex: 1, paddingHorizontal: 20, marginTop: 70 },
+  contentContainer: { flex: 1, paddingHorizontal: 20, marginTop: 40 },
   // contentImage: { 
   //   width: '100%', 
   //   height: undefined,     
@@ -305,21 +388,22 @@ const styles = StyleSheet.create({
   //   marginBottom: 20,
   // },
   contentImage: { 
-    width: 400, 
-    height: 400,          
+    width: 330, 
+    height: 330,          
     resizeMode: 'contain',  
     marginBottom: 0,
-    marginHorizontal: 'auto'
+    marginHorizontal: 'auto',
+    // marginTop: 30
   },
 
   cardContainer: { position: 'relative', alignItems: 'center', justifyContent: 'center', marginTop: 55, marginLeft: 50 },
   backCard: {
-    position: 'absolute', width: width * 0.3, height: 500,
+    position: 'absolute', width: width * 0.3, height: 400,
     // backgroundColor: '#257b3e', 
     borderRadius: 16, zIndex: 0
   },
   frontCard: {
-    width: width * 0.3, height: 500,
+    width: width * 0.3, height: 400,
     backgroundColor: 'transparent', borderRadius: 16, paddingHorizontal: 30,
     transform: [{ rotate: '-10deg' }], zIndex: 1, 
     // overflow: 'hidden',
@@ -489,4 +573,5 @@ const styles = StyleSheet.create({
       // backgroundColor: '#ffffffc3',
       opacity: 0.5
   },
+  closeButton: { position: 'absolute', top: 50, right: 20, zIndex: 10 },
 });

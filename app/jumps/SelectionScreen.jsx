@@ -94,13 +94,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     // justifyContent: 'space-between',
-    gap: 40,
+    gap: 20,
     paddingHorizontal: width * 0.0,
     paddingVertical: height * 0.02,
   },
   headerText: {
     fontFamily: 'Arial-Bold-1',
-    fontSize: 45,
+    fontSize: 38,
     color: '#284615',
   },
   imageLogo: {
@@ -114,13 +114,13 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontFamily: 'Arial-Bold-1',
-    fontSize: 65,
+    fontSize: 60,
     textAlign: 'center',
     color: '#284615',
   },
   welcomeTextBottom: {
     fontFamily: 'Arial-Bold-1',
-    fontSize: 65,
+    fontSize: 60,
     textAlign: 'center',
     color: '#284615',
     marginTop: -10,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     marginTop: height * 0.04,
   },
   button: {
-    paddingVertical: height * 0.015,
+    paddingVertical: height * 0.005,
     paddingHorizontal: width * 0.06,
     borderRadius: 20,
     justifyContent: 'center',

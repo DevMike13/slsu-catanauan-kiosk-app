@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     // },
     map: {
         width: 800,
-        height: 450,     // <---- was '80%' before
+        height: 350,     // <---- was '80%' before
         borderRadius: 15,
         marginTop: 30
     },

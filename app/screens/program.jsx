@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, ScrollView, Dimensions, TextInput, Modal, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, Dimensions, TextInput, Modal, TouchableOpacity, Pressable , FlatList, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -188,14 +188,14 @@ const Program = () => {
                         <View style={styles.frontCard}>
                             <View style={styles.innerCard}>
                                 <View style={styles.tabContainer}>
-                                    <FlatList
+                                    {/* <FlatList
                                     data={tabList}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item }) => (
                                         <TouchableOpacity
                                             onPress={() => setActiveTab(item)}
                                             activeOpacity={0.8}
-                                            style={[{ marginBottom: 30, overflow: 'hidden', backgroundColor: "#fff" }, activeTab === item ? styles.activeTabButton : styles.inactiveTabButton]}
+                                            style={[{ marginBottom: 20, overflow: 'hidden', backgroundColor: "#fff" }, activeTab === item ? styles.activeTabButton : styles.inactiveTabButton]}
                                         >
                                             <LinearGradient
                                                 colors={
@@ -217,18 +217,122 @@ const Program = () => {
                                                 </Text>
                                             </LinearGradient>
                                         </TouchableOpacity>
+                            
                                     )}
-                                    showsVerticalScrollIndicator={false}
-                                    contentContainerStyle={styles.flatlistContainer}
-                                    />
+                                        showsVerticalScrollIndicator={false}
+                                        contentContainerStyle={styles.flatlistContainer}
+                                    />  */}
+                                    {/* {tabList.map((item) => {
+                                        const isActive = activeTab === item;
+
+                                        return (
+                                            <Pressable
+                                            key={item}
+                                            onPress={() => setActiveTab(item)}
+                                            style={({ pressed }) => [
+                                                { marginBottom: 20, overflow: 'hidden', backgroundColor: '#fff', opacity: pressed ? 0.7 : 1 },
+                                                isActive ? styles.activeTabButton : styles.inactiveTabButton
+                                            ]}
+                                            >
+                                            <LinearGradient
+                                                colors={['#fff', '#fff']}
+                                                style={styles.tabButton}
+                                            >
+                                                <Text
+                                                style={[
+                                                    styles.tabText,
+                                                    isActive ? styles.activeTabText : styles.inactiveTabText
+                                                ]}
+                                                >
+                                                {item}
+                                                </Text>
+                                            </LinearGradient>
+                                            </Pressable>
+                                        );
+                                    })} */}
+
+                                    {/* <View style={styles.tabContainer}>
+                                        {tabList.map((item) => {
+                                            const isActive = activeTab === item;
+
+                                            return (
+                                            <TouchableOpacity
+                                                key={item}
+                                                onPress={() => setActiveTab(item)}
+                                                activeOpacity={0.8}
+                                                style={[
+                                                { marginBottom: 20, overflow: 'hidden', backgroundColor: '#fff' },
+                                                isActive ? styles.activeTabButton : styles.inactiveTabButton
+                                                ]}
+                                            >
+                                                <LinearGradient
+                                                colors={['#fff', '#fff']}
+                                                style={styles.tabButton}
+                                                >
+                                                <Text
+                                                    style={[
+                                                    styles.tabText,
+                                                    isActive ? styles.activeTabText : styles.inactiveTabText
+                                                    ]}
+                                                >
+                                                    {item}
+                                                </Text>
+                                                </LinearGradient>
+                                            </TouchableOpacity>
+                                            );
+                                        })}
+                                    </View> */}
+                                    <FlatList
+                                        data={tabList}
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item }) => {
+                                            const isActive = activeTab === item;
+
+                                            return (
+                                            <Pressable
+                                                onPress={() => setActiveTab(item)}
+                                                style={({ pressed }) => [
+                                                { 
+                                                    marginBottom: 20, 
+                                                    overflow: 'hidden', 
+                                                    backgroundColor: '#fff', 
+                                                    opacity: pressed ? 0.7 : 1 
+                                                },
+                                                isActive ? styles.activeTabButton : styles.inactiveTabButton
+                                                ]}
+                                            >
+                                                <LinearGradient
+                                                colors={['#fff', '#fff']}
+                                                start={{ x: 0, y: 0 }}
+                                                end={{ x: 1, y: 0 }}
+                                                style={styles.tabButton}
+                                                >
+                                                <Text
+                                                    style={[
+                                                    styles.tabText,
+                                                    isActive ? styles.activeTabText : styles.inactiveTabText
+                                                    ]}
+                                                >
+                                                    {item}
+                                                </Text>
+                                                </LinearGradient>
+                                            </Pressable>
+                                            );
+                                        }}
+                                        showsVerticalScrollIndicator={false}
+                                        contentContainerStyle={styles.flatlistContainer}
+                                        />
+
                                 </View>
                             </View>
                         </View>
                     </View>
   
-                  <ScrollView style={styles.contentWrapper} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
+                  {/* <ScrollView style={styles.contentWrapper} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingBottom: 0 }} showsVerticalScrollIndicator={false}> */}
+                    <View style={styles.contentWrapper}  >
                       {renderContent()}
-                  </ScrollView>
+                    </View>
+                  {/* </ScrollView> */}
               </View>
           </SafeAreaView>
             {/* Modal Editor */}
@@ -323,7 +427,7 @@ const styles = StyleSheet.create({
     },
     tabButton: {
         paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
         // borderRadius: 50,
         alignItems: 'center',
     },
@@ -336,7 +440,7 @@ const styles = StyleSheet.create({
     },
     tabText: {
         fontFamily: 'Arial-Bold-1',
-        fontSize: 18,
+        fontSize: 16,
         textAlign: 'center'
     },
     activeTabText: {
@@ -399,14 +503,14 @@ const styles = StyleSheet.create({
         position: 'relative',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 55,
+        marginTop: 80,
         marginLeft: 50
       },
     
       backCard: {
         position: 'absolute',
-        width: width * 0.3,
-        height: 500,
+        width: width * 0.4,
+        height: 400,
         // backgroundColor: '#257b3e',
         borderRadius: 16,
         zIndex: 0
@@ -414,8 +518,9 @@ const styles = StyleSheet.create({
     
       frontCard: {
         width: width * 0.3,
-        height: 500,
-        backgroundColor: 'transparent',
+        height: 400,
+        // backgroundColor: 'transparent',
+        // backgroundColor: '#257b3e',
         borderRadius: 16,
         paddingHorizontal: 30,
         // paddingVertical: 60,
