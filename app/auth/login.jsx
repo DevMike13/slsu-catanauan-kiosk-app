@@ -1,4 +1,4 @@
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Alert, ImageBackground, ScrollView } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Alert, ImageBackground, ScrollView, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -143,18 +143,18 @@ const Login = () => {
                   onChangeText={setPassword}
                   style={styles.inputMain}
                 />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 170, top: 6}}>
+                <Pressable onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 170, top: 6}}>
                   <Ionicons
                     name={!showPassword ? 'eye-off-outline' : "eye-outline"}
                     size={28}
                     color='#284615'
                   />
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
 
           </KeyboardAwareScrollView>
-          <TouchableOpacity 
+          <Pressable 
               activeOpacity={0.8} 
               style={styles.buttonWrapper}
               onPress={handleLogin}
@@ -169,9 +169,9 @@ const Login = () => {
               >
                 <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Log In'}</Text>
               </LinearGradient>
-          </TouchableOpacity>
+          </Pressable>
       </SafeAreaView>
-      <TouchableOpacity 
+      <Pressable 
           style={styles.navButtonContainer}
           onPress={() => router.back()}
       >
@@ -180,7 +180,7 @@ const Login = () => {
               style={styles.navButtonImage}
               resizeMode='contain'
           />
-      </TouchableOpacity>
+      </Pressable>
     </ImageBackground>
   );
 }

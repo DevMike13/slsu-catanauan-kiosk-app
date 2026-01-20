@@ -23,7 +23,7 @@ import history from '../assets/images/history.png';
 import vmgo from '../assets/images/vmgo.png';
 import org from '../assets/images/org.png';
 import program from '../assets/images/program.png';
-import calendar from '../assets/images/calendar.png';
+import calendar from '../assets/images/calendar-icon.png';
 import events from '../assets/images/events.png';
 import attire from '../assets/images/attire.png';
 import summary from '../assets/images/summary.png';

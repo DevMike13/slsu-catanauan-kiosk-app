@@ -257,7 +257,7 @@ const Main = () => {
           />
           <Text style={styles.headerText}>SLSU CATANAUAN</Text>
           
-          {(user?.role != 'admin' || user?.role != 'super-admin') && (
+          {user?.role !== 'admin' && user?.role !== 'super-admin' && (
             <Pressable 
               style={{ marginLeft: 'auto', width: 40, height: 40, zIndex: 99 }}
               onPress={handleLogout}

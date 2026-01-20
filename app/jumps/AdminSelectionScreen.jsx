@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, Dimensions, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, Dimensions, ScrollView, Pressable, Animated } from 'react-native';
+import { useEffect, useRef } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -8,6 +9,41 @@ const { width, height } = Dimensions.get('window');
 
 const AdminSelectionScreen = () => {
   const router = useRouter();
+  const welcomeOpacity = useRef(new Animated.Value(0)).current;
+  const welcomeTranslate = useRef(new Animated.Value(20)).current;
+
+  const campusOpacity = useRef(new Animated.Value(0)).current;
+  const campusTranslate = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(welcomeOpacity, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(welcomeTranslate, {
+          toValue: 0,
+          duration: 1000,
+          delay: 1000,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.parallel([
+        Animated.timing(campusOpacity, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(campusTranslate, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start();
+  }, []);
 
   return (
     <ImageBackground
@@ -34,11 +70,31 @@ const AdminSelectionScreen = () => {
 
           {/* CONTENT */}
           <View style={styles.contentWrapper}>
-            <Text style={styles.welcomeText}>WELCOME TO</Text>
-            <Text style={styles.welcomeTextBottom}>SLSU CATANAUAN</Text>
+            <Animated.Text
+            style={[
+              styles.welcomeText,
+              {
+                opacity: welcomeOpacity,
+                transform: [{ translateY: welcomeTranslate }],
+              },
+            ]}
+          >
+            WELCOME TO
+          </Animated.Text>
+          <Animated.Text
+            style={[
+              styles.welcomeTextBottom,
+              {
+                opacity: campusOpacity,
+                transform: [{ translateY: campusTranslate }],
+              },
+            ]}
+          >
+            SLSU CATANAUAN
+          </Animated.Text>
 
             <View style={styles.buttonContainer}>
-              <TouchableOpacity 
+              <Pressable 
                 activeOpacity={0.8} 
                 style={styles.buttonWrapper}
                 onPress={() => router.push('/auth/register')}
@@ -52,9 +108,9 @@ const AdminSelectionScreen = () => {
                 >
                   <Text style={styles.buttonText}>Sign Up</Text>
                 </LinearGradient>
-              </TouchableOpacity>
+              </Pressable>
 
-              <TouchableOpacity 
+              <Pressable 
                 activeOpacity={0.8} 
                 style={styles.buttonWrapper}
                 onPress={() => router.push('/auth/login')}
@@ -68,7 +124,7 @@ const AdminSelectionScreen = () => {
                 >
                   <Text style={styles.buttonText}>Log In</Text>
                 </LinearGradient>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </ScrollView>

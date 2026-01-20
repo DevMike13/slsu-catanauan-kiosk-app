@@ -159,7 +159,7 @@ const Program = () => {
       >
             {(user?.role === 'admin' || user?.role === 'super-admin') && (
                 <View style={styles.funtionButtonContainer}>
-                    <TouchableOpacity
+                    <Pressable
                         style={styles.logoutButton}
                         onPress={handleLogout}
                     >
@@ -168,8 +168,8 @@ const Program = () => {
                             style={styles.editIcon}
                             resizeMode="contain"
                         />
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </Pressable>
+                    <Pressable
                         style={styles.editButton}
                         onPress={openEditor}
                     >
@@ -178,7 +178,7 @@ const Program = () => {
                             style={styles.editIcon}
                             resizeMode="contain"
                         />
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
             )}
           <SafeAreaView style={styles.container}>
@@ -361,14 +361,14 @@ const Program = () => {
                             />
                         </ScrollView>
                         <View style={styles.modalActions}>
-                            <TouchableOpacity style={[styles.actionButton, styles.cancelButton]} onPress={() => setModalVisible(false)}>
+                            <Pressable style={[styles.actionButton, styles.cancelButton]} onPress={() => setModalVisible(false)}>
                                 <Ionicons name="close" size={18} color="#333" style={styles.buttonIcon} />
                                 <Text style={[styles.actionButtonText, styles.cancelText]}>Cancel</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.actionButton, styles.saveButton]} onPress={saveContent}>
+                            </Pressable>
+                            <Pressable style={[styles.actionButton, styles.saveButton]} onPress={saveContent}>
                                 <Ionicons name="save" size={18} color="#fff" style={styles.buttonIcon} />
                                 <Text style={styles.actionButtonText}>Save</Text>
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
                     </View>
                 </View>

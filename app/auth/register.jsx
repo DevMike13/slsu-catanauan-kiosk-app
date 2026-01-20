@@ -1,4 +1,4 @@
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Alert, ImageBackground, ScrollView } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Alert, ImageBackground, ScrollView, Pressable } from 'react-native';
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'expo-router';
@@ -205,13 +205,13 @@ const Register = () => {
                   onChangeText={setPassword}
                   style={styles.inputMain}
                 />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 170, top: 6}}>
+                <Pressable onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 170, top: 6}}>
                   <Ionicons
                     name={!showPassword ? 'eye-off-outline' : "eye-outline"}
                     size={28}
                     color='#284615'
                   />
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
 
@@ -227,13 +227,13 @@ const Register = () => {
                   onChangeText={setConfirmPassword}
                   style={styles.inputMain}
                 />
-                <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={{ position: 'absolute', right: 240, top: 6}}>
+                <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={{ position: 'absolute', right: 240, top: 6}}>
                   <Ionicons
                     name={!showConfirmPassword ? 'eye-off-outline' : "eye-outline"}
                     size={28}
                     color='#284615'
                   />
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
 
@@ -269,7 +269,7 @@ const Register = () => {
             </View>
           </KeyboardAwareScrollView>
           </View>
-          <TouchableOpacity 
+          <Pressable 
               activeOpacity={0.8} 
               style={styles.buttonWrapper}
               onPress={handleRegister}
@@ -284,9 +284,9 @@ const Register = () => {
               >
                 <Text style={styles.buttonText}>{loading ? 'Signing up...' : 'Sign Up'}</Text>
               </LinearGradient>
-          </TouchableOpacity>
+          </Pressable>
       </SafeAreaView>
-      <TouchableOpacity 
+      <Pressable 
           style={styles.navButtonContainer}
           onPress={() => router.back()}
       >
@@ -295,7 +295,7 @@ const Register = () => {
               style={styles.navButtonImage}
               resizeMode='contain'
           />
-      </TouchableOpacity>
+      </Pressable>
     </ImageBackground>
   );
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { 
   View, Text, StyleSheet, ImageBackground, ScrollView, 
-  Dimensions, TextInput, Modal, TouchableOpacity, FlatList, Pressable
+  Dimensions, TextInput, Modal, FlatList, Pressable
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -166,7 +166,7 @@ const Enrollment = () => {
         <View style={{ flexDirection: "row" }}>
           {/* <SemiCircle value={item.female} color="#ff6ec7" label="Female" style={{ pointerEvents: 'none' }}/>
           <SemiCircle value={item.male} color="#4facfe" label="Male" style={{ pointerEvents: 'none' }}/> */}
-          <BarGraph
+          {/* <BarGraph
             value={item.female}
             max={Math.max(item.female, item.male, 10)}
             color="#ff6ec7"
@@ -177,7 +177,75 @@ const Enrollment = () => {
             max={Math.max(item.female, item.male, 10)}
             color="#4facfe"
             label="Male"
-          />
+          /> */}
+          <View pointerEvents="none" style={{ flexDirection: 'row' }}>
+  {/* Female */}
+  <View style={{ alignItems: 'center', marginHorizontal: 12 }}>
+    <View
+      style={{
+        width: 30,
+        height: 70,
+        backgroundColor: '#ffffff30',
+        borderRadius: 6,
+        justifyContent: 'flex-end',
+        overflow: 'hidden',
+      }}
+    >
+      <View
+        style={{
+          width: '100%',
+          height: Math.max(
+            (item.female / Math.max(item.female, item.male, 10)) * 70,
+            4
+          ),
+          backgroundColor: '#ff6ec7',
+          borderRadius: 6,
+        }}
+      />
+    </View>
+
+    <Text style={{ color: '#fff', marginTop: 6, fontWeight: 'bold' }}>
+      {item.female}
+    </Text>
+    <Text style={{ color: '#fff', fontSize: 12 }}>
+      Female
+    </Text>
+  </View>
+
+  {/* Male */}
+  <View style={{ alignItems: 'center', marginHorizontal: 12 }}>
+    <View
+      style={{
+        width: 30,
+        height: 70,
+        backgroundColor: '#ffffff30',
+        borderRadius: 6,
+        justifyContent: 'flex-end',
+        overflow: 'hidden',
+      }}
+    >
+      <View
+        style={{
+          width: '100%',
+          height: Math.max(
+            (item.male / Math.max(item.female, item.male, 10)) * 70,
+            4
+          ),
+          backgroundColor: '#4facfe',
+          borderRadius: 6,
+        }}
+      />
+    </View>
+
+    <Text style={{ color: '#fff', marginTop: 6, fontWeight: 'bold' }}>
+      {item.male}
+    </Text>
+    <Text style={{ color: '#fff', fontSize: 12 }}>
+      Male
+    </Text>
+  </View>
+</View>
+
         </View>
         {(user?.role === 'admin' || user?.role === 'super-admin') && (
           <Pressable style={styles.yearEditButton} onPress={() => openYearEditor(item)}>
@@ -199,7 +267,7 @@ const Enrollment = () => {
             <View style={styles.frontCard}>
               <View style={styles.innerCard}>
                 <View style={styles.tabContainer}>
-                  <FlatList
+                  {/* <FlatList
                     data={tabList}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
@@ -227,7 +295,43 @@ const Enrollment = () => {
                     )}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.flatlistContainer}
-                  />
+                  /> */}
+                  <View style={styles.flatlistContainer}>
+  {tabList.map((item, index) => {
+    const isActive = activeTab === item;
+
+    return (
+      <Pressable
+        key={index}
+        onPress={() => setActiveTab(item)}
+        style={[
+          {
+            marginBottom: 30,
+            backgroundColor: '#fff',
+          },
+          isActive ? styles.activeTabButton : styles.inactiveTabButton,
+        ]}
+      >
+        <LinearGradient
+          colors={['#fff', '#fff']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.tabButton}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              isActive ? styles.activeTabText : styles.inactiveTabText,
+            ]}
+          >
+            {item}
+          </Text>
+        </LinearGradient>
+      </Pressable>
+    );
+  })}
+</View>
+
                 </View>
               </View>
             </View>
@@ -265,7 +369,7 @@ const Enrollment = () => {
             </Text>
 
             <View style={{ marginBottom: 15 }}>
-              <Text style={{ marginBottom: 10, fontFamily: 'Poppins-SemiBold'}}>Male</Text>
+              <Text style={{ marginBottom: 10, fontFamily: 'Arial-Bold-1'}}>Male</Text>
               <TextInput
                 style={styles.modalInput}
                 value={tempData?.male}
@@ -275,7 +379,7 @@ const Enrollment = () => {
             </View>
 
             <View style={{ marginBottom: 15 }}>
-              <Text style={{ marginBottom: 10, fontFamily: 'Poppins-SemiBold'}}>Female</Text>
+              <Text style={{ marginBottom: 10, fontFamily: 'Arial-Bold-1'}}>Female</Text>
               <TextInput
                 style={styles.modalInput}
                 value={tempData?.female}
@@ -335,7 +439,7 @@ const styles = StyleSheet.create({
       height: 80
   },
   headerText: {
-      fontFamily: 'Poppins-Bold',
+      fontFamily: 'Arial-Bold-1',
       fontSize: width * 0.06,
       marginBottom: -20
   },
@@ -419,13 +523,13 @@ const styles = StyleSheet.create({
       marginBottom: 20
   },
   heading: {
-      fontFamily: 'Poppins-Bold',
+      fontFamily: 'Arial-Bold-1',
       fontSize: 14,
       marginBottom: 4,
       color: 'white'
   },
   paragraph: {
-      fontFamily: 'Poppins-Regular',
+      fontFamily: 'Arial-Regular',
       textAlign: 'justify',
       color: 'white'
   },
@@ -501,7 +605,7 @@ const styles = StyleSheet.create({
   
     logoutButtonText: {
       color: 'white',
-      fontFamily: 'Poppins-Bold'
+      fontFamily: 'Arial-Bold-1'
     },
   
     yearEditButton: {
@@ -518,7 +622,7 @@ const styles = StyleSheet.create({
   
     yearEditText: {
       color: '#257b3e',
-      fontFamily: 'Poppins-Bold'
+      fontFamily: 'Arial-Bold-1'
     },
   
     modalBackdrop: {
@@ -543,7 +647,7 @@ const styles = StyleSheet.create({
     
     modalTitle: { 
       fontSize: 20, 
-      fontFamily: 'Poppins-Bold', 
+      fontFamily: 'Arial-Bold-1', 
       marginBottom: 16, 
       color: '#257b3e',
       textAlign: 'center'
@@ -558,11 +662,11 @@ const styles = StyleSheet.create({
       marginBottom: 20, 
       borderRadius: 14,
       backgroundColor: '#fafafa',
-      fontFamily: 'Poppins-Regular',
+      fontFamily: 'Arial-Regular',
       fontSize: 14
     },
     modalLabel: {
-      fontFamily: 'Poppins-SemiBold',
+      fontFamily: 'Arial-Bold-1',
     },
     modalActions: {
       flexDirection: 'row',
@@ -595,7 +699,7 @@ const styles = StyleSheet.create({
       fontWeight: '600', 
       fontSize: 16, 
       color: 'white', 
-      fontFamily: 'Poppins-SemiBold'
+      fontFamily: 'Arial-Bold-1'
     },
     
     cancelText: {
