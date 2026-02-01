@@ -6,6 +6,13 @@ import { collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firesto
 import { firestoreDB } from '../../firebase';
 import { useAuthStore } from '../../store/useAuthStore';
 import { initEventsDB, fetchAllEvents, addEvent, deleteEvent } from '../../database/events';
+import {
+  initAnnouncementsDB,
+  fetchAllAnnouncements,
+  addAnnouncement,
+  deleteAnnouncement
+} from '../../database/announcements';
+
 import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
@@ -19,11 +26,18 @@ const Events = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [newEvent, setNewEvent] = useState('');
   
+  const [announcements, setAnnouncements] = useState([]);
+  const [announcementModalVisible, setAnnouncementModalVisible] = useState(false);
+  const [newAnnouncement, setNewAnnouncement] = useState('');
+
   useEffect(() => {
     const init = async () => {
       await initEventsDB();
+      await initAnnouncementsDB();
       const allEvents = await fetchAllEvents();
+      const allAnnouncements = await fetchAllAnnouncements();
       setEvents(allEvents);
+      setAnnouncements(allAnnouncements);
     };
     init();
   }, []);
@@ -52,6 +66,30 @@ const Events = () => {
     await deleteEvent(id);
     const allEvents = await fetchAllEvents();
     setEvents(allEvents);
+  };
+
+  const handleAddAnnouncement = async () => {
+    if (!newAnnouncement.trim()) return;
+    await addAnnouncement(newAnnouncement);
+    setAnnouncements(await fetchAllAnnouncements());
+    setNewAnnouncement('');
+    setAnnouncementModalVisible(false);
+  };
+
+  const handleDeleteAnnouncement = async (id) => {
+    await deleteAnnouncement(id);
+    setAnnouncements(await fetchAllAnnouncements());
+  };
+
+  const confirmDeleteAnnouncement = (id) => {
+    Alert.alert(
+      "Delete Announcement",
+      "Are you sure you want to delete this announcement?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Delete", style: "destructive", onPress: () => handleDeleteAnnouncement(id) }
+      ]
+    );
   };
 
   const handleLogout = () => {
@@ -87,6 +125,9 @@ const Events = () => {
               resizeMode="contain"
             />
           </TouchableOpacity>
+          <TouchableOpacity style={[styles.editButton, { marginTop: 5 }]} onPress={() => setAnnouncementModalVisible(true)}>
+            <Ionicons name="notifications" size={34} color="#787a79" />
+          </TouchableOpacity>
         </View>
       )}
       
@@ -105,6 +146,7 @@ const Events = () => {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
               >
+                <Text style={{ marginTop: 20, fontFamily: 'Arial-Bold-1', fontSize: 18, color:'#fff' }}>EVENTS</Text>
                 {events.map((event) => (
                   <View key={event.id} style={styles.eventItem}>
                     <View style={styles.eventInfo}>
@@ -126,6 +168,20 @@ const Events = () => {
                   <Text style={styles.noEventText}>No events yet</Text>
                 )}
 
+                <Text style={{ marginTop: 20, fontFamily: 'Arial-Bold-1', fontSize: 18, color:'#fff' }}>ANNOUNCEMENTS</Text>
+                {announcements.map(a => (
+                  <View key={a.id} style={styles.eventItem}>
+                    <View style={styles.eventInfo}>
+                      <Text style={styles.eventText}>{a.title}</Text>
+                    </View>
+                    {(user?.role === 'admin' || user?.role === 'super-admin') && (
+                      <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteAnnouncement(a.id)}>
+                        <Ionicons name="trash" size={16} color="#fff" />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                ))}
+                {announcements.length === 0 && <Text style={styles.noEventText}>No announcements yet</Text>}
               </ScrollView>
             </View>
           </View>
@@ -160,6 +216,32 @@ const Events = () => {
                   style={[styles.actionButton, styles.saveButton]}
                   onPress={handleAddEvent}
                 >
+                  <Ionicons name="save" size={18} color="#fff" style={styles.buttonIcon} />
+                  <Text style={styles.actionButtonText}>Save</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* --- Announcement Modal --- */}
+        <Modal visible={announcementModalVisible} animationType="slide" transparent>
+          <View style={styles.modalBackdrop}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>Add Announcement</Text>
+              <TextInput
+                placeholder="Enter announcement title"
+                value={newAnnouncement}
+                onChangeText={setNewAnnouncement}
+                style={styles.modalInput}
+                placeholderTextColor="#888"
+              />
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={[styles.actionButton, styles.cancelButton]} onPress={() => setAnnouncementModalVisible(false)}>
+                  <Ionicons name="close" size={18} color="#333" style={styles.buttonIcon} />
+                  <Text style={[styles.actionButtonText, styles.cancelText]}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.actionButton, styles.saveButton]} onPress={handleAddAnnouncement}>
                   <Ionicons name="save" size={18} color="#fff" style={styles.buttonIcon} />
                   <Text style={styles.actionButtonText}>Save</Text>
                 </TouchableOpacity>

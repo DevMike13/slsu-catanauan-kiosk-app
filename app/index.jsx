@@ -12,6 +12,9 @@ const Index = () => {
   const welcomeOpacity = useRef(new Animated.Value(0)).current;
   const welcomeTranslate = useRef(new Animated.Value(20)).current;
 
+  const welcomeTwoOpacity = useRef(new Animated.Value(0)).current;
+  const welcomeTwoTranslate = useRef(new Animated.Value(20)).current;
+
   const campusOpacity = useRef(new Animated.Value(0)).current;
   const campusTranslate = useRef(new Animated.Value(20)).current;
 
@@ -27,6 +30,18 @@ const Index = () => {
           toValue: 0,
           duration: 1000,
           delay: 1000,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.parallel([
+        Animated.timing(welcomeTwoOpacity, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(welcomeTwoTranslate, {
+          toValue: 0,
+          duration: 1000,
           useNativeDriver: true,
         }),
       ]),
@@ -61,7 +76,7 @@ const Index = () => {
               style={styles.imageLogo}
               resizeMode="contain"
             />
-            <Text style={styles.headerText}>SOUTHERN LUZON STATE UNIVERSITY</Text>
+            {/* <Text style={styles.headerText}>SOUTHERN LUZON STATE UNIVERSITY</Text> */}
             {/* <Image 
               source={images.mainLogo}
               style={styles.imageLogo}
@@ -84,6 +99,17 @@ const Index = () => {
           </Animated.Text>
           <Animated.Text
             style={[
+              styles.welcomeText,
+              {
+                opacity: welcomeTwoOpacity,
+                transform: [{ translateY: welcomeTwoTranslate }],
+              },
+            ]}
+          >
+            SOUTHERN LUZON STATE UNIVERSITY
+          </Animated.Text>
+          <Animated.Text
+            style={[
               styles.welcomeTextBottom,
               {
                 opacity: campusOpacity,
@@ -91,7 +117,7 @@ const Index = () => {
               },
             ]}
           >
-            SLSU CATANAUAN
+            CATANAUAN EXTENSION
           </Animated.Text>
 
             <Pressable 
@@ -133,7 +159,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'space-between',
+    justifyContent: 'center',
     gap: 20,
     paddingHorizontal: width * 0.0,
     paddingVertical: height * 0.02,
@@ -161,7 +187,7 @@ const styles = StyleSheet.create({
 
   contentWrapper: {
     alignItems: 'center',
-    marginTop: height * 0.05,
+    marginTop: height * 0.01,
   },
 
   // welcomeText: {
@@ -174,14 +200,14 @@ const styles = StyleSheet.create({
 
   welcomeText: {
     fontFamily: 'Arial-Bold-1',
-    fontSize: 60,
+    fontSize: 50,
     textAlign: 'center',
     color: '#284615',
     
   },
   welcomeTextBottom: {
     fontFamily: 'Arial-Bold-1',
-    fontSize: 60,
+    fontSize: 50,
     textAlign: 'center',
     color: '#284615',
     marginTop: -10,

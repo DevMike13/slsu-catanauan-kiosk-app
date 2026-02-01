@@ -272,12 +272,19 @@ const Main = () => {
         </View>
 
         {/* Content */}
-        <Pressable style={{ flex: 1 }} onPress={handleDoubleTap}>
+        {/* <Pressable style={{ flex: 1, backgroundColor: 'blue' }} onPress={handleDoubleTap}>
           <View style={styles.scrollArea}>
             {renderContent()}
           </View>
-        </Pressable>
-
+        </Pressable> */}
+        <View
+          style={{ flex: 1 }}
+          onTouchStartCapture={handleDoubleTap}
+        >
+          <View style={styles.scrollArea}>
+            {renderContent()}
+          </View>
+        </View>
         {/* <Pressable
           style={[
             StyleSheet.absoluteFill,

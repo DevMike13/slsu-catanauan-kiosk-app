@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import QRCode from "react-native-qrcode-svg";
 
 import { firestoreDB, storage } from '../../firebase';
@@ -55,41 +56,96 @@ const Studorg = () => {
     initDB();
   }, []);
   
+  // const pickAndUploadImage = async () => {
+  //   try {
+  //     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  //     if (!permission.granted) return alert('Permission to access media library is required.');
+
+  //     const result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //       allowsEditing: true,
+  //       quality: 0.8,
+  //     });
+
+  //     if (!result.canceled && result.assets?.length > 0) {
+  //       setLoading(true);
+  //       const imageUri = result.assets[0].uri;
+
+  //       // Upload to Firebase Storage
+  //       const response = await fetch(imageUri);
+  //       const blob = await response.blob();
+  //       const storageRef = ref(storage, `studorg/${activeTab}_${Date.now()}.jpg`);
+  //       await uploadBytes(storageRef, blob);
+  //       const downloadURL = await getDownloadURL(storageRef);
+
+  //       // Update SQLite DB
+  //       await updateImage(activeTab, downloadURL);
+  //       setOrgImages((prev) => ({ ...prev, [activeTab]: downloadURL }));
+
+  //       setLoading(false);
+  //     }
+  //   } catch (err) {
+  //     console.error("Upload failed:", err);
+  //     setLoading(false);
+  //     alert("Failed to upload image.");
+  //   }
+  // };
+  const saveImageLocally = async (uri, tab) => {
+    try {
+      const fileName = `${tab}_${Date.now()}.jpg`;
+      const localPath = FileSystem.documentDirectory + fileName;
+  
+      await FileSystem.copyAsync({
+        from: uri,
+        to: localPath,
+      });
+  
+      return localPath;
+    } catch (err) {
+      console.error("Failed to save locally:", err);
+      return uri; // fallback
+    }
+  };
+  
   const pickAndUploadImage = async () => {
     try {
       const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permission.granted) return alert('Permission to access media library is required.');
-
+      if (!permission.granted) {
+        alert('Permission required');
+        return;
+      }
+  
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         quality: 0.8,
       });
-
-      if (!result.canceled && result.assets?.length > 0) {
-        setLoading(true);
-        const imageUri = result.assets[0].uri;
-
-        // Upload to Firebase Storage
-        const response = await fetch(imageUri);
-        const blob = await response.blob();
-        const storageRef = ref(storage, `studorg/${activeTab}_${Date.now()}.jpg`);
-        await uploadBytes(storageRef, blob);
-        const downloadURL = await getDownloadURL(storageRef);
-
-        // Update SQLite DB
-        await updateImage(activeTab, downloadURL);
-        setOrgImages((prev) => ({ ...prev, [activeTab]: downloadURL }));
-
-        setLoading(false);
-      }
-    } catch (err) {
-      console.error("Upload failed:", err);
+  
+      if (result.canceled) return;
+  
+      setLoading(true);
+  
+      const pickedUri = result.assets[0].uri;
+  
+      // 🔹 Copy image into app storage
+      const localUri = await saveImageLocally(pickedUri);
+  
+      // 🔹 Save LOCAL path to SQLite
+      await updateImage(activeTab, localUri);
+  
+      setOrgImages(prev => ({
+        ...prev,
+        [activeTab]: localUri,
+      }));
+  
       setLoading(false);
-      alert("Failed to upload image.");
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+      alert('Failed to save image offline');
     }
   };
-
+  
   const openQrEditor = () => {
     setTempQrLink(qrLinks[activeTab] || "");
     setTempEmail(emails[activeTab] || "");

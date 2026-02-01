@@ -12,6 +12,9 @@ const AdminSelectionScreen = () => {
   const welcomeOpacity = useRef(new Animated.Value(0)).current;
   const welcomeTranslate = useRef(new Animated.Value(20)).current;
 
+  const welcomeTwoOpacity = useRef(new Animated.Value(0)).current;
+  const welcomeTwoTranslate = useRef(new Animated.Value(20)).current;
+
   const campusOpacity = useRef(new Animated.Value(0)).current;
   const campusTranslate = useRef(new Animated.Value(20)).current;
 
@@ -27,6 +30,18 @@ const AdminSelectionScreen = () => {
           toValue: 0,
           duration: 1000,
           delay: 1000,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.parallel([
+        Animated.timing(welcomeTwoOpacity, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(welcomeTwoTranslate, {
+          toValue: 0,
+          duration: 1000,
           useNativeDriver: true,
         }),
       ]),
@@ -60,7 +75,7 @@ const AdminSelectionScreen = () => {
               style={styles.imageLogo}
               resizeMode="contain"
             />
-            <Text style={styles.headerText}>SOUTHERN LUZON STATE UNIVERSITY</Text>
+            {/* <Text style={styles.headerText}>SOUTHERN LUZON STATE UNIVERSITY</Text> */}
             {/* <Image 
               source={images.mainLogo}
               style={styles.imageLogo}
@@ -70,7 +85,7 @@ const AdminSelectionScreen = () => {
 
           {/* CONTENT */}
           <View style={styles.contentWrapper}>
-            <Animated.Text
+          <Animated.Text
             style={[
               styles.welcomeText,
               {
@@ -83,6 +98,17 @@ const AdminSelectionScreen = () => {
           </Animated.Text>
           <Animated.Text
             style={[
+              styles.welcomeText,
+              {
+                opacity: welcomeTwoOpacity,
+                transform: [{ translateY: welcomeTwoTranslate }],
+              },
+            ]}
+          >
+            SOUTHERN LUZON STATE UNIVERSITY
+          </Animated.Text>
+          <Animated.Text
+            style={[
               styles.welcomeTextBottom,
               {
                 opacity: campusOpacity,
@@ -90,7 +116,7 @@ const AdminSelectionScreen = () => {
               },
             ]}
           >
-            SLSU CATANAUAN
+            CATANAUAN EXTENSION
           </Animated.Text>
 
             <View style={styles.buttonContainer}>
@@ -129,6 +155,16 @@ const AdminSelectionScreen = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
+      <Pressable 
+          style={styles.navButtonContainer}
+          onPress={() => router.back()}
+      >
+          <Image 
+              source={images.backIcon}
+              style={styles.navButtonImage}
+              resizeMode='contain'
+          />
+      </Pressable>
     </ImageBackground>
   );
 }
@@ -149,7 +185,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'space-between',
+    justifyContent: 'center',
     gap: 20,
     paddingHorizontal: width * 0.0,
     paddingVertical: height * 0.02,
@@ -167,17 +203,17 @@ const styles = StyleSheet.create({
   
   contentWrapper: {
     alignItems: 'center',
-    marginTop: height * 0.03,
+    marginTop: height * 0.01,
   },
   welcomeText: {
     fontFamily: 'Arial-Bold-1',
-    fontSize: 60,
+    fontSize: 50,
     textAlign: 'center',
     color: '#284615',
   },
   welcomeTextBottom: {
     fontFamily: 'Arial-Bold-1',
-    fontSize: 60,
+    fontSize: 50,
     textAlign: 'center',
     color: '#284615',
     marginTop: -10,
@@ -205,5 +241,14 @@ const styles = StyleSheet.create({
     color: '#284615',
     fontFamily: 'Arial-Bold-1',
     fontSize: 38,
+  },
+  navButtonContainer:{
+    position: 'absolute',
+    bottom: 10,
+    left: 10
+  },
+  navButtonImage: {
+      width: 50,
+      height: 50
   },
 });

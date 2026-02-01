@@ -16,6 +16,7 @@ import { db, prepopulateUsers, initDB, showAllUsers, deleteAllUsers } from '../.
 
 
 const { width, height } = Dimensions.get('window');
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const Login = () => {
 
@@ -154,24 +155,44 @@ const Login = () => {
             </View>
 
           </KeyboardAwareScrollView>
-          <Pressable 
-              activeOpacity={0.8} 
-              style={styles.buttonWrapper}
-              onPress={handleLogin}
-              disabled={loading}
-          >
-              <LinearGradient
-                  colors={['#00000055', '#ffffffdb']} 
-                  locations={[0, 0.15]}
-                  start={{ x: 0, y: 1.2 }}
-                  end={{ x: 1, y: 0 }}
-                  style={styles.button}
-              >
-                <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Log In'}</Text>
-              </LinearGradient>
-          </Pressable>
+          <View style={styles.buttonContainer}>
+            <Pressable 
+                activeOpacity={0.8} 
+                style={styles.buttonWrapper}
+                onPress={handleLogin}
+                disabled={loading}
+            >
+                <LinearGradient
+                    colors={['#00000055', '#ffffffdb']} 
+                    locations={[0, 0.15]}
+                    start={{ x: 0, y: 1.2 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.button}
+                >
+                  <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Log In'}</Text>
+                </LinearGradient>
+            </Pressable>
+
+            <Pressable 
+                activeOpacity={0.8} 
+                style={styles.buttonWrapper}
+                onPress={() => router.back()}
+                disabled={loading}
+            >
+                <LinearGradient
+                    colors={['#0000006f', '#fffffff1']} 
+                    locations={[0, 0.15]}
+                    start={{ x: 0, y: 1.2 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.button}
+                >
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </LinearGradient>
+            </Pressable>
+          </View>
+          
       </SafeAreaView>
-      <Pressable 
+      {/* <Pressable 
           style={styles.navButtonContainer}
           onPress={() => router.back()}
       >
@@ -180,7 +201,7 @@ const Login = () => {
               style={styles.navButtonImage}
               resizeMode='contain'
           />
-      </Pressable>
+      </Pressable> */}
     </ImageBackground>
   );
 }
@@ -262,15 +283,18 @@ const styles = StyleSheet.create({
     color: 'blue'
   },
   buttonContainer:{
-    marginTop: 50
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'center', // center the row horizontally
+    gap: 10,
   },
   buttonWrapper: {
     borderRadius: 50,
-    width: '16%',
-    alignSelf: 'center',
-    position: 'absolute',
-    bottom: 10,
-    right: 40
+    width: '16%', // adjust width so both fit nicely in one row
+    height: 50,
   },
   button: {
     // paddingVertical: height * 0.015,
